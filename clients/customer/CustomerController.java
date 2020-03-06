@@ -15,4 +15,8 @@ public class CustomerController
         model.setState(state);
         System.out.println("New state: " + state);
     }
+    
+    public boolean verifyAccount(String user, String pass) {
+        return model.verifyAccount(user, pass);
+    }
 }

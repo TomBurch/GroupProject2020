@@ -46,15 +46,17 @@ public class CustomerView implements PropertyChangeListener
         }
     }
     
-    private class LoginPanel extends JPanel {
+    private class LoginPanel extends JPanel {    
         public LoginPanel() {
             setPreferredSize(new Dimension(400, 300));
             setLayout(new GridBagLayout());
             JButton loginButton = new JButton("Login");
             loginButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("Login clicked");
-                    controller.setState("Trade");
+                    String user = "123";
+                    String pass = "abc";
+                    boolean success = controller.verifyAccount(user, pass);
+                    //controller.setState("Trade");
                 }
             });
             add(loginButton, SwingConstants.CENTER);
@@ -69,7 +71,6 @@ public class CustomerView implements PropertyChangeListener
             JButton tradeButton = new JButton("Trade");
             tradeButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    System.out.println("Trade clicked");
                     controller.setState("Login");
                 }
             });
