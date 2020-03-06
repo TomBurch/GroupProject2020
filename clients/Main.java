@@ -18,18 +18,14 @@ public class Main
         createCustomerGUI();
     }
     
-    public void createCustomerGUI() {
-        JFrame window = new JFrame();
-        window.setTitle("Customer Client");
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+    public void createCustomerGUI() {               
         CustomerModel model = new CustomerModel();
-        CustomerView view = new CustomerView(window);
+        CustomerView view = new CustomerView();
         CustomerController controller = new CustomerController(view, model);
-        view.setController(controller);
-        model.addObserver(view);
         
-        window.pack();
-        window.setVisible(true);
+        view.setController(controller);
+        model.addPropertyChangeListener(view);
+        
+        view.setVisible(true);
     }
 }

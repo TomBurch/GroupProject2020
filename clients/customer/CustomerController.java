@@ -10,4 +10,9 @@ public class CustomerController
         this.view = view;
         this.model = model;
     }
+    
+    public void setState(String state) {
+        model.setState(state);
+        System.out.println("New state: " + state);
+    }
 }

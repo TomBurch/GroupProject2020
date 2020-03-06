@@ -6,19 +6,24 @@ import java.beans.PropertyChangeListener;
 public class CustomerModel
 {
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    private String state = "Login";
     
     public CustomerModel()
     {
-
     }
     
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
     
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        pcs.removePropertyChangeListener(listener);
+    public String getState() {
+        return state;
     }
     
-    //pcs.firePropertyChange("value", oldValue, newValue)
+    public void setState(String state) {
+        String oldValue = this.state;
+        String newValue = state;
+        this.state = state;
+        pcs.firePropertyChange("state", oldValue, newValue);
+    }
 }
