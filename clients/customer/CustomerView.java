@@ -2,10 +2,10 @@ package clients.customer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Observable;
-import java.util.Observer;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
-public class CustomerView implements Observer
+public class CustomerView implements PropertyChangeListener
 {
     private CustomerController controller = null;
     
@@ -16,8 +16,10 @@ public class CustomerView implements Observer
     } 
     
     @Override
-    public void update(Observable obs, Object arg) {
-        CustomerModel model = (CustomerModel) obs;
+    public void propertyChange(PropertyChangeEvent event) {
+        //event.getNewValue();
+        //event.getOldValue();
+        //event.getPropertyName();
     }
     
     public void setController(CustomerController controller) {
