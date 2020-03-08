@@ -7,10 +7,7 @@ public class CustomerModel
 {
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private String state = "Login";
-    
-    public CustomerModel()
-    {
-    }
+    private LoginHandler loginHandler = new LoginHandler();
     
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
@@ -25,5 +22,13 @@ public class CustomerModel
         String newValue = state;
         this.state = state;
         pcs.firePropertyChange("state", oldValue, newValue);
+    }
+    
+    public boolean verifyAccount(String user, String pass) {
+        return loginHandler.verifyAccount(user, pass);
+    }
+    
+    public boolean makeAccount(String user, String pass) {
+        return loginHandler.makeAccount(user, pass);
     }
 }
