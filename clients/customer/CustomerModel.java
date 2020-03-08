@@ -9,10 +9,6 @@ public class CustomerModel
     private String state = "Login";
     private LoginHandler loginHandler = new LoginHandler();
     
-    public CustomerModel()
-    {
-    }
-    
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
@@ -30,5 +26,9 @@ public class CustomerModel
     
     public boolean verifyAccount(String user, String pass) {
         return loginHandler.verifyAccount(user, pass);
+    }
+    
+    public boolean makeAccount(String user, String pass) {
+        return loginHandler.makeAccount(user, pass);
     }
 }
