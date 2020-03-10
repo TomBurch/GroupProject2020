@@ -30,9 +30,10 @@ public class LoginHandler
                 return true;
             }
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("LoginHandler::verifyAccount:: " + e);
         }
         
+        System.out.println("LoginHandler::verifyAccount:: Unable to verify account '" + user + "'");
         return false;
     }
     
@@ -59,6 +60,11 @@ public class LoginHandler
         
         String hashAndSalt = hashString + ":" + saltString;
         
+        if (!validateUsername(user) || !validatePassword(pass)) {
+            System.out.println("LoginHandler::makeAccount:: Invalid username or password");
+            return false;
+        }
+        
         try {
             Connection conn = accManager.getConnection();
             PreparedStatement statement = conn.prepareStatement("INSERT INTO ACCOUNTS (Username, PasswordHash) VALUES (?, ?)");
@@ -71,10 +77,25 @@ public class LoginHandler
                 return false;
             }  
         } catch (SQLException e) {
-            System.out.println(e);
+            System.out.println("LoginHandler::makeAccount:: " + e);
         }
+        System.out.println("LoginHandler::makeAccount:: Made new account '" + user + "'");
         return true;
     }    
+
+    private boolean validateUsername(String user) {
+        if (user.length() >= 5) {
+            return true;
+        }
+        return false;
+    }
+    
+    private boolean validatePassword(String pass) {
+        if (pass.length() >= 5 && pass.length() <= 15) {
+            return true;
+        }
+        return false;
+    }
         
     
     private byte[] hash(String pass, byte[] salt) {

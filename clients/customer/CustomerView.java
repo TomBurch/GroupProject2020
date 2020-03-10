@@ -47,8 +47,6 @@ public class CustomerView implements PropertyChangeListener
     }
     
     public class LoginPanel extends JPanel {
-
-        private JMenuBar menuBar;
         private JButton loginButton;
         private JPasswordField passEntry;
         private JLabel passLabel;
@@ -60,13 +58,10 @@ public class CustomerView implements PropertyChangeListener
         //Constructor 
         public LoginPanel(){
             this.setSize(400,300);
-            //menu generate method
-    
-            //pane with null layout
+            
             JPanel contentPane = new JPanel(null);
             contentPane.setPreferredSize(new Dimension(400,300));
             contentPane.setBackground(new Color(192,192,192));
-    
     
             loginButton = new JButton();
             loginButton.setBounds(231,200,90,35);
@@ -79,12 +74,14 @@ public class CustomerView implements PropertyChangeListener
             
             loginButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-                    String user = "abc";
-                    String pass = "123";
+                    System.out.println("CustomerView:: loginButton clicked");
+                    String user = userEntry.getText();
+                    String pass = passEntry.getText();
                     controller.makeAccount(user, pass);
-                    boolean success = controller.verifyAccount(user, pass);
                         
-                    controller.setState("Trade");
+                    if (controller.verifyAccount(user, pass)) {
+                        controller.setState("Trade");
+                    }
                 }
             });
     
