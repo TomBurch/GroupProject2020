@@ -13,7 +13,7 @@ public class CustomerController
     
     public void setState(String state) {
         model.setState(state);
-        System.out.println("New state: " + state);
+        System.out.println("CustomerController::setState:: New state: " + state);
     }
     
     public boolean verifyAccount(String user, String pass) {

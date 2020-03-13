@@ -4,9 +4,19 @@ import java.sql.*;
 
 public abstract class DBManager
 {
-    //private static final String driver = "org.apache.derby.jdbc.EmbeddedDriver"; 
+    private static final String driver = "org.apache.derby.jdbc.EmbeddedDriver"; 
     private static final String dbUrl = "jdbc:derby:fizzit.db;create=true";
     protected static Connection conn;
+    
+    public DBManager() {
+        try {
+            System.out.println("DBManager::constructor:: Loading EmbeddedDriver");
+            Class.forName(driver).newInstance();
+            conn = DriverManager.getConnection(dbUrl);
+        } catch (Exception e) {
+            System.out.println("DBManager::constructor:: " + e);
+        }
+    }
     
     private static void shutdown() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -19,14 +29,6 @@ public abstract class DBManager
                 }
             }
         });
-    }
-    
-    public DBManager() {
-        try {
-            conn = DriverManager.getConnection(dbUrl);
-        } catch (SQLException e) {
-            System.out.println("DBManager::constructor:: " + e);
-        }
     }
     
     protected abstract void setup();
