@@ -8,6 +8,7 @@ public class CustomerModel
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private String state = "Login";
     private LoginHandler loginHandler = new LoginHandler();
+    private TradeHandler tradeHandler = new TradeHandler();
     
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);

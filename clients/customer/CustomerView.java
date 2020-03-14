@@ -152,18 +152,66 @@ public class CustomerView implements PropertyChangeListener
         }  
     }  
     
-    private class TradePanel extends JPanel {
-        public TradePanel() {
-            setPreferredSize(new Dimension(400, 300));
-            setLayout(new GridBagLayout());
-            JButton tradeButton = new JButton("Trade");
-            tradeButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    controller.setState("Login");
-                }
-            });
-            add(tradeButton, SwingConstants.CENTER);
-            setBorder(BorderFactory.createTitledBorder("Trade"));
+    public class TradePanel extends JPanel {
+        private JMenuBar menuBar;
+        private JButton tradeButton;
+        private JTextField isbnEntry;
+        private JLabel isbnLabel;
+        private JList tradeList;
+    
+        //Constructor 
+        public TradePanel(){
+            this.setSize(400,300);
+    
+            //pane with null layout
+            JPanel contentPane = new JPanel(null);
+            contentPane.setPreferredSize(new Dimension(400,300));
+            contentPane.setBackground(new Color(192,192,192));
+    
+            tradeButton = new JButton();
+            tradeButton.setBounds(148,94,90,35);
+            tradeButton.setBackground(new Color(214,217,223));
+            tradeButton.setForeground(new Color(0,0,0));
+            tradeButton.setEnabled(true);
+            tradeButton.setFont(new Font("sansserif",0,12));
+            tradeButton.setText("Submit");
+            tradeButton.setVisible(true);
+    
+            isbnEntry = new JTextField();
+            isbnEntry.setBounds(109,48,267,29);
+            isbnEntry.setBackground(new Color(255,255,255));
+            isbnEntry.setForeground(new Color(0,0,0));
+            isbnEntry.setEnabled(true);
+            isbnEntry.setFont(new Font("sansserif",0,12));
+            isbnEntry.setText("");
+            isbnEntry.setVisible(true);
+    
+            isbnLabel = new JLabel();
+            isbnLabel.setBounds(19,45,90,35);
+            isbnLabel.setBackground(new Color(214,217,223));
+            isbnLabel.setForeground(new Color(0,0,0));
+            isbnLabel.setEnabled(true);
+            isbnLabel.setFont(new Font("sansserif",0,12));
+            isbnLabel.setText("Enter ISBN: ");
+            isbnLabel.setVisible(true);
+    
+            tradeList = new JList();
+            tradeList.setBounds(79,150,243,109);
+            tradeList.setBackground(new Color(255,255,255));
+            tradeList.setForeground(new Color(0,0,0));
+            tradeList.setEnabled(true);
+            tradeList.setFont(new Font("sansserif",0,12));
+            tradeList.setVisible(true);
+    
+            //adding components to contentPane panel
+            contentPane.add(tradeButton);
+            contentPane.add(isbnEntry);
+            contentPane.add(isbnLabel);
+            contentPane.add(tradeList);
+    
+            //adding panel to JFrame and seting of window position and close operation
+            this.add(contentPane);
+            this.setVisible(true);
         }
     }
 }
