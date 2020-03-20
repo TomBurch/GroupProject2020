@@ -24,15 +24,15 @@ public class CustomerView implements PropertyChangeListener
     {
         cardPanel.add(new LoginPanel(), "Login");
         cardPanel.add(tabbedPane, "Main");
-        tabbedPane.addTab("Home", new TradePanel());
+        tabbedPane.addTab("Home", new HomePanel());
         tabbedPane.addTab("Current Trade", new TradePanel());
-        tabbedPane.addTab("Saved Products", new TradePanel());
-        tabbedPane.addTab("Trade History", new TradePanel());
+        tabbedPane.addTab("Saved Products", new SavedPanel());
+        tabbedPane.addTab("Trade History", new HistoryPanel());
         try {
             BufferedImage image = ImageIO.read(getClass().getResource("/resources/cog.png"));
             Image scaledImage = image.getScaledInstance(15, 15, Image.SCALE_DEFAULT);
             ImageIcon icon = new ImageIcon(scaledImage);
-            tabbedPane.addTab("", icon, new LoginPanel());
+            tabbedPane.addTab("", icon, new AccountPanel());
         } catch (Exception e) {
             System.out.println("CustomerView::Constructor:: " + e);
         }     
@@ -170,7 +170,7 @@ public class CustomerView implements PropertyChangeListener
         }  
     }  
     
-    public class TradePanel extends JPanel {
+    public class HomePanel extends JPanel {
         private JMenuBar menuBar;
         private JButton tradeButton;
         private JTextField isbnEntry;
@@ -178,7 +178,7 @@ public class CustomerView implements PropertyChangeListener
         private JList tradeList;
     
         //Constructor 
-        public TradePanel(){
+        public HomePanel(){
             this.setSize(400,300);
     
             //pane with null layout
@@ -230,6 +230,115 @@ public class CustomerView implements PropertyChangeListener
             //adding panel to JFrame and seting of window position and close operation
             this.add(contentPane);
             this.setVisible(true);
+        }
+    }
+    
+    public class TradePanel extends JPanel {
+        private JLabel label;
+        public TradePanel() {
+            this.setSize(400,300);
+    
+            //pane with null layout
+            JPanel contentPane = new JPanel(null);
+            contentPane.setPreferredSize(new Dimension(400,300));
+            contentPane.setBackground(new Color(192,192,192));
+            
+            label = new JLabel();
+            label.setBounds(19,45,90,35);
+            label.setBackground(new Color(214,217,223));
+            label.setForeground(new Color(0,0,0));
+            label.setEnabled(true);
+            label.setFont(new Font("sansserif",0,12));
+            label.setText("Trade");
+            label.setVisible(true);
+            
+            contentPane.add(label);
+    
+            //adding panel to JFrame and seting of window position and close operation
+            this.add(contentPane);
+            this.setVisible(true);
+            
+        }
+    }
+    
+    public class SavedPanel extends JPanel {
+        private JLabel label;
+        public SavedPanel() {
+            this.setSize(400,300);
+    
+            //pane with null layout
+            JPanel contentPane = new JPanel(null);
+            contentPane.setPreferredSize(new Dimension(400,300));
+            contentPane.setBackground(new Color(192,192,192)); 
+
+            label = new JLabel();
+            label.setBounds(19,45,90,35);
+            label.setBackground(new Color(214,217,223));
+            label.setForeground(new Color(0,0,0));
+            label.setEnabled(true);
+            label.setFont(new Font("sansserif",0,12));
+            label.setText("Saved");
+            label.setVisible(true);
+            
+            contentPane.add(label);
+    
+            //adding panel to JFrame and seting of window position and close operation
+            this.add(contentPane);
+            this.setVisible(true);
+        }
+    }
+    
+    public class HistoryPanel extends JPanel {
+        private JLabel label;
+        public HistoryPanel() {
+            this.setSize(400,300);
+    
+            //pane with null layout
+            JPanel contentPane = new JPanel(null);
+            contentPane.setPreferredSize(new Dimension(400,300));
+            contentPane.setBackground(new Color(192,192,192));            
+
+            label = new JLabel();
+            label.setBounds(19,45,90,35);
+            label.setBackground(new Color(214,217,223));
+            label.setForeground(new Color(0,0,0));
+            label.setEnabled(true);
+            label.setFont(new Font("sansserif",0,12));
+            label.setText("History");
+            label.setVisible(true);
+            
+            contentPane.add(label);
+    
+            //adding panel to JFrame and seting of window position and close operation
+            this.add(contentPane);
+            this.setVisible(true);        
+        }
+    }
+    
+    public class AccountPanel extends JPanel {
+        private JLabel label;
+        public AccountPanel() {
+            this.setSize(400,300);
+    
+            //pane with null layout
+            JPanel contentPane = new JPanel(null);
+            contentPane.setPreferredSize(new Dimension(400,300));
+            contentPane.setBackground(new Color(192,192,192));            
+
+            label = new JLabel();
+            label.setBounds(19,45,90,35);
+            label.setBackground(new Color(214,217,223));
+            label.setForeground(new Color(0,0,0));
+            label.setEnabled(true);
+            label.setFont(new Font("sansserif",0,12));
+            label.setText("Account");
+            label.setVisible(true);
+            
+            contentPane.add(label);
+    
+            //adding panel to JFrame and seting of window position and close operation
+            this.add(contentPane);
+            this.setVisible(true);        
         }
     }
 }
