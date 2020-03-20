@@ -3,6 +3,9 @@ package clients.customer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
@@ -11,13 +14,28 @@ public class CustomerView implements PropertyChangeListener
     private CustomerController controller = null;
     
     private JPanel mainPanel = new JPanel();
+    private JTabbedPane tabbedPane = new JTabbedPane();
     private CardLayout cardLayout = new CardLayout();
     private JPanel cardPanel = new JPanel(cardLayout);
+    
+    private static final String IMAGE = "cog.jpg";
     
     public CustomerView()
     {
         cardPanel.add(new LoginPanel(), "Login");
-        cardPanel.add(new TradePanel(), "Trade");
+        cardPanel.add(tabbedPane, "Main");
+        tabbedPane.addTab("Home", new TradePanel());
+        tabbedPane.addTab("Current Trade", new TradePanel());
+        tabbedPane.addTab("Saved Products", new TradePanel());
+        tabbedPane.addTab("Trade History", new TradePanel());
+        try {
+            BufferedImage image = ImageIO.read(getClass().getResource("/resources/cog.png"));
+            Image scaledImage = image.getScaledInstance(15, 15, Image.SCALE_DEFAULT);
+            ImageIcon icon = new ImageIcon(scaledImage);
+            tabbedPane.addTab("", icon, new LoginPanel());
+        } catch (Exception e) {
+            System.out.println("CustomerView::Constructor:: " + e);
+        }     
         
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(cardPanel, BorderLayout.CENTER);
@@ -80,7 +98,7 @@ public class CustomerView implements PropertyChangeListener
                     controller.makeAccount(user, pass);
                         
                     if (controller.verifyAccount(user, pass)) {
-                        controller.setState("Trade");
+                        controller.setState("Main");
                     }
                 }
             });
