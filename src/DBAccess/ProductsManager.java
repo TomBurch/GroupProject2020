@@ -11,8 +11,13 @@ public class ProductsManager extends DBManager
     @Override
     protected void setup() {
         try {
-            PreparedStatement dropState = conn.prepareStatement("DROP TABLE PRODUCTS");
-            dropState.executeUpdate();
+            //try {
+            //    PreparedStatement dropState = conn.prepareStatement("DROP TABLE PRODUCTS");
+            //    dropState.executeUpdate();
+            //} catch (SQLException e) {
+            //    System.out.println("AccountsManager::Setup:: " + e);
+            //}
+
             if (!checkTable("Products")) {
                System.out.println("ProductsManager::Setup:: Table products doesn't exist");
 
