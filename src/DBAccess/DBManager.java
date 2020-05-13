@@ -4,14 +4,12 @@ import java.sql.*;
 
 public abstract class DBManager
 {
-    //private static final String driver = "org.apache.derby.jdbc.EmbeddedDriver";
     private static final String dbUrl = "jdbc:derby:fizzit.db;create=true";
     protected static Connection conn;
     
     public DBManager() {
         try {
             System.out.println("DBManager::constructor:: Loading EmbeddedDriver");
-            //Class.forName(driver).newInstance();
             conn = DriverManager.getConnection(dbUrl);
         } catch (Exception e) {
             System.out.println("DBManager::constructor:: " + e);

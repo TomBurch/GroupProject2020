@@ -2,6 +2,7 @@
 package clients.customer;
 
 import DBAccess.AccountsManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.security.SecureRandom;
 import javax.crypto.spec.PBEKeySpec;
@@ -39,7 +40,7 @@ public class LoginHandler
         return false;
     }
     
-    public boolean verifyPassword(String enteredPass, String passHashSalt) {
+    public boolean verifyPassword(String enteredPass, @NotNull String passHashSalt) {
         //Split PasswordHash entry from accounts into hash + salt
         String passSalt = passHashSalt.substring(passHashSalt.indexOf(":") + 1);
         String passHash = passHashSalt.substring(0, passHashSalt.indexOf(":"));
@@ -85,21 +86,20 @@ public class LoginHandler
         return true;
     }    
 
-    private boolean validateUsername(String user) {
+    private boolean validateUsername(@NotNull String user) {
         if (user.length() >= 5) {
             return true;
         }
         return false;
     }
     
-    private boolean validatePassword(String pass) {
+    private boolean validatePassword(@NotNull String pass) {
         if (pass.length() >= 5 && pass.length() <= 15) {
             return true;
         }
         return false;
     }
-        
-    
+
     private byte[] hash(String pass, byte[] salt) {
         byte[] passHash = null;
         
