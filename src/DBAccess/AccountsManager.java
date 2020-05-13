@@ -13,6 +13,11 @@ public class AccountsManager extends DBManager
         try {
             PreparedStatement dropState = conn.prepareStatement("DROP TABLE ACCOUNTS");
             dropState.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("AccountsManager::Setup:: " + e);
+        }
+
+        try {
             if (!checkTable("ACCOUNTS")) {
                System.out.println("AccountsManager::Setup:: Table accounts doesn't exist");
                
