@@ -17,11 +17,13 @@ public class AccountsManager extends DBManager
                System.out.println("AccountsManager::Setup:: Table accounts doesn't exist");
                
                PreparedStatement statement = conn.prepareStatement(
-               "CREATE TABLE ACCOUNTS ("
-               + "AccountID int NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
-               + "Username varchar(15) NOT NULL," 
-               + "PasswordHash varChar(65) NOT NULL,"
-               + "PRIMARY KEY (AccountID))");
+                       "CREATE TABLE ACCOUNTS ("
+                       + "AccountID int NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
+                       + "Username varchar(15) NOT NULL,"
+                       + "PasswordHash varChar(65) NOT NULL,"
+                       + "Email varChar(320) NOT NULL,"
+                       + "Postcode varChar(9) NOT NULL,"
+                       + "PRIMARY KEY (AccountID))");
                statement.executeUpdate();
                
                System.out.println("AccountsManager::Setup:: Created table accounts");
