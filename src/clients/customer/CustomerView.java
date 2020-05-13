@@ -349,11 +349,10 @@ public class CustomerView implements PropertyChangeListener
     }
 
     public class HomePanel extends JPanel {
-        private JMenuBar menuBar;
         private JButton tradeButton;
         private JTextField isbnEntry;
         private JLabel isbnLabel;
-        private JList tradeList;
+        private JTextArea output;
     
         //Constructor 
         public HomePanel(){
@@ -380,6 +379,9 @@ public class CustomerView implements PropertyChangeListener
 
                     if (product != null) {
                         controller.addProductToBasket(product);
+                        output.setText(product.getDetails());
+                    } else {
+                        output.setText("Product is not currently required");
                     }
                 }
             });
@@ -402,19 +404,20 @@ public class CustomerView implements PropertyChangeListener
             isbnLabel.setText("Enter ISBN: ");
             isbnLabel.setVisible(true);
     
-            tradeList = new JList();
-            tradeList.setBounds(79,150,243,109);
-            tradeList.setBackground(new Color(255,255,255));
-            tradeList.setForeground(new Color(0,0,0));
-            tradeList.setEnabled(true);
-            tradeList.setFont(new Font("sansserif",0,12));
-            tradeList.setVisible(true);
+            output = new JTextArea();
+            output.setBounds(79,150,243,109);
+            output.setBackground(new Color(255,255,255));
+            output.setForeground(new Color(0,0,0));
+            output.setEnabled(true);
+            output.setFont(new Font("sansserif",0,12));
+            output.setText("");
+            output.setVisible(true);
     
             //adding components to contentPane panel
             contentPane.add(tradeButton);
             contentPane.add(isbnEntry);
             contentPane.add(isbnLabel);
-            contentPane.add(tradeList);
+            contentPane.add(output);
     
             //adding panel to JFrame and seting of window position and close operation
             this.add(contentPane);

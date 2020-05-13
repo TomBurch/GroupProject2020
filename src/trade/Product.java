@@ -1,11 +1,25 @@
 package trade;
 
+import java.util.Formatter;
+
 public class Product {
     private String productID;
+    private String title;
+    private float price;
+    private String author;
+    private String publisher;
+    private String yearPublished;
+    private String description;
     private int quantity;
 
-    public Product(String productID, int quantity) {
+    public Product(String productID, String title, float price, String author, String publisher, String yearPublished, String description, int quantity) {
         this.productID = productID;
+        this.title = title;
+        this.price = price;
+        this.author = author;
+        this.publisher = publisher;
+        this.yearPublished = yearPublished;
+        this.description = description;
         this.quantity = quantity;
     }
 
@@ -19,6 +33,21 @@ public class Product {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getDetails() {
+        StringBuilder sb = new StringBuilder(256);
+        Formatter fr = new Formatter(sb);
+
+        fr.format("Title: %s\n", this.title);
+        fr.format("Author: %s\n", this.author);
+        fr.format("Price: £%5.2f\n", this.price);
+        fr.format("Publisher: %s\n", this.publisher);
+        fr.format("Year Published: %s\n", this.yearPublished);
+        fr.format("Description: %s\n", this.description);
+        fr.close();
+
+        return sb.toString();
     }
 
     @Override

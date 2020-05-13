@@ -32,7 +32,14 @@ public class TradeHandler
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 String productID = rs.getString("ProductID");
-                Product product = new Product(productID, 1);
+                String title = rs.getString("Title");
+                float price = rs.getFloat("Price");
+                String author = rs.getString("Author");
+                String publisher = rs.getString("Publisher");
+                String yearPublished = rs.getString("YearPublished");
+                String description = rs.getString("Description");
+
+                Product product = new Product(productID, title, price, author, publisher, yearPublished, description, 1);
                 return product;
             }  else {
                 System.out.println("TradeHandler::getProduct:: Product not in database");
