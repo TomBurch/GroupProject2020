@@ -1,5 +1,7 @@
 package clients.customer;
 
+import trade.Product;
+
 public class CustomerController
 {
     private CustomerModel model = null;
@@ -22,5 +24,13 @@ public class CustomerController
     
     public boolean makeAccount(String user, String pass, String passConfirm, String postcode, String email) {
         return model.makeAccount(user, pass, passConfirm, postcode, email);
+    }
+
+    public Product getProduct(String ISBN) {
+        return model.getProduct(ISBN);
+    }
+
+    public void addProductToBasket(Product product) {
+        model.addProductToBasket(product);
     }
 }

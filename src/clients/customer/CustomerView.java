@@ -1,5 +1,7 @@
 package clients.customer;
 
+import trade.Product;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -370,7 +372,18 @@ public class CustomerView implements PropertyChangeListener
             tradeButton.setFont(new Font("sansserif",0,12));
             tradeButton.setText("Submit");
             tradeButton.setVisible(true);
-    
+            tradeButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("CustomerView:: tradeButton clicked");
+                    String ISBN = isbnEntry.getText();
+                    Product product = controller.getProduct(ISBN);
+
+                    if (product != null) {
+                        controller.addProductToBasket(product);
+                    }
+                }
+            });
+
             isbnEntry = new JTextField();
             isbnEntry.setBounds(109,48,267,29);
             isbnEntry.setBackground(new Color(255,255,255));

@@ -10,12 +10,12 @@ public class AccountsManager extends DBManager
     
     @Override
     protected void setup() {
-        try {
-            PreparedStatement dropState = conn.prepareStatement("DROP TABLE ACCOUNTS");
-            dropState.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println("AccountsManager::Setup:: " + e);
-        }
+        //try {
+        //    PreparedStatement dropState = conn.prepareStatement("DROP TABLE ACCOUNTS");
+        //    dropState.executeUpdate();
+        //} catch (SQLException e) {
+        //    System.out.println("AccountsManager::Setup:: " + e);
+        //}
 
         try {
             if (!checkTable("ACCOUNTS")) {

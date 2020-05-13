@@ -1,5 +1,7 @@
 package clients.customer;
 
+import trade.Product;
+
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
 
@@ -31,5 +33,13 @@ public class CustomerModel
     
     public boolean makeAccount(String user, String pass, String passConfirm, String postcode, String email) {
         return loginHandler.makeAccount(user, pass, passConfirm, postcode, email);
+    }
+
+    public Product getProduct(String ISBN) {
+        return tradeHandler.getProduct(ISBN);
+    }
+
+    public void addProductToBasket(Product product) {
+        tradeHandler.addProductToBasket(product);
     }
 }
