@@ -46,7 +46,6 @@ public class TradeHandler
 
     public void addProductToBasket(Product product) {
         this.basket.add(product);
-        System.out.println(basket);
     }
 
     public boolean validateISBN(String ISBN) {
