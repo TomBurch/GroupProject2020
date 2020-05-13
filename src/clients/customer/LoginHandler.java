@@ -25,12 +25,15 @@ public class LoginHandler
             statement.setString(1, user);
             
             ResultSet rs = statement.executeQuery();
-            rs.next();
+            if (rs.next()) {
+                String passHashSalt = rs.getString("PasswordHash");
             
-            String passHashSalt = rs.getString("PasswordHash");
-            
-            if (verifyPassword(pass, passHashSalt)) {
-                return true;
+                if (verifyPassword(pass, passHashSalt)) {
+                    return true;
+                }
+            } else {
+                System.out.println("LoginHandler::verifyAccount:: Username not in database");
+                return false;
             }
         } catch (SQLException e) {
             System.out.println("LoginHandler::verifyAccount:: " + e);
@@ -55,6 +58,11 @@ public class LoginHandler
     }
     
     public boolean makeAccount(String user, String pass, String passConfirm, String postcode, String email) {
+        if (!pass.equals(passConfirm)) {
+            System.out.println("LoginHandler::makeAccount:: Passwords do not match");
+            return false;
+        }
+
         byte[] salt = generateSalt();
         byte[] passHash = hash(pass, salt);
            
@@ -66,13 +74,21 @@ public class LoginHandler
         if (!validateUsername(user) || !validatePassword(pass)) {
             System.out.println("LoginHandler::makeAccount:: Invalid username or password");
             return false;
+        } else if (!validatePostcode(postcode)) {
+            System.out.println("LoginHandler::makeAccount:: Invalid postcode");
+            return false;
+        } else if (!validateEmail(email)) {
+            System.out.println("LoginHandler::makeAccount:: Invalid email");
+            return false;
         }
         
         try {
             Connection conn = accManager.getConnection();
-            PreparedStatement statement = conn.prepareStatement("INSERT INTO ACCOUNTS (Username, PasswordHash) VALUES (?, ?)");
+            PreparedStatement statement = conn.prepareStatement("INSERT INTO ACCOUNTS (Username, PasswordHash, Postcode, Email) VALUES (?, ?, ?, ?)");
             statement.setString(1, user);
             statement.setString(2, hashAndSalt);
+            statement.setString(3, postcode);
+            statement.setString(4, email);
         
             int result = statement.executeUpdate();
         
@@ -95,6 +111,20 @@ public class LoginHandler
     
     private boolean validatePassword(@NotNull String pass) {
         if (pass.length() >= 5 && pass.length() <= 15) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean validatePostcode(@NotNull String postcode) {
+        if (postcode.matches("^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([AZa-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))[0-9][A-Za-z]{2})$")) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean validateEmail(@NotNull String email) {
+        if (email.matches("^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")) {
             return true;
         }
         return false;
