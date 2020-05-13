@@ -29,7 +29,7 @@ public class CustomerModel
         return loginHandler.verifyAccount(user, pass);
     }
     
-    public boolean makeAccount(String user, String pass) {
-        return loginHandler.makeAccount(user, pass);
+    public boolean makeAccount(String user, String pass, String passConfirm, String postcode, String email) {
+        return loginHandler.makeAccount(user, pass, passConfirm, postcode, email);
     }
 }

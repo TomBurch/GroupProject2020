@@ -54,7 +54,7 @@ public class LoginHandler
         return false;
     }
     
-    public boolean makeAccount(String user, String pass) {
+    public boolean makeAccount(String user, String pass, String passConfirm, String postcode, String email) {
         byte[] salt = generateSalt();
         byte[] passHash = hash(pass, salt);
            

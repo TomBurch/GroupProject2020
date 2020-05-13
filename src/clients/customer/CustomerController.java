@@ -20,7 +20,7 @@ public class CustomerController
         return model.verifyAccount(user, pass);
     }
     
-    public boolean makeAccount(String user, String pass) {
-        return model.makeAccount(user, pass);
+    public boolean makeAccount(String user, String pass, String passConfirm, String postcode, String email) {
+        return model.makeAccount(user, pass, passConfirm, postcode, email);
     }
 }
