@@ -51,15 +51,6 @@ public class CustomerView implements PropertyChangeListener {
         } catch (Exception e) {
             System.out.println("CustomerView::Constructor:: " + e);
         }
-
-        tabbedPane.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                if (tabbedPane.getSelectedIndex() == 1) { //Current Trade tab
-                    JList<String> tradeList = (JList<String>) tradePanel.getClientProperty("tradeList");
-                    tradeList.setModel(controller.getListModel());
-                }
-            }
-        });
         
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(cardPanel, BorderLayout.CENTER);
@@ -92,6 +83,17 @@ public class CustomerView implements PropertyChangeListener {
             case "tradePrice":
                 JLabel priceLabel = (JLabel) tradePanel.getClientProperty("priceLabel");
                 priceLabel.setText(String.format("Total Price: £%5.2f", (float) event.getNewValue()));
+                break;
+
+            case "tradeList":
+                JList<String> tradeList = (JList<String>) tradePanel.getClientProperty("tradeList");
+                tradeList.setModel((DefaultListModel) event.getNewValue());
+                break;
+
+            case "savedList":
+                JList<String> savedList = (JList<String>) savedPanel.getClientProperty("savedList");
+                savedList.setModel((DefaultListModel) event.getNewValue());
+                break;
         }
     }
     
@@ -435,6 +437,7 @@ public class CustomerView implements PropertyChangeListener {
         private JScrollPane scrollPane;
         private JLabel priceLabel;
         private JButton tradeButton;
+        private JButton saveButton;
 
         public TradePanel() {
             this.setSize(400,300);
@@ -468,7 +471,7 @@ public class CustomerView implements PropertyChangeListener {
             this.putClientProperty("priceLabel", priceLabel);
 
             tradeButton = new JButton();
-            tradeButton.setBounds(120,245,160,35);
+            tradeButton.setBounds(210,245,160,35);
             tradeButton.setBackground(new Color(214,217,223));
             tradeButton.setForeground(new Color(0,0,0));
             tradeButton.setEnabled(true);
@@ -479,9 +482,22 @@ public class CustomerView implements PropertyChangeListener {
                     e -> controller.trade_tradeButtonClicked()
             );
 
+            saveButton = new JButton();
+            saveButton.setBounds(30,245,160,35);
+            saveButton.setBackground(new Color(214,217,223));
+            saveButton.setForeground(new Color(0,0,0));
+            saveButton.setEnabled(true);
+            saveButton.setFont(new Font("sansserif",0,12));
+            saveButton.setText("Save For Later");
+            saveButton.setVisible(true);
+            saveButton.addActionListener(
+                    e -> controller.trade_saveButtonClicked()
+            );
+
             contentPane.add(scrollPane);
             contentPane.add(priceLabel);
             contentPane.add(tradeButton);
+            contentPane.add(saveButton);
     
             //adding panel to JFrame and seting of window position and close operation
             this.add(contentPane);
@@ -491,7 +507,8 @@ public class CustomerView implements PropertyChangeListener {
     }
     
     public class SavedPanel extends JPanel {
-        private JLabel label;
+        private JList<String> savedList;
+        private JScrollPane scrollPane;
 
         public SavedPanel() {
             this.setSize(400,300);
@@ -499,20 +516,24 @@ public class CustomerView implements PropertyChangeListener {
             //pane with null layout
             JPanel contentPane = new JPanel(null);
             contentPane.setPreferredSize(new Dimension(400,300));
-            contentPane.setBackground(new Color(192,192,192)); 
+            contentPane.setBackground(new Color(192,192,192));
 
-            label = new JLabel();
-            label.setBounds(19,45,90,35);
-            label.setBackground(new Color(214,217,223));
-            label.setForeground(new Color(0,0,0));
-            label.setEnabled(true);
-            label.setFont(new Font("sansserif",0,12));
-            label.setText("Saved");
-            label.setVisible(true);
-            
-            contentPane.add(label);
+            savedList = new JList<String>();
+            savedList.setBounds(50, 25, 300, 150);
+            savedList.setBackground(new Color(255,255,255));
+            savedList.setForeground(new Color(0,0,0));
+            savedList.setEnabled(true);
+            savedList.setFont(new Font("sansserif",0,12));
+            savedList.setVisible(true);
+            this.putClientProperty("savedList", savedList);
+
+            scrollPane = new JScrollPane();
+            scrollPane.setBounds(50, 25, 300, 150);
+            scrollPane.getViewport().add(savedList);
+
+            contentPane.add(scrollPane);
     
-            //adding panel to JFrame and seting of window position and close operation
+            //adding panel to JFrame and setting of window position and close operation
             this.add(contentPane);
             this.setVisible(true);
         }

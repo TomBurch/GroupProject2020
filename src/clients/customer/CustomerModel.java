@@ -1,6 +1,7 @@
 package clients.customer;
 
 import handlers.LoginHandler;
+import handlers.SavedHandler;
 import handlers.TradeHandler;
 import trade.Product;
 
@@ -14,6 +15,7 @@ public class CustomerModel
     private String state = "Login";
     private LoginHandler loginHandler = new LoginHandler();
     private TradeHandler tradeHandler = new TradeHandler();
+    private SavedHandler savedHandler = new SavedHandler();
     
     public boolean verifyAccount(String user, String pass) {
         return loginHandler.verifyAccount(user, pass);
@@ -28,15 +30,21 @@ public class CustomerModel
 
         if (product != null) {
             tradeHandler.addProductToBasket(product);
+
             setOutput(product.getDetails());
+            setTradeList(tradeHandler.getListModel());
             setTradePrice(tradeHandler.getBasketPrice());
         } else {
             setOutput("Product is not currently required");
         }
     }
 
-    public DefaultListModel getListModel() {
+    public DefaultListModel getTradeListModel() {
         return tradeHandler.getListModel();
+    }
+
+    public DefaultListModel getSavedListModel() {
+        return savedHandler.getListModel();
     }
 
     public int getBasketSize() {
@@ -45,6 +53,13 @@ public class CustomerModel
 
     public float getBasketPrice() {
         return tradeHandler.getBasketPrice();
+    }
+
+    public void saveBasket() {
+        savedHandler.addBasket(tradeHandler.getBasket());
+        tradeHandler.clearBasket();
+        setTradeList(tradeHandler.getListModel());
+        setSavedList(savedHandler.getListModel());
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -65,5 +80,13 @@ public class CustomerModel
 
     public void setTradePrice(float newValue) {
         pcs.firePropertyChange("tradePrice", null, newValue);
+    }
+
+    public void setTradeList(DefaultListModel newValue) {
+        pcs.firePropertyChange("tradeList", null, newValue);
+    }
+
+    public void setSavedList(DefaultListModel newValue) {
+        pcs.firePropertyChange("savedList", null, newValue);
     }
 }

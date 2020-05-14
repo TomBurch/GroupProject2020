@@ -13,8 +13,12 @@ public class CustomerController
         this.model = model;
     }
 
-    public DefaultListModel getListModel() {
-        return model.getListModel();
+    public DefaultListModel getTradeListModel() {
+        return model.getTradeListModel();
+    }
+
+    public DefaultListModel getSavedListModel() {
+        return model.getSavedListModel();
     }
 
     public void login_loginButtonClicked(String user, String pass) {
@@ -59,5 +63,10 @@ public class CustomerController
         } else {
             System.out.println("Trade not allowed");
         }
+    }
+
+    public void trade_saveButtonClicked() {
+        System.out.println("CustomerController:: TradePanel::saveButton clicked");
+        model.saveBasket();
     }
 }
