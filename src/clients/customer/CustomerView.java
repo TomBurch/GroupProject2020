@@ -1,16 +1,13 @@
 package clients.customer;
 
 import org.jetbrains.annotations.NotNull;
-import trade.Product;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.io.File;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 

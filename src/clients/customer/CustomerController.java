@@ -1,7 +1,5 @@
 package clients.customer;
 
-import trade.Product;
-
 import javax.swing.*;
 
 public class CustomerController
