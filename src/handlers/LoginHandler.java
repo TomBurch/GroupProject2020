@@ -1,5 +1,5 @@
 
-package clients.customer;
+package handlers;
 
 import DBAccess.AccountsManager;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +11,6 @@ import java.util.Base64;
 import java.sql.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 public class LoginHandler {
     private AccountsManager accManager = new AccountsManager();
@@ -55,16 +54,13 @@ public class LoginHandler {
         byte[] salt = Base64.getDecoder().decode(passSalt); 
         String enteredPassHash = Base64.getEncoder().encodeToString(hash(enteredPass, salt));
 
-        if (enteredPassHash.equals(passHash)) {
-            return true;
-        }
-        return false;
+        return enteredPassHash.equals(passHash);
     }
     
-    public boolean makeAccount(String user, String pass, String passConfirm, String postcode, String email) {
+    public void makeAccount(String user, @NotNull String pass, String passConfirm, String postcode, String email) {
         if (!pass.equals(passConfirm)) {
             System.out.println("LoginHandler::makeAccount:: Passwords do not match");
-            return false;
+            return;
         }
 
         byte[] salt = generateSalt();
@@ -77,13 +73,13 @@ public class LoginHandler {
         
         if (!validateUsername(user) || !validatePassword(pass)) {
             System.out.println("LoginHandler::makeAccount:: Invalid username or password");
-            return false;
+            return;
         } else if (!validatePostcode(postcode)) {
             System.out.println("LoginHandler::makeAccount:: Invalid postcode");
-            return false;
+            return;
         } else if (!validateEmail(email)) {
             System.out.println("LoginHandler::makeAccount:: Invalid email");
-            return false;
+            return;
         }
         
         try {
@@ -97,43 +93,30 @@ public class LoginHandler {
             int result = statement.executeUpdate();
         
             if (result == 0) {
-                return false;
+                return;
             }  
         } catch (SQLException e) {
             System.out.println("LoginHandler::makeAccount:: " + e);
         }
         System.out.println("LoginHandler::makeAccount:: Made new account '" + user + "'");
-        return true;
-    }    
+    }
 
     private boolean validateUsername(@NotNull String user) {
-        if (user.length() >= 5) {
-            return true;
-        }
-        return false;
+        return user.length() >= 5;
     }
     
     private boolean validatePassword(@NotNull String pass) {
-        if (pass.length() >= 5 && pass.length() <= 15) {
-            return true;
-        }
-        return false;
+        return (pass.length() >= 5 && pass.length() <= 15);
     }
 
     private boolean validatePostcode(@NotNull String postcode) {
         Matcher matcher = regexPostcode.matcher(postcode);
-        if (matcher.matches()) {
-            return true;
-        }
-        return false;
+        return matcher.matches();
     }
 
     private boolean validateEmail(@NotNull String email) {
         Matcher matcher = regexEmail.matcher(email);
-        if (matcher.matches()) {
-            return true;
-        }
-        return false;
+        return matcher.matches();
     }
 
     private byte[] hash(String pass, byte[] salt) {

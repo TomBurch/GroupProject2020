@@ -1,25 +1,22 @@
-package clients.customer;
+package handlers;
 
 import DBAccess.ProductsManager;
-import trade.Basket;
 import trade.Product;
 
 import java.sql.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TradeHandler
-{
+public class TradeHandler extends BasketHandler {
     private ProductsManager prodManager = new ProductsManager();
-    private Basket basket = new Basket();
 
     private final Pattern regexISBN = Pattern.compile("^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$");
     
     public TradeHandler() {      
     }
     
-    public Product getProduct(String ISBN) {
-        if (!validateISBN(ISBN)) {
+    public Product getProductFromISBN(String isbn) {
+        if (!validateISBN(isbn)) {
             System.out.println("TradeHandler::getProduct:: Invalid ISBN number");
             return null;
         }
@@ -27,13 +24,19 @@ public class TradeHandler
         try {
             Connection conn = prodManager.getConnection();
             PreparedStatement statement = conn.prepareStatement("SELECT * FROM PRODUCTS WHERE ISBN = ?");
-            statement.setString(1, ISBN);
+            statement.setString(1, isbn);
 
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 String productID = rs.getString("ProductID");
-                Product product = new Product(productID, 1);
-                return product;
+                String title = rs.getString("Title");
+                float price = rs.getFloat("Price");
+                String author = rs.getString("Author");
+                String publisher = rs.getString("Publisher");
+                String yearPublished = rs.getString("YearPublished");
+                String description = rs.getString("Description");
+
+                return new Product(productID, isbn, title, price, author, publisher, yearPublished, description, 1);
             }  else {
                 System.out.println("TradeHandler::getProduct:: Product not in database");
                 return null;
@@ -44,15 +47,8 @@ public class TradeHandler
         return null;
     }
 
-    public void addProductToBasket(Product product) {
-        this.basket.add(product);
-    }
-
     public boolean validateISBN(String ISBN) {
         Matcher matcher = regexISBN.matcher(ISBN);
-        if (matcher.matches()) {
-            return true;
-        }
-        return false;
+        return matcher.matches();
     }
 }

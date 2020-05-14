@@ -1,11 +1,49 @@
 package trade;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 
 public class Basket extends ArrayList<Product> {
     private final ProductIDComparator comparator = new ProductIDComparator();
 
     public Basket() {
+    }
+
+    public Product getProductFromISBN(String isbn) {
+        return super.stream()
+                .filter(product -> product.getISBN().equals(isbn))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public int getTotalSize() {
+        return super.stream().mapToInt(Product::getQuantity).sum();
+    }
+
+    public float getTotalPrice() {
+        float price = 0;
+        ListIterator<Product> iterator = super.listIterator();
+        Product product;
+
+        while (iterator.hasNext()) {
+            product = iterator.next();
+            price += (product.getQuantity() * product.getPrice());
+        }
+
+        return price;
+    }
+
+    public void add(Product product, int quantity) {
+        int i = super.indexOf(product);
+
+        if (i != -1) {
+            Product existingProduct = super.get(i);
+            existingProduct.setQuantity(existingProduct.getQuantity() + quantity);
+        } else {
+            super.add(product);
+            super.sort(comparator);
+        }
     }
 
     @Override
@@ -25,8 +63,8 @@ public class Basket extends ArrayList<Product> {
         return result;
     }
 
-    class ProductIDComparator implements Comparator<Product> {
-        public int compare(Product p1, Product p2) {
+    static class ProductIDComparator implements Comparator<Product> {
+        public int compare(@NotNull Product p1, @NotNull Product p2) {
             String p1ID = p1.getProductID();
             String p2ID = p2.getProductID();
             return p1ID.compareTo(p2ID);
