@@ -4,6 +4,7 @@ import java.util.Formatter;
 
 public class Product {
     private String productID;
+    private String isbn;
     private String title;
     private float price;
     private String author;
@@ -12,8 +13,9 @@ public class Product {
     private String description;
     private int quantity;
 
-    public Product(String productID, String title, float price, String author, String publisher, String yearPublished, String description, int quantity) {
+    public Product(String productID, String isbn, String title, float price, String author, String publisher, String yearPublished, String description, int quantity) {
         this.productID = productID;
+        this.isbn = isbn;
         this.title = title;
         this.price = price;
         this.author = author;
@@ -37,6 +39,8 @@ public class Product {
 
     public float getPrice() { return this.price; }
 
+    public String getISBN() { return this.isbn; }
+
     public String getDetails() {
         StringBuilder sb = new StringBuilder(256);
         Formatter fr = new Formatter(sb);
@@ -53,7 +57,7 @@ public class Product {
     }
 
     public String getLineSummary() {
-        return String.format("%s x    %s    %s    £%5.2f", this.quantity, this.title, this.author, (this.price * this.quantity));
+        return String.format("%sx  %s    £%5.2f    %s    %s", this.quantity, this.isbn, (this.price * this.quantity), this.title, this.author);
     }
 
     @Override

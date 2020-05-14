@@ -4,6 +4,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import javax.swing.event.ChangeEvent;
@@ -439,6 +443,10 @@ public class CustomerView implements PropertyChangeListener {
         private JButton tradeButton;
         private JButton saveButton;
 
+        private JPopupMenu popupMenu;
+        private JMenuItem savePopup;
+        private JMenuItem deletePopup;
+
         public TradePanel() {
             this.setSize(400,300);
     
@@ -494,6 +502,26 @@ public class CustomerView implements PropertyChangeListener {
                     e -> controller.trade_saveButtonClicked()
             );
 
+            popupMenu = new JPopupMenu("Trade");
+
+            savePopup = new JMenuItem("Save for later");
+            savePopup.addActionListener(
+                    e -> controller.trade_savePopupClicked(
+                            tradeList.getSelectedValuesList()
+                    )
+            );
+
+            deletePopup = new JMenuItem("Delete");
+            deletePopup.addActionListener(
+                    e -> controller.trade_deletePopupClicked(
+                            tradeList.getSelectedValuesList()
+                    )
+            );
+
+            popupMenu.add(savePopup);
+            popupMenu.add(deletePopup);
+            tradeList.setComponentPopupMenu(popupMenu);
+            contentPane.setComponentPopupMenu(popupMenu);
             contentPane.add(scrollPane);
             contentPane.add(priceLabel);
             contentPane.add(tradeButton);
@@ -502,7 +530,6 @@ public class CustomerView implements PropertyChangeListener {
             //adding panel to JFrame and seting of window position and close operation
             this.add(contentPane);
             this.setVisible(true);
-            
         }
     }
     
@@ -512,8 +539,7 @@ public class CustomerView implements PropertyChangeListener {
 
         public SavedPanel() {
             this.setSize(400,300);
-    
-            //pane with null layout
+
             JPanel contentPane = new JPanel(null);
             contentPane.setPreferredSize(new Dimension(400,300));
             contentPane.setBackground(new Color(192,192,192));

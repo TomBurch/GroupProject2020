@@ -1,6 +1,9 @@
 package clients.customer;
 
 import javax.swing.*;
+import java.util.List;
+
+import trade.Product;
 
 public class CustomerController
 {
@@ -68,5 +71,17 @@ public class CustomerController
     public void trade_saveButtonClicked() {
         System.out.println("CustomerController:: TradePanel::saveButton clicked");
         model.saveBasket();
+    }
+
+    public void trade_savePopupClicked(List<String> selectedValues) {
+        System.out.println("CustomerController:: TradePanel::savePopup clicked");
+        selectedValues.forEach(lineSummary -> {
+            Product product = model.getProductFromLineSummary(lineSummary);
+            model.saveProduct(product);
+        });
+    }
+
+    public void trade_deletePopupClicked(List<String> selectedValues) {
+        System.out.println("CustomerController:: TradePanel::savePopup clicked");
     }
 }

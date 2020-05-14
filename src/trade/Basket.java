@@ -20,6 +20,13 @@ public class Basket extends ArrayList<Product> {
         }
     }
 
+    public Product getProductFromISBN(String isbn) {
+        return super.stream()
+                .filter(product -> product.getISBN().equals(isbn))
+                .findFirst()
+                .orElse(null);
+    }
+
     public int getTotalSize() {
         return super.stream().mapToInt(Product::getQuantity).sum();
     }

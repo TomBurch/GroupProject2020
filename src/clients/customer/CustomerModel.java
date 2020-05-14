@@ -39,6 +39,10 @@ public class CustomerModel
         }
     }
 
+    public Product getProductFromLineSummary(String lineSummary) {
+        return tradeHandler.getProductFromLineSummary(lineSummary);
+    }
+
     public DefaultListModel getTradeListModel() {
         return tradeHandler.getListModel();
     }
@@ -59,6 +63,15 @@ public class CustomerModel
         savedHandler.addBasket(tradeHandler.getBasket());
         tradeHandler.clearBasket();
         setTradeList(tradeHandler.getListModel());
+        setTradePrice(tradeHandler.getBasketPrice());
+        setSavedList(savedHandler.getListModel());
+    }
+
+    public void saveProduct(Product product) {
+        savedHandler.addProductToBasket(product);
+        tradeHandler.deleteProductFromBasket(product);
+        setTradeList(tradeHandler.getListModel());
+        setTradePrice(tradeHandler.getBasketPrice());
         setSavedList(savedHandler.getListModel());
     }
 

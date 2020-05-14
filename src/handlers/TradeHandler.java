@@ -36,7 +36,7 @@ public class TradeHandler extends BasketHandler {
                 String yearPublished = rs.getString("YearPublished");
                 String description = rs.getString("Description");
 
-                return new Product(productID, title, price, author, publisher, yearPublished, description, 1);
+                return new Product(productID, isbn, title, price, author, publisher, yearPublished, description, 1);
             }  else {
                 System.out.println("TradeHandler::getProduct:: Product not in database");
                 return null;
