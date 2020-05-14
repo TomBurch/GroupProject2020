@@ -58,7 +58,7 @@ public class TradeHandler
         if (existingProduct != null) {
             this.listModel.removeElement(existingProduct.getLineSummary());
         }
-        this.basket.add(product);
+        basket.add(product);
         product = basket.getProduct(product);
         this.listModel.addElement(product.getLineSummary());
     }
@@ -73,5 +73,9 @@ public class TradeHandler
 
     public DefaultListModel getListModel() {
         return this.listModel;
+    }
+
+    public int getBasketSize() {
+        return basket.getTotalSize();
     }
 }

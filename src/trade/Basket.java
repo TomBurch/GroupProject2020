@@ -18,6 +18,11 @@ public class Basket extends ArrayList<Product> {
         }
     }
 
+    public int getTotalSize() {
+        int size = super.stream().mapToInt(Product::getQuantity).sum();
+        return size;
+    }
+
     @Override
     public boolean add(Product product) {
         boolean result;

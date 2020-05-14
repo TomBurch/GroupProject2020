@@ -47,4 +47,8 @@ public class CustomerModel
     public DefaultListModel getListModel() {
         return tradeHandler.getListModel();
     }
+
+    public int getBasketSize() {
+        return tradeHandler.getBasketSize();
+    }
 }

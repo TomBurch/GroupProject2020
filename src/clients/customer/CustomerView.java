@@ -472,6 +472,12 @@ public class CustomerView implements PropertyChangeListener
             tradeButton.setFont(new Font("sansserif",0,12));
             tradeButton.setText("Confirm Trade");
             tradeButton.setVisible(true);
+            tradeButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    System.out.println("CustomerView:: tradeButton clicked");
+                    System.out.println(controller.getBasketSize());
+                }
+            });
 
             contentPane.add(tradeList);
             contentPane.add(tradeButton);

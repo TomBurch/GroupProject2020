@@ -39,4 +39,8 @@ public class CustomerController
     public DefaultListModel getListModel() {
         return model.getListModel();
     }
+
+    public int getBasketSize() {
+        return model.getBasketSize();
+    }
 }
