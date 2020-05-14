@@ -82,7 +82,11 @@ public class CustomerController
     }
 
     public void saved_tradePopupClicked(@NotNull List<String> selectedValues) {
-        return;
+        System.out.println("CustomerController:: SavedPanel::tradePopup clicked");
+        selectedValues.forEach(lineSummary -> {
+            Product product = model.getSavedProductFromLineSummary(lineSummary);
+            model.tradeProduct(product);
+        });
     }
 
     public void saved_deletePopupClicked(@NotNull List<String> selectedValues) {

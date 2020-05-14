@@ -82,6 +82,14 @@ public class CustomerModel
         setSavedList(savedHandler.getListModel());
     }
 
+    public void tradeProduct(Product product) {
+        tradeHandler.addProductToBasket(product);
+        savedHandler.deleteProductFromBasket(product);
+        setSavedList(savedHandler.getListModel());
+        setTradeList(tradeHandler.getListModel());
+        setTradePrice(savedHandler.getBasketPrice());
+    }
+
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         pcs.addPropertyChangeListener(listener);
     }
