@@ -37,6 +37,18 @@ public class Basket extends ArrayList<Product> {
         return price;
     }
 
+    public void add(Product product, int quantity) {
+        int i = super.indexOf(product);
+
+        if (i != -1) {
+            Product existingProduct = super.get(i);
+            existingProduct.setQuantity(existingProduct.getQuantity() + quantity);
+        } else {
+            super.add(product);
+            super.sort(comparator);
+        }
+    }
+
     @Override
     public boolean add(Product product) {
         boolean result;
