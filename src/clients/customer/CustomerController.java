@@ -82,6 +82,10 @@ public class CustomerController
     }
 
     public void trade_deletePopupClicked(List<String> selectedValues) {
-        System.out.println("CustomerController:: TradePanel::savePopup clicked");
+        System.out.println("CustomerController:: TradePanel::deletePopup clicked");
+        selectedValues.forEach(lineSummary -> {
+           Product product = model.getProductFromLineSummary(lineSummary);
+           model.deleteProductFromTrade(product);
+        });
     }
 }

@@ -39,6 +39,12 @@ public class CustomerModel
         }
     }
 
+    public void deleteProductFromTrade(Product product) {
+        tradeHandler.deleteProductFromBasket(product);
+        setTradeList(tradeHandler.getListModel());
+        setTradePrice(tradeHandler.getBasketPrice());
+    }
+
     public Product getProductFromLineSummary(String lineSummary) {
         return tradeHandler.getProductFromLineSummary(lineSummary);
     }
