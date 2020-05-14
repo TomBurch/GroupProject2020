@@ -2,6 +2,8 @@ package clients.customer;
 
 import trade.Product;
 
+import javax.swing.*;
+
 public class CustomerController
 {
     private CustomerModel model = null;
@@ -32,5 +34,9 @@ public class CustomerController
 
     public void addProductToBasket(Product product) {
         model.addProductToBasket(product);
+    }
+
+    public DefaultListModel getListModel() {
+        return model.getListModel();
     }
 }

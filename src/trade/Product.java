@@ -50,6 +50,10 @@ public class Product {
         return sb.toString();
     }
 
+    public String getLineSummary() {
+        return String.format("%s x    %s    %s    £%5.2f", this.quantity, this.title, this.author, (this.price * this.quantity));
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object == this) {

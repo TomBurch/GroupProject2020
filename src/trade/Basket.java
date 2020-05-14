@@ -8,6 +8,16 @@ public class Basket extends ArrayList<Product> {
     public Basket() {
     }
 
+    public Product getProduct(Product product) {
+        int i = super.indexOf(product);
+
+        if (i != -1) {
+            return super.get(i);
+        } else {
+            return null;
+        }
+    }
+
     @Override
     public boolean add(Product product) {
         boolean result;

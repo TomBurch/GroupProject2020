@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.io.File;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
@@ -38,7 +40,23 @@ public class CustomerView implements PropertyChangeListener
             tabbedPane.addTab("", icon, new AccountPanel());
         } catch (Exception e) {
             System.out.println("CustomerView::Constructor:: " + e);
-        }     
+        }
+
+        tabbedPane.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                if (tabbedPane.getSelectedIndex() == 1) { //Current Trade tab
+                    JPanel currentTradePanel = (JPanel) tabbedPane.getSelectedComponent();
+                    JPanel contentPane = (JPanel) currentTradePanel.getComponent(0);
+                    JList<String> tradeList = null;
+                    for (Component component : contentPane.getComponents()) {
+                        if (component instanceof JList) {
+                            JList<String> list = (JList<String>) component;
+                            list.setModel(controller.getListModel());
+                        }
+                    }
+                }
+            }
+        });
         
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(cardPanel, BorderLayout.CENTER);
@@ -427,6 +445,9 @@ public class CustomerView implements PropertyChangeListener
     
     public class TradePanel extends JPanel {
         private JLabel label;
+        private JList<String> tradeList;
+        private JButton tradeButton;
+
         public TradePanel() {
             this.setSize(400,300);
     
@@ -434,17 +455,26 @@ public class CustomerView implements PropertyChangeListener
             JPanel contentPane = new JPanel(null);
             contentPane.setPreferredSize(new Dimension(400,300));
             contentPane.setBackground(new Color(192,192,192));
-            
-            label = new JLabel();
-            label.setBounds(19,45,90,35);
-            label.setBackground(new Color(214,217,223));
-            label.setForeground(new Color(0,0,0));
-            label.setEnabled(true);
-            label.setFont(new Font("sansserif",0,12));
-            label.setText("Trade");
-            label.setVisible(true);
-            
-            contentPane.add(label);
+
+            tradeList = new JList();
+            tradeList.setBounds(50, 25, 300, 200);
+            tradeList.setBackground(new Color(255,255,255));
+            tradeList.setForeground(new Color(0,0,0));
+            tradeList.setEnabled(true);
+            tradeList.setFont(new Font("sansserif",0,12));
+            tradeList.setVisible(true);
+
+            tradeButton = new JButton();
+            tradeButton.setBounds(120,245,160,35);
+            tradeButton.setBackground(new Color(214,217,223));
+            tradeButton.setForeground(new Color(0,0,0));
+            tradeButton.setEnabled(true);
+            tradeButton.setFont(new Font("sansserif",0,12));
+            tradeButton.setText("Confirm Trade");
+            tradeButton.setVisible(true);
+
+            contentPane.add(tradeList);
+            contentPane.add(tradeButton);
     
             //adding panel to JFrame and seting of window position and close operation
             this.add(contentPane);

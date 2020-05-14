@@ -4,6 +4,7 @@ import DBAccess.ProductsManager;
 import trade.Basket;
 import trade.Product;
 
+import javax.swing.*;
 import java.sql.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,6 +13,7 @@ public class TradeHandler
 {
     private ProductsManager prodManager = new ProductsManager();
     private Basket basket = new Basket();
+    private DefaultListModel listModel = new DefaultListModel();
 
     private final Pattern regexISBN = Pattern.compile("^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$");
     
@@ -52,7 +54,13 @@ public class TradeHandler
     }
 
     public void addProductToBasket(Product product) {
+        Product existingProduct = basket.getProduct(product);
+        if (existingProduct != null) {
+            this.listModel.removeElement(existingProduct.getLineSummary());
+        }
         this.basket.add(product);
+        product = basket.getProduct(product);
+        this.listModel.addElement(product.getLineSummary());
     }
 
     public boolean validateISBN(String ISBN) {
@@ -61,5 +69,9 @@ public class TradeHandler
             return true;
         }
         return false;
+    }
+
+    public DefaultListModel getListModel() {
+        return this.listModel;
     }
 }

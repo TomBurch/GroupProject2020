@@ -2,6 +2,7 @@ package clients.customer;
 
 import trade.Product;
 
+import javax.swing.*;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
 
@@ -41,5 +42,9 @@ public class CustomerModel
 
     public void addProductToBasket(Product product) {
         tradeHandler.addProductToBasket(product);
+    }
+
+    public DefaultListModel getListModel() {
+        return tradeHandler.getListModel();
     }
 }
