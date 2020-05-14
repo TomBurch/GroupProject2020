@@ -17,8 +17,8 @@ public class CustomerModel
         return loginHandler.verifyAccount(user, pass);
     }
     
-    public boolean makeAccount(String user, String pass, String passConfirm, String postcode, String email) {
-        return loginHandler.makeAccount(user, pass, passConfirm, postcode, email);
+    public void makeAccount(String user, String pass, String passConfirm, String postcode, String email) {
+        loginHandler.makeAccount(user, pass, passConfirm, postcode, email);
     }
 
     public void addProductToBasket(String isbn) {

@@ -58,7 +58,7 @@ public class CustomerView implements PropertyChangeListener {
         tabbedPane.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 if (tabbedPane.getSelectedIndex() == 1) { //Current Trade tab
-                    JList<String> tradeList = (JList) tradePanel.getClientProperty("tradeList");
+                    JList<String> tradeList = (JList<String>) tradePanel.getClientProperty("tradeList");
                     tradeList.setModel(controller.getListModel());
                 }
             }
@@ -447,7 +447,7 @@ public class CustomerView implements PropertyChangeListener {
             contentPane.setPreferredSize(new Dimension(400,300));
             contentPane.setBackground(new Color(192,192,192));
 
-            tradeList = new JList();
+            tradeList = new JList<String>();
             tradeList.setBounds(50, 25, 300, 150);
             tradeList.setBackground(new Color(255,255,255));
             tradeList.setForeground(new Color(0,0,0));
@@ -495,6 +495,7 @@ public class CustomerView implements PropertyChangeListener {
     
     public class SavedPanel extends JPanel {
         private JLabel label;
+
         public SavedPanel() {
             this.setSize(400,300);
     

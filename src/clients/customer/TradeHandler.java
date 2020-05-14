@@ -64,10 +64,7 @@ public class TradeHandler
 
     public boolean validateISBN(String ISBN) {
         Matcher matcher = regexISBN.matcher(ISBN);
-        if (matcher.matches()) {
-            return true;
-        }
-        return false;
+        return matcher.matches();
     }
 
     public DefaultListModel getListModel() {
