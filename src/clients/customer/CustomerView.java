@@ -1,5 +1,6 @@
 package clients.customer;
 
+import org.jetbrains.annotations.NotNull;
 import trade.Product;
 
 import javax.swing.*;
@@ -13,26 +14,38 @@ import java.io.File;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
-public class CustomerView implements PropertyChangeListener
-{
+public class CustomerView implements PropertyChangeListener {
     private CustomerController controller = null;
     
     private JPanel mainPanel = new JPanel();
     private JTabbedPane tabbedPane = new JTabbedPane();
     private CardLayout cardLayout = new CardLayout();
     private JPanel cardPanel = new JPanel(cardLayout);
+
+    private JPanel loginPanel;
+    private JPanel registerPanel;
+    private JPanel homePanel;
+    private JPanel tradePanel;
+    private JPanel savedPanel;
+    private JPanel historyPanel;
     
     private static final String IMAGE = "cog.jpg";
     
-    public CustomerView()
-    {
-        cardPanel.add(new LoginPanel(), "Login");
-        cardPanel.add(new RegisterPanel(), "Register");
+    public CustomerView() {
+        loginPanel = new LoginPanel();
+        registerPanel = new RegisterPanel();
+        cardPanel.add(loginPanel, "Login");
+        cardPanel.add(registerPanel, "Register");
         cardPanel.add(tabbedPane, "Main");
-        tabbedPane.addTab("Home", new HomePanel());
-        tabbedPane.addTab("Current Trade", new TradePanel());
-        tabbedPane.addTab("Saved Products", new SavedPanel());
-        tabbedPane.addTab("Trade History", new HistoryPanel());
+
+        homePanel = new HomePanel();
+        tradePanel = new TradePanel();
+        savedPanel = new SavedPanel();
+        historyPanel = new HistoryPanel();
+        tabbedPane.addTab("Home", homePanel);
+        tabbedPane.addTab("Current Trade", tradePanel);
+        tabbedPane.addTab("Saved Products", savedPanel);
+        tabbedPane.addTab("Trade History", historyPanel);
         try {
             BufferedImage image = ImageIO.read(getClass().getResource("/resources/cog.png"));
             Image scaledImage = image.getScaledInstance(15, 15, Image.SCALE_DEFAULT);
@@ -45,9 +58,7 @@ public class CustomerView implements PropertyChangeListener
         tabbedPane.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 if (tabbedPane.getSelectedIndex() == 1) { //Current Trade tab
-                    JPanel currentTradePanel = (JPanel) tabbedPane.getSelectedComponent();
-                    JPanel contentPane = (JPanel) currentTradePanel.getComponent(0);
-                    JList<String> tradeList = null;
+                    JPanel contentPane = (JPanel) tradePanel.getComponent(0);
                     for (Component component : contentPane.getComponents()) {
                         if (component instanceof JList) {
                             JList<String> list = (JList<String>) component;
@@ -75,9 +86,16 @@ public class CustomerView implements PropertyChangeListener
     }   
     
     @Override
-    public void propertyChange(PropertyChangeEvent event) {
-        if (event.getPropertyName().equals("state")) {
-            cardLayout.show(cardPanel, (String) event.getNewValue());
+    public void propertyChange(@NotNull PropertyChangeEvent event) {
+        switch (event.getPropertyName()) {
+            case "state":
+                cardLayout.show(cardPanel, (String) event.getNewValue());
+                break;
+
+            case "output":
+                JTextArea output = (JTextArea) homePanel.getClientProperty("output");
+                output.setText((String) event.getNewValue());
+                break;
         }
     }
     
@@ -150,17 +168,12 @@ public class CustomerView implements PropertyChangeListener
             loginButton.setFont(new Font("sansserif",0,12));
             loginButton.setText("Login");
             loginButton.setVisible(true);
-            loginButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("CustomerView:: loginButton clicked");
-                    String user = userEntry.getText();
-                    String pass = passEntry.getText();
-
-                    if (controller.verifyAccount(user, pass)) {
-                        controller.setState("Main");
-                    }
-                }
-            });
+            loginButton.addActionListener(
+                    e -> controller.login_loginButtonClicked(
+                            userEntry.getText(),
+                            passEntry.getText()
+                    )
+            );
 
             registerButton = new JButton();
             registerButton.setBounds(69,260,90,35);
@@ -170,12 +183,9 @@ public class CustomerView implements PropertyChangeListener
             registerButton.setFont(new Font("sansserif",0,12));
             registerButton.setText("Register");
             registerButton.setVisible(true);
-            registerButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("CustomerView:: registerButton clicked");
-                    controller.setState("Register");
-                }
-            });
+            registerButton.addActionListener(
+                    e -> controller.login_registerButtonClicked()
+            );
     
             //adding components to contentPane panel
             contentPane.add(title);
@@ -316,21 +326,15 @@ public class CustomerView implements PropertyChangeListener
             confirmButton.setFont(new Font("sansserif",0,12));
             confirmButton.setText("Confirm");
             confirmButton.setVisible(true);
-            confirmButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("CustomerView:: confirmButton clicked");
-                    String user = userEntry.getText();
-                    String pass = passEntry.getText();
-                    String passConfirm = passConfirmEntry.getText();
-                    String postcode = postcodeEntry.getText();
-                    String email = emailEntry.getText();
-
-                    controller.makeAccount(user, pass, passConfirm, postcode, email);
-                    if (controller.verifyAccount(user, pass)) {
-                        controller.setState("Main");
-                    }
-                }
-            });
+            confirmButton.addActionListener(
+                    e -> controller.register_confirmButtonClicked(
+                            userEntry.getText(),
+                            passEntry.getText(),
+                            passConfirmEntry.getText(),
+                            postcodeEntry.getText(),
+                            emailEntry.getText()
+                    )
+            );
 
             cancelButton = new JButton();
             cancelButton.setBounds(69,260,90,35);
@@ -340,12 +344,9 @@ public class CustomerView implements PropertyChangeListener
             cancelButton.setFont(new Font("sansserif",0,12));
             cancelButton.setText("Cancel");
             cancelButton.setVisible(true);
-            cancelButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("CustomerView:: cancelButton clicked");
-                    controller.setState("Login");
-                }
-            });
+            cancelButton.addActionListener(
+                    e -> controller.register_cancelButtonClicked()
+            );
 
             contentPane.add(title);
             contentPane.add(userEntry);
@@ -367,10 +368,10 @@ public class CustomerView implements PropertyChangeListener
     }
 
     public class HomePanel extends JPanel {
-        private JButton tradeButton;
+        private JButton submitButton;
         private JTextField isbnEntry;
         private JLabel isbnLabel;
-        private JTextArea output;
+        public JTextArea output;
     
         //Constructor 
         public HomePanel(){
@@ -381,28 +382,17 @@ public class CustomerView implements PropertyChangeListener
             contentPane.setPreferredSize(new Dimension(400,300));
             contentPane.setBackground(new Color(192,192,192));
     
-            tradeButton = new JButton();
-            tradeButton.setBounds(148,94,90,35);
-            tradeButton.setBackground(new Color(214,217,223));
-            tradeButton.setForeground(new Color(0,0,0));
-            tradeButton.setEnabled(true);
-            tradeButton.setFont(new Font("sansserif",0,12));
-            tradeButton.setText("Submit");
-            tradeButton.setVisible(true);
-            tradeButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("CustomerView:: tradeButton clicked");
-                    String ISBN = isbnEntry.getText();
-                    Product product = controller.getProduct(ISBN);
-
-                    if (product != null) {
-                        controller.addProductToBasket(product);
-                        output.setText(product.getDetails());
-                    } else {
-                        output.setText("Product is not currently required");
-                    }
-                }
-            });
+            submitButton = new JButton();
+            submitButton.setBounds(148,94,90,35);
+            submitButton.setBackground(new Color(214,217,223));
+            submitButton.setForeground(new Color(0,0,0));
+            submitButton.setEnabled(true);
+            submitButton.setFont(new Font("sansserif",0,12));
+            submitButton.setText("Submit");
+            submitButton.setVisible(true);
+            submitButton.addActionListener(
+                    e -> controller.home_submitButtonClicked(isbnEntry.getText())
+            );
 
             isbnEntry = new JTextField();
             isbnEntry.setBounds(109,48,267,29);
@@ -430,9 +420,10 @@ public class CustomerView implements PropertyChangeListener
             output.setFont(new Font("sansserif",0,12));
             output.setText("");
             output.setVisible(true);
+            this.putClientProperty("output", output);
     
             //adding components to contentPane panel
-            contentPane.add(tradeButton);
+            contentPane.add(submitButton);
             contentPane.add(isbnEntry);
             contentPane.add(isbnLabel);
             contentPane.add(output);
@@ -472,19 +463,9 @@ public class CustomerView implements PropertyChangeListener
             tradeButton.setFont(new Font("sansserif",0,12));
             tradeButton.setText("Confirm Trade");
             tradeButton.setVisible(true);
-            tradeButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("CustomerView:: tradeButton clicked");
-                    int size = controller.getBasketSize();
-                    float price = controller.getBasketPrice();
-
-                    if (price >= 10 && (size >= 10 && size <= 100)) {
-                        System.out.println("Trade allowed");
-                    } else {
-                        System.out.println("Trade not allowed");
-                    }
-                }
-            });
+            tradeButton.addActionListener(
+                    e -> controller.trade_tradeButtonClicked()
+            );
 
             contentPane.add(tradeList);
             contentPane.add(tradeButton);

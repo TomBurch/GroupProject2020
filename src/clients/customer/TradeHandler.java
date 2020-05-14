@@ -20,8 +20,8 @@ public class TradeHandler
     public TradeHandler() {      
     }
     
-    public Product getProduct(String ISBN) {
-        if (!validateISBN(ISBN)) {
+    public Product getProductFromISBN(String isbn) {
+        if (!validateISBN(isbn)) {
             System.out.println("TradeHandler::getProduct:: Invalid ISBN number");
             return null;
         }
@@ -29,7 +29,7 @@ public class TradeHandler
         try {
             Connection conn = prodManager.getConnection();
             PreparedStatement statement = conn.prepareStatement("SELECT * FROM PRODUCTS WHERE ISBN = ?");
-            statement.setString(1, ISBN);
+            statement.setString(1, isbn);
 
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {

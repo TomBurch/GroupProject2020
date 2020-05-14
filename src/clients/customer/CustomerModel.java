@@ -13,18 +13,11 @@ public class CustomerModel
     private LoginHandler loginHandler = new LoginHandler();
     private TradeHandler tradeHandler = new TradeHandler();
     
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener(listener);
-    }
-    
-    public String getState() {
-        return state;
-    }
-    
     public void setState(String state) {
         String oldValue = this.state;
         String newValue = state;
         this.state = state;
+        System.out.println("CustomerModel::setState:: New state: " + state);
         pcs.firePropertyChange("state", oldValue, newValue);
     }
     
@@ -36,12 +29,15 @@ public class CustomerModel
         return loginHandler.makeAccount(user, pass, passConfirm, postcode, email);
     }
 
-    public Product getProduct(String ISBN) {
-        return tradeHandler.getProduct(ISBN);
-    }
+    public void addProductToBasket(String isbn) {
+        Product product = tradeHandler.getProductFromISBN(isbn);
 
-    public void addProductToBasket(Product product) {
-        tradeHandler.addProductToBasket(product);
+        if (product != null) {
+            tradeHandler.addProductToBasket(product);
+            setOutput(product.getDetails());
+        } else {
+            setOutput("Product is not currently required");
+        }
     }
 
     public DefaultListModel getListModel() {
@@ -54,5 +50,13 @@ public class CustomerModel
 
     public float getBasketPrice() {
         return tradeHandler.getBasketPrice();
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    public void setOutput(String newValue) {
+        pcs.firePropertyChange("output", null, newValue);
     }
 }
