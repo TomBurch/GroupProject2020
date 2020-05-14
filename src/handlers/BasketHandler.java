@@ -1,4 +1,7 @@
-package trade;
+package handlers;
+
+import trade.Basket;
+import trade.Product;
 
 import javax.swing.*;
 

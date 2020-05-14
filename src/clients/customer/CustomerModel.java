@@ -1,5 +1,7 @@
 package clients.customer;
 
+import handlers.LoginHandler;
+import handlers.TradeHandler;
 import trade.Product;
 
 import javax.swing.*;

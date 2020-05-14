@@ -1,5 +1,5 @@
 
-package clients.customer;
+package handlers;
 
 import DBAccess.AccountsManager;
 import org.jetbrains.annotations.NotNull;

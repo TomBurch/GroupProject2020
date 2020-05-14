@@ -1,11 +1,8 @@
-package clients.customer;
+package handlers;
 
 import DBAccess.ProductsManager;
-import trade.Basket;
-import trade.BasketHandler;
 import trade.Product;
 
-import javax.swing.*;
 import java.sql.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
