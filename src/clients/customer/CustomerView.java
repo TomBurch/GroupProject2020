@@ -58,13 +58,8 @@ public class CustomerView implements PropertyChangeListener {
         tabbedPane.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 if (tabbedPane.getSelectedIndex() == 1) { //Current Trade tab
-                    JPanel contentPane = (JPanel) tradePanel.getComponent(0);
-                    for (Component component : contentPane.getComponents()) {
-                        if (component instanceof JList) {
-                            JList<String> list = (JList<String>) component;
-                            list.setModel(controller.getListModel());
-                        }
-                    }
+                    JList<String> tradeList = (JList) tradePanel.getClientProperty("tradeList");
+                    tradeList.setModel(controller.getListModel());
                 }
             }
         });
@@ -96,6 +91,10 @@ public class CustomerView implements PropertyChangeListener {
                 JTextArea output = (JTextArea) homePanel.getClientProperty("output");
                 output.setText((String) event.getNewValue());
                 break;
+
+            case "tradePrice":
+                JLabel priceLabel = (JLabel) tradePanel.getClientProperty("priceLabel");
+                priceLabel.setText(String.format("Total Price: £%5.2f", (float) event.getNewValue()));
         }
     }
     
@@ -435,8 +434,9 @@ public class CustomerView implements PropertyChangeListener {
     }
     
     public class TradePanel extends JPanel {
-        private JLabel label;
         private JList<String> tradeList;
+        private JScrollPane scrollPane;
+        private JLabel priceLabel;
         private JButton tradeButton;
 
         public TradePanel() {
@@ -448,12 +448,27 @@ public class CustomerView implements PropertyChangeListener {
             contentPane.setBackground(new Color(192,192,192));
 
             tradeList = new JList();
-            tradeList.setBounds(50, 25, 300, 200);
+            tradeList.setBounds(50, 25, 300, 150);
             tradeList.setBackground(new Color(255,255,255));
             tradeList.setForeground(new Color(0,0,0));
             tradeList.setEnabled(true);
             tradeList.setFont(new Font("sansserif",0,12));
             tradeList.setVisible(true);
+            this.putClientProperty("tradeList", tradeList);
+
+            scrollPane = new JScrollPane();
+            scrollPane.setBounds(50, 25, 300, 150);
+            scrollPane.getViewport().add(tradeList);
+
+            priceLabel = new JLabel();
+            priceLabel.setBounds(147,200,160,35);
+            priceLabel.setBackground(new Color(214,217,223));
+            priceLabel.setForeground(new Color(0,0,0));
+            priceLabel.setEnabled(true);
+            priceLabel.setFont(new Font("sansserif",0,12));
+            priceLabel.setText("Total Price: £0.00");
+            priceLabel.setVisible(true);
+            this.putClientProperty("priceLabel", priceLabel);
 
             tradeButton = new JButton();
             tradeButton.setBounds(120,245,160,35);
@@ -467,7 +482,8 @@ public class CustomerView implements PropertyChangeListener {
                     e -> controller.trade_tradeButtonClicked()
             );
 
-            contentPane.add(tradeList);
+            contentPane.add(scrollPane);
+            contentPane.add(priceLabel);
             contentPane.add(tradeButton);
     
             //adding panel to JFrame and seting of window position and close operation

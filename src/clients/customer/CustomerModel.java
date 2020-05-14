@@ -13,14 +13,6 @@ public class CustomerModel
     private LoginHandler loginHandler = new LoginHandler();
     private TradeHandler tradeHandler = new TradeHandler();
     
-    public void setState(String state) {
-        String oldValue = this.state;
-        String newValue = state;
-        this.state = state;
-        System.out.println("CustomerModel::setState:: New state: " + state);
-        pcs.firePropertyChange("state", oldValue, newValue);
-    }
-    
     public boolean verifyAccount(String user, String pass) {
         return loginHandler.verifyAccount(user, pass);
     }
@@ -35,6 +27,7 @@ public class CustomerModel
         if (product != null) {
             tradeHandler.addProductToBasket(product);
             setOutput(product.getDetails());
+            setTradePrice(tradeHandler.getBasketPrice());
         } else {
             setOutput("Product is not currently required");
         }
@@ -56,7 +49,19 @@ public class CustomerModel
         pcs.addPropertyChangeListener(listener);
     }
 
+    public void setState(String state) {
+        String oldValue = this.state;
+        String newValue = state;
+        this.state = state;
+        System.out.println("CustomerModel::setState:: New state: " + state);
+        pcs.firePropertyChange("state", oldValue, newValue);
+    }
+
     public void setOutput(String newValue) {
         pcs.firePropertyChange("output", null, newValue);
+    }
+
+    public void setTradePrice(float newValue) {
+        pcs.firePropertyChange("tradePrice", null, newValue);
     }
 }
