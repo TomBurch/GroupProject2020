@@ -19,8 +19,21 @@ public class Basket extends ArrayList<Product> {
     }
 
     public int getTotalSize() {
-        int size = super.stream().mapToInt(Product::getQuantity).sum();
+        int size = super.stream().mapToInt(product -> product.getQuantity()).sum();
         return size;
+    }
+
+    public float getTotalPrice() {
+        float price = 0;
+        ListIterator<Product> iterator = super.listIterator();
+        Product product;
+
+        while (iterator.hasNext()) {
+            product = iterator.next();
+            price += (product.getQuantity() * product.getPrice());
+        }
+
+        return price;
     }
 
     @Override

@@ -78,4 +78,8 @@ public class TradeHandler
     public int getBasketSize() {
         return basket.getTotalSize();
     }
+
+    public float getBasketPrice() {
+        return basket.getTotalPrice();
+    }
 }

@@ -475,7 +475,14 @@ public class CustomerView implements PropertyChangeListener
             tradeButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     System.out.println("CustomerView:: tradeButton clicked");
-                    System.out.println(controller.getBasketSize());
+                    int size = controller.getBasketSize();
+                    float price = controller.getBasketPrice();
+
+                    if (price >= 10 && (size >= 10 && size <= 100)) {
+                        System.out.println("Trade allowed");
+                    } else {
+                        System.out.println("Trade not allowed");
+                    }
                 }
             });
 

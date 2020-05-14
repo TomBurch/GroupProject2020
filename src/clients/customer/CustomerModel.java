@@ -51,4 +51,8 @@ public class CustomerModel
     public int getBasketSize() {
         return tradeHandler.getBasketSize();
     }
+
+    public float getBasketPrice() {
+        return tradeHandler.getBasketPrice();
+    }
 }

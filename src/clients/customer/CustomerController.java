@@ -43,4 +43,8 @@ public class CustomerController
     public int getBasketSize() {
         return model.getBasketSize();
     }
+
+    public float getBasketPrice() {
+        return model.getBasketPrice();
+    }
 }

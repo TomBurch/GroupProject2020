@@ -35,6 +35,8 @@ public class Product {
         this.quantity = quantity;
     }
 
+    public float getPrice() { return this.price; }
+
     public String getDetails() {
         StringBuilder sb = new StringBuilder(256);
         Formatter fr = new Formatter(sb);

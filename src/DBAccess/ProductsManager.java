@@ -38,6 +38,7 @@ public class ProductsManager extends DBManager
                s.executeUpdate("INSERT INTO Products (ISBN, Title, Price, Author, Publisher, YearPublished, Description) VALUES ('978-3-16-148410-0', 'Example Book 1', 5.50, 'Author 1', 'Publisher 1', '2000-06-13', 'Example description 1')");
                s.executeUpdate("INSERT INTO Products (ISBN, Title, Price, Author, Publisher, YearPublished, Description) VALUES ('978-3-16-148420-0', 'Example Book 2', 3.50, 'Author 2', 'Publisher 2', '2001-05-12', 'Example description 2')");
                s.executeUpdate("INSERT INTO Products (ISBN, Title, Price, Author, Publisher, YearPublished, Description) VALUES ('978-3-16-148430-0', 'Example Book 3', 1.50, 'Author 3', 'Publisher 3', '2002-04-11', 'Example description 3')");
+               s.executeUpdate("INSERT INTO Products (ISBN, Title, Price, Author, Publisher, YearPublished, Description) VALUES ('978-3-16-148440-0', 'Example Book 4', 0.50, 'Author 4', 'Publisher 4', '2002-03-10', 'Example description 4')");
 
                System.out.println("ProductsManager::Setup:: Created table products");
             }
