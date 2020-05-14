@@ -24,8 +24,6 @@ public class CustomerView implements PropertyChangeListener {
     private JPanel savedPanel;
     private JPanel historyPanel;
     
-    private static final String IMAGE = "cog.jpg";
-    
     public CustomerView() {
         loginPanel = new LoginPanel();
         registerPanel = new RegisterPanel();
@@ -443,8 +441,7 @@ public class CustomerView implements PropertyChangeListener {
 
         public TradePanel() {
             this.setSize(400,300);
-    
-            //pane with null layout
+
             JPanel contentPane = new JPanel(null);
             contentPane.setPreferredSize(new Dimension(400,300));
             contentPane.setBackground(new Color(192,192,192));
@@ -520,8 +517,7 @@ public class CustomerView implements PropertyChangeListener {
             contentPane.add(priceLabel);
             contentPane.add(tradeButton);
             contentPane.add(saveButton);
-    
-            //adding panel to JFrame and seting of window position and close operation
+
             this.add(contentPane);
             this.setVisible(true);
         }
@@ -530,6 +526,10 @@ public class CustomerView implements PropertyChangeListener {
     public class SavedPanel extends JPanel {
         private JList<String> savedList;
         private JScrollPane scrollPane;
+
+        private JPopupMenu popupMenu;
+        private JMenuItem tradePopup;
+        private JMenuItem deletePopup;
 
         public SavedPanel() {
             this.setSize(400,300);
@@ -550,6 +550,27 @@ public class CustomerView implements PropertyChangeListener {
             scrollPane = new JScrollPane();
             scrollPane.setBounds(50, 25, 300, 150);
             scrollPane.getViewport().add(savedList);
+
+            popupMenu = new JPopupMenu("Saved");
+
+            tradePopup = new JMenuItem("Add to trade");
+            tradePopup.addActionListener(
+                    e -> controller.saved_tradePopupClicked(
+                            savedList.getSelectedValuesList()
+                    )
+            );
+
+            deletePopup = new JMenuItem("Delete");
+            deletePopup.addActionListener(
+                    e -> controller.saved_deletePopupClicked(
+                            savedList.getSelectedValuesList()
+                    )
+            );
+
+            popupMenu.add(tradePopup);
+            popupMenu.add(deletePopup);
+            savedList.setComponentPopupMenu(popupMenu);
+            contentPane.setComponentPopupMenu(popupMenu);
 
             contentPane.add(scrollPane);
     

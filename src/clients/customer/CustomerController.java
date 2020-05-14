@@ -2,6 +2,7 @@ package clients.customer;
 
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
 import trade.Product;
 
 public class CustomerController
@@ -64,19 +65,31 @@ public class CustomerController
         model.saveBasket();
     }
 
-    public void trade_savePopupClicked(List<String> selectedValues) {
+    public void trade_savePopupClicked(@NotNull List<String> selectedValues) {
         System.out.println("CustomerController:: TradePanel::savePopup clicked");
         selectedValues.forEach(lineSummary -> {
-            Product product = model.getProductFromLineSummary(lineSummary);
+            Product product = model.getTradeProductFromLineSummary(lineSummary);
             model.saveProduct(product);
         });
     }
 
-    public void trade_deletePopupClicked(List<String> selectedValues) {
+    public void trade_deletePopupClicked(@NotNull List<String> selectedValues) {
         System.out.println("CustomerController:: TradePanel::deletePopup clicked");
         selectedValues.forEach(lineSummary -> {
-           Product product = model.getProductFromLineSummary(lineSummary);
+           Product product = model.getTradeProductFromLineSummary(lineSummary);
            model.deleteProductFromTrade(product);
+        });
+    }
+
+    public void saved_tradePopupClicked(@NotNull List<String> selectedValues) {
+        return;
+    }
+
+    public void saved_deletePopupClicked(@NotNull List<String> selectedValues) {
+        System.out.println("CustomerController:: SavedPanel::deletePopup clicked");
+        selectedValues.forEach(lineSummary -> {
+            Product product = model.getSavedProductFromLineSummary(lineSummary);
+            model.deleteProductFromSaved(product);
         });
     }
 }
