@@ -10,16 +10,6 @@ public class Basket extends ArrayList<Product> {
     public Basket() {
     }
 
-    public Product getProduct(Product product) {
-        int i = super.indexOf(product);
-
-        if (i != -1) {
-            return super.get(i);
-        } else {
-            return null;
-        }
-    }
-
     public Product getProductFromISBN(String isbn) {
         return super.stream()
                 .filter(product -> product.getISBN().equals(isbn))

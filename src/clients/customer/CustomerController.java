@@ -1,6 +1,5 @@
 package clients.customer;
 
-import javax.swing.*;
 import java.util.List;
 
 import trade.Product;
@@ -14,14 +13,6 @@ public class CustomerController
     {
         this.view = view;
         this.model = model;
-    }
-
-    public DefaultListModel getTradeListModel() {
-        return model.getTradeListModel();
-    }
-
-    public DefaultListModel getSavedListModel() {
-        return model.getSavedListModel();
     }
 
     public void login_loginButtonClicked(String user, String pass) {
