@@ -39,6 +39,37 @@ public class CustomerModel {
     }
 
     /**
+     * Add a product to the Trade basket
+     * @param isbn  ISBN of the product
+     */
+    public void addProductToTrade(String isbn) {
+        Product product = checkProduct(isbn);
+
+        if (product != null) {
+            tradeHandler.addProductToBasket(product);
+            setTradeList(tradeHandler.getListModel());
+            setTradePrice(tradeHandler.getBasketPrice());
+        }
+    }
+
+    /**
+     * Check if a Product with given ISBN exists in Products table
+     * @param isbn
+     * @return  Product if it exists, else null
+     */
+    public Product checkProduct(String isbn) {
+        Product product = tradeHandler.getProductFromISBN(isbn);
+
+        if (product != null) {
+            setHomeOutput(product.getDetails());
+            return product;
+        } else {
+            setHomeOutput("Product is not currently required");
+            return null;
+        }
+    }
+
+    /**
      * Delete selected savedList products from the Saved basket
      * @param selectedValues    List of selected products (lineSummary)
      */
@@ -84,21 +115,12 @@ public class CustomerModel {
     public void tradeSelectedValues(@NotNull List<String> selectedValues) {
         selectedValues.forEach(lineSummary -> {
             Product product = savedHandler.getProductFromLineSummary(lineSummary);
-            System.out.println(product);
             tradeHandler.addProductToBasket(product);
             savedHandler.deleteProductFromBasket(product);
         });
         setTradeList(tradeHandler.getListModel());
         setTradePrice(tradeHandler.getBasketPrice());
         setSavedList(savedHandler.getListModel());
-    }
-
-    /**
-     * Get total size of the Trade basket (sum of Product.quantity)
-     * @return  int - Basket size
-     */
-    public int getTradeBasketSize() {
-        return tradeHandler.getBasketSize();
     }
 
     /**
@@ -123,21 +145,11 @@ public class CustomerModel {
     }
 
     /**
-     * Add a product to the Trade basket
-     * @param isbn  ISBN of the product
+     * Get total size of the Trade basket (sum of Product.quantity)
+     * @return  int - Basket size
      */
-    public void addProductToTrade(String isbn) {
-        Product product = tradeHandler.getProductFromISBN(isbn);
-
-        if (product != null) {
-            tradeHandler.addProductToBasket(product);
-
-            setHomeOutput(product.getDetails());
-            setTradeList(tradeHandler.getListModel());
-            setTradePrice(tradeHandler.getBasketPrice());
-        } else {
-            setHomeOutput("Product is not currently required");
-        }
+    public int getTradeBasketSize() {
+        return tradeHandler.getBasketSize();
     }
 
     //=== PropertyChange methods ===//

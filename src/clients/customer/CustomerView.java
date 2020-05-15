@@ -371,7 +371,8 @@ public class CustomerView implements PropertyChangeListener {
      * Panel for entering ISBNs to view products, and adding them to the Trade basket
      */
     public class HomePanel extends JPanel {
-        private JButton submitButton;
+        private JButton checkButton;
+        private JButton tradeButton;
         private JTextField isbnEntry;
         private JLabel isbnLabel;
         public JTextArea output;
@@ -384,17 +385,30 @@ public class CustomerView implements PropertyChangeListener {
             JPanel contentPane = new JPanel(null);
             contentPane.setPreferredSize(new Dimension(400,300));
             contentPane.setBackground(new Color(192,192,192));
+
+            checkButton = new JButton();
+            checkButton = new JButton();
+            checkButton.setBounds(65,94,120,35);
+            checkButton.setBackground(new Color(214,217,223));
+            checkButton.setForeground(new Color(0,0,0));
+            checkButton.setEnabled(true);
+            checkButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            checkButton.setText("Check Product");
+            checkButton.setVisible(true);
+            checkButton.addActionListener(
+                    e -> controller.home_checkButtonClicked(isbnEntry.getText())
+            );
     
-            submitButton = new JButton();
-            submitButton.setBounds(148,94,90,35);
-            submitButton.setBackground(new Color(214,217,223));
-            submitButton.setForeground(new Color(0,0,0));
-            submitButton.setEnabled(true);
-            submitButton.setFont(new Font("sansserif", Font.PLAIN,12));
-            submitButton.setText("Submit");
-            submitButton.setVisible(true);
-            submitButton.addActionListener(
-                    e -> controller.home_submitButtonClicked(isbnEntry.getText())
+            tradeButton = new JButton();
+            tradeButton.setBounds(215,94,120,35);
+            tradeButton.setBackground(new Color(214,217,223));
+            tradeButton.setForeground(new Color(0,0,0));
+            tradeButton.setEnabled(true);
+            tradeButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            tradeButton.setText("Add To Trade");
+            tradeButton.setVisible(true);
+            tradeButton.addActionListener(
+                    e -> controller.home_tradeButtonClicked(isbnEntry.getText())
             );
 
             isbnEntry = new JTextField();
@@ -424,14 +438,13 @@ public class CustomerView implements PropertyChangeListener {
             output.setText("");
             output.setVisible(true);
             this.putClientProperty("output", output);
-    
-            //adding components to contentPane panel
-            contentPane.add(submitButton);
+
+            contentPane.add(checkButton);
+            contentPane.add(tradeButton);
             contentPane.add(isbnEntry);
             contentPane.add(isbnLabel);
             contentPane.add(output);
-    
-            //adding panel to JFrame and seting of window position and close operation
+
             this.add(contentPane);
             this.setVisible(true);
         }
