@@ -39,23 +39,21 @@ public class CustomerController {
 
     //=== Home Panel ===//
 
-    public void home_submitButtonClicked(String isbn) {
-        System.out.println("CustomerController:: HomePanel::submitButton clicked");
+    public void home_checkButtonClicked(String isbn) {
+        System.out.println("CustomerController:: HomePanel::checkButton clicked");
+        model.checkProduct(isbn);
+    }
+
+    public void home_tradeButtonClicked(String isbn) {
+        System.out.println("CustomerController:: HomePanel::tradeButton clicked");
         model.addProductToTrade(isbn);
     }
 
     //=== Trade Panel ===//
 
-    public void trade_tradeButtonClicked() {
+    public String trade_tradeButtonClicked() {
         System.out.println("CustomerController:: TradePanel::tradeButton clicked");
-        float price = model.getBasketPrice();
-        int size = model.getTradeBasketSize();
-
-        if (price >= 10 && (size >= 10 && size <= 100)) {
-            System.out.println("Trade allowed");
-        } else {
-            System.out.println("Trade not allowed");
-        }
+        return model.processTrade();
     }
 
     public void trade_saveButtonClicked() {

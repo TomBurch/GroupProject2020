@@ -3,6 +3,7 @@ package handlers;
 
 import DBAccess.AccountsManager;
 import org.jetbrains.annotations.NotNull;
+import trade.Account;
 
 import java.security.SecureRandom;
 import javax.crypto.spec.PBEKeySpec;
@@ -13,11 +14,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Class for handling account registration and validation
+ * Class for handling accounts
  */
-public class LoginHandler {
+public class AccountHandler {
     /**Manages access to the Accounts table*/
     private AccountsManager accManager = new AccountsManager();
+    /**Details of logged in account*/
+    private Account account;
 
     /**UK Government regex pattern for postcodes*/
     private final Pattern regexPostcode = Pattern.compile("^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([AZa-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))[0-9][A-Za-z]{2})$");
@@ -42,14 +45,14 @@ public class LoginHandler {
                     return true;
                 }
             } else {
-                System.out.println("LoginHandler::verifyAccount:: Username not in database");
+                System.out.println("AccountHandler::verifyAccount:: Username not in database");
                 return false;
             }
         } catch (SQLException e) {
-            System.out.println("LoginHandler::verifyAccount:: " + e);
+            System.out.println("AccountHandler::verifyAccount:: " + e);
         }
         
-        System.out.println("LoginHandler::verifyAccount:: Unable to verify account '" + user + "'");
+        System.out.println("AccountHandler::verifyAccount:: Unable to verify account '" + user + "'");
         return false;
     }
 
@@ -74,7 +77,7 @@ public class LoginHandler {
      */
     public void makeAccount(String user, @NotNull String pass, String passConfirm, String postcode, String email) {
         if (!pass.equals(passConfirm)) {
-            System.out.println("LoginHandler::makeAccount:: Passwords do not match");
+            System.out.println("AccountHandler::makeAccount:: Passwords do not match");
             return;
         }
 
@@ -87,13 +90,13 @@ public class LoginHandler {
         String hashAndSalt = hashString + ":" + saltString;
         
         if (!validateUsername(user) || !validatePassword(pass)) {
-            System.out.println("LoginHandler::makeAccount:: Invalid username or password");
+            System.out.println("AccountHandler::makeAccount:: Invalid username or password");
             return;
         } else if (!validatePostcode(postcode)) {
-            System.out.println("LoginHandler::makeAccount:: Invalid postcode");
+            System.out.println("AccountHandler::makeAccount:: Invalid postcode");
             return;
         } else if (!validateEmail(email)) {
-            System.out.println("LoginHandler::makeAccount:: Invalid email");
+            System.out.println("AccountHandler::makeAccount:: Invalid email");
             return;
         }
         
@@ -111,9 +114,39 @@ public class LoginHandler {
                 return;
             }  
         } catch (SQLException e) {
-            System.out.println("LoginHandler::makeAccount:: " + e);
+            System.out.println("AccountHandler::makeAccount:: " + e);
         }
-        System.out.println("LoginHandler::makeAccount:: Made new account '" + user + "'");
+        System.out.println("AccountHandler::makeAccount:: Made new account '" + user + "'");
+    }
+
+    /**
+     * Set account from the given username
+     * @param username  String
+     */
+    public void setAccount(String username) {
+        try {
+            Connection conn = accManager.getConnection();
+            PreparedStatement statement = conn.prepareStatement("SELECT * FROM ACCOUNTS WHERE Username = ?");
+            statement.setString(1, username);
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                int accountID = rs.getInt("AccountID");
+                String email = rs.getString("Email");
+                String postcode = rs.getString("Postcode");
+
+                account = new Account(accountID, username, email, postcode);
+                System.out.println("AccountHandler::SetAccount:: Set account to " + username);
+            } else {
+                System.out.println("AccountHandler::SetAccount:: Unable to find user");
+            }
+        } catch (SQLException e) {
+            System.out.println("AccountHandler::setAccount:: " + e);
+        }
+    }
+
+    public int getAccountID() {
+        return account.getAccountID();
     }
 
     private byte[] hash(String pass, byte[] salt) {
@@ -125,7 +158,7 @@ public class LoginHandler {
             passHash = factory.generateSecret(spec).getEncoded();
             passHash = Base64.getEncoder().encode(passHash);
         } catch (Exception e) {
-            System.out.println("LoginHandler::hash:: " + e);
+            System.out.println("AccountHandler::hash:: " + e);
         }
         
         return passHash;

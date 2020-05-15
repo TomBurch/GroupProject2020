@@ -6,7 +6,6 @@ import java.util.Formatter;
  * Class representing an item from the Products table
  */
 public class Product {
-    private String productID;
     private String isbn;
     private String title;
     private float price;
@@ -16,8 +15,7 @@ public class Product {
     private String description;
     private int quantity;
 
-    public Product(String productID, String isbn, String title, float price, String author, String publisher, String yearPublished, String description, int quantity) {
-        this.productID = productID;
+    public Product(String isbn, String title, float price, String author, String publisher, String yearPublished, String description, int quantity) {
         this.isbn = isbn;
         this.title = title;
         this.price = price;
@@ -26,10 +24,6 @@ public class Product {
         this.yearPublished = yearPublished;
         this.description = description;
         this.quantity = quantity;
-    }
-
-    public String getProductID() {
-        return this.productID;
     }
 
     public int getQuantity() {
@@ -82,6 +76,6 @@ public class Product {
         }
 
         Product pr = (Product) object;
-        return this.productID.equals(pr.productID);
+        return this.isbn.equals(pr.isbn);
     }
 }

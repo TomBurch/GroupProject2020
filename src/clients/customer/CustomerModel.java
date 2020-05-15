@@ -1,9 +1,10 @@
 package clients.customer;
 
-import handlers.LoginHandler;
+import handlers.AccountHandler;
 import handlers.SavedHandler;
 import handlers.TradeHandler;
 import org.jetbrains.annotations.NotNull;
+import trade.Basket;
 import trade.Product;
 
 import javax.swing.*;
@@ -17,7 +18,7 @@ public class CustomerModel {
     /**Initial GUI panel*/
     private String state = "Login";
 
-    private LoginHandler loginHandler = new LoginHandler();
+    private AccountHandler accountHandler = new AccountHandler();
     private TradeHandler tradeHandler = new TradeHandler();
     private SavedHandler savedHandler = new SavedHandler();
 
@@ -25,7 +26,7 @@ public class CustomerModel {
      * Make a new account and log in
      */
     public void register(String user, String pass, String passConfirm, String postcode, String email) {
-        loginHandler.makeAccount(user, pass, passConfirm, postcode, email);
+        accountHandler.makeAccount(user, pass, passConfirm, postcode, email);
         login(user, pass);
     }
 
@@ -33,8 +34,45 @@ public class CustomerModel {
      * Verify login details and move to Main panel
      */
     public void login(String user, String pass) {
-        if (loginHandler.verifyAccount(user, pass)) {
+        if (accountHandler.verifyAccount(user, pass)) {
+            accountHandler.setAccount(user);
+            Basket savedBasket = savedHandler.getUsersSavedBasket(accountHandler.getAccountID());
+            if (savedBasket != null) {
+                savedHandler.addBasket(savedBasket);
+                setSavedList(savedHandler.getListModel());
+            }
             setState("Main");
+        }
+    }
+
+    /**
+     * Add a product to the Trade basket
+     * @param isbn  ISBN of the product
+     */
+    public void addProductToTrade(String isbn) {
+        Product product = checkProduct(isbn);
+
+        if (product != null) {
+            tradeHandler.addProductToBasket(product);
+            setTradeList(tradeHandler.getListModel());
+            setTradePrice(tradeHandler.getBasketPrice());
+        }
+    }
+
+    /**
+     * Check if a Product with given ISBN exists in Products table
+     * @param isbn  String
+     * @return  Product if it exists, else null
+     */
+    public Product checkProduct(String isbn) {
+        Product product = tradeHandler.getProductFromISBN(isbn);
+
+        if (product != null) {
+            setHomeOutput(product.getDetails());
+            return product;
+        } else {
+            setHomeOutput("Product is not currently required");
+            return null;
         }
     }
 
@@ -47,6 +85,7 @@ public class CustomerModel {
             Product product = savedHandler.getProductFromLineSummary(lineSummary);
             savedHandler.deleteProductFromBasket(product);
         });
+        savedHandler.updateUsersSavedBasket(accountHandler.getAccountID());
         setSavedList(savedHandler.getListModel());
     }
 
@@ -72,6 +111,7 @@ public class CustomerModel {
             savedHandler.addProductToBasket(product);
             tradeHandler.deleteProductFromBasket(product);
         });
+        savedHandler.updateUsersSavedBasket(accountHandler.getAccountID());
         setSavedList(savedHandler.getListModel());
         setTradeList(tradeHandler.getListModel());
         setTradePrice(tradeHandler.getBasketPrice());
@@ -84,7 +124,6 @@ public class CustomerModel {
     public void tradeSelectedValues(@NotNull List<String> selectedValues) {
         selectedValues.forEach(lineSummary -> {
             Product product = savedHandler.getProductFromLineSummary(lineSummary);
-            System.out.println(product);
             tradeHandler.addProductToBasket(product);
             savedHandler.deleteProductFromBasket(product);
         });
@@ -94,11 +133,18 @@ public class CustomerModel {
     }
 
     /**
-     * Get total size of the Trade basket (sum of Product.quantity)
-     * @return  int - Basket size
+     * Attempt to trade the contents of the Trade basket (currently non-functional)
+     * @return String - Success/Fail message for dialog
      */
-    public int getTradeBasketSize() {
-        return tradeHandler.getBasketSize();
+    public String processTrade() {
+        float price = tradeHandler.getBasketPrice();
+        int size = tradeHandler.getBasketSize();
+
+        if (price >= 10 && (size >= 10 && size <= 100)) {
+            return "Trade successful";
+        } else {
+            return "Trade failed\nMust contain between 10 and 100 products worth over £10";
+        }
     }
 
     /**
@@ -106,38 +152,11 @@ public class CustomerModel {
      */
     public void saveBasket() {
         savedHandler.addBasket(tradeHandler.getBasket());
+        savedHandler.updateUsersSavedBasket(accountHandler.getAccountID());
         tradeHandler.clearBasket();
         setTradeList(tradeHandler.getListModel());
         setTradePrice(tradeHandler.getBasketPrice());
         setSavedList(savedHandler.getListModel());
-    }
-
-    //=== To be replaced ===//
-
-    /**
-     * Get total price of the Trade basket (sum of Product.quantity * Product.price)
-     * @return  float - Basket price
-     */
-    public float getBasketPrice() {
-        return tradeHandler.getBasketPrice();
-    }
-
-    /**
-     * Add a product to the Trade basket
-     * @param isbn  ISBN of the product
-     */
-    public void addProductToTrade(String isbn) {
-        Product product = tradeHandler.getProductFromISBN(isbn);
-
-        if (product != null) {
-            tradeHandler.addProductToBasket(product);
-
-            setHomeOutput(product.getDetails());
-            setTradeList(tradeHandler.getListModel());
-            setTradePrice(tradeHandler.getBasketPrice());
-        } else {
-            setHomeOutput("Product is not currently required");
-        }
     }
 
     //=== PropertyChange methods ===//
@@ -148,19 +167,18 @@ public class CustomerModel {
 
     /**
      * Change the active Panel
-     * @param state
+     * @param state String
      */
     public void setState(String state) {
         String oldValue = this.state;
-        String newValue = state;
         this.state = state;
         System.out.println("CustomerModel::setState:: New state: " + state);
-        pcs.firePropertyChange("state", oldValue, newValue);
+        pcs.firePropertyChange("state", oldValue, state);
     }
 
     /**
      * Change the HomePanel output text
-     * @param newValue
+     * @param newValue  String
      */
     public void setHomeOutput(String newValue) {
         pcs.firePropertyChange("homeOutput", null, newValue);
@@ -168,7 +186,7 @@ public class CustomerModel {
 
     /**
      * Change the TradePanel priceLabel text
-     * @param newValue
+     * @param newValue  float
      */
     public void setTradePrice(float newValue) {
         pcs.firePropertyChange("tradePrice", null, newValue);
@@ -176,7 +194,7 @@ public class CustomerModel {
 
     /**
      * Change the TradePanel tradeList contents
-     * @param newValue
+     * @param newValue  DefaultListModel
      */
     public void setTradeList(DefaultListModel newValue) {
         pcs.firePropertyChange("tradeList", null, newValue);
@@ -184,7 +202,7 @@ public class CustomerModel {
 
     /**
      * Changed the SavedPanel savedList contents
-     * @param newValue
+     * @param newValue  DefaultListModel
      */
     public void setSavedList(DefaultListModel newValue) {
         pcs.firePropertyChange("savedList", null, newValue);

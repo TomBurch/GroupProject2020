@@ -5,8 +5,7 @@ import java.sql.*;
 /**
  * DBManager for creating and managing access to the Products table
  */
-public class ProductsManager extends DBManager
-{
+public class ProductsManager extends DBManager {
     @Override
     protected void setup() {
         try {
@@ -22,7 +21,6 @@ public class ProductsManager extends DBManager
 
                PreparedStatement statement = conn.prepareStatement(
                        "CREATE TABLE PRODUCTS ("
-                       + "ProductID int NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
                        + "ISBN varchar(17) NOT NULL,"
                        + "Title varchar(50) NOT NULL,"
                        + "Price decimal(5,2) NOT NULL,"
@@ -30,7 +28,7 @@ public class ProductsManager extends DBManager
                        + "Publisher varchar(15),"
                        + "YearPublished date,"
                        + "Description varchar(100),"
-                       + "PRIMARY KEY (ProductID))");
+                       + "PRIMARY KEY (ISBN))");
                statement.executeUpdate();
 
                Statement s = conn.createStatement();
