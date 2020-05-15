@@ -7,9 +7,6 @@ import java.util.*;
 public class Basket extends ArrayList<Product> {
     private final ProductIDComparator comparator = new ProductIDComparator();
 
-    public Basket() {
-    }
-
     public Product getProductFromISBN(String isbn) {
         return super.stream()
                 .filter(product -> product.getISBN().equals(isbn))

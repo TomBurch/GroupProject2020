@@ -3,26 +3,30 @@ package clients.customer;
 import handlers.LoginHandler;
 import handlers.SavedHandler;
 import handlers.TradeHandler;
+import org.jetbrains.annotations.NotNull;
 import trade.Product;
 
 import javax.swing.*;
 import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
-public class CustomerModel
-{
+public class CustomerModel {
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private String state = "Login";
     private LoginHandler loginHandler = new LoginHandler();
     private TradeHandler tradeHandler = new TradeHandler();
     private SavedHandler savedHandler = new SavedHandler();
-    
-    public boolean verifyAccount(String user, String pass) {
-        return loginHandler.verifyAccount(user, pass);
-    }
-    
-    public void makeAccount(String user, String pass, String passConfirm, String postcode, String email) {
+
+    public void register(String user, String pass, String passConfirm, String postcode, String email) {
         loginHandler.makeAccount(user, pass, passConfirm, postcode, email);
+        login(user, pass);
+    }
+
+    public void login(String user, String pass) {
+        if (loginHandler.verifyAccount(user, pass)) {
+            setState("Main");
+        }
     }
 
     public void addProductToBasket(String isbn) {
@@ -39,23 +43,42 @@ public class CustomerModel
         }
     }
 
-    public void deleteProductFromSaved(Product product) {
-        savedHandler.deleteProductFromBasket(product);
+    public void deleteSavedSelectedValues(@NotNull List<String> selectedValues) {
+        selectedValues.forEach(lineSummary -> {
+            Product product = savedHandler.getProductFromLineSummary(lineSummary);
+            savedHandler.deleteProductFromBasket(product);
+        });
         setSavedList(savedHandler.getListModel());
     }
 
-    public void deleteProductFromTrade(Product product) {
-        tradeHandler.deleteProductFromBasket(product);
+    public void deleteTradeSelectedValues(@NotNull List<String> selectedValues) {
+        selectedValues.forEach(lineSummary -> {
+           Product product = tradeHandler.getProductFromLineSummary(lineSummary);
+           tradeHandler.deleteProductFromBasket(product);
+        });
+        setTradeList(tradeHandler.getListModel());
+    }
+
+    public void saveSelectedValues(@NotNull List<String> selectedValues) {
+        selectedValues.forEach(lineSummary -> {
+            Product product = tradeHandler.getProductFromLineSummary(lineSummary);
+            savedHandler.addProductToBasket(product);
+            tradeHandler.deleteProductFromBasket(product);
+        });
+        setSavedList(savedHandler.getListModel());
         setTradeList(tradeHandler.getListModel());
         setTradePrice(tradeHandler.getBasketPrice());
     }
 
-    public Product getTradeProductFromLineSummary(String lineSummary) {
-        return tradeHandler.getProductFromLineSummary(lineSummary);
-    }
-
-    public Product getSavedProductFromLineSummary(String lineSummary) {
-        return savedHandler.getProductFromLineSummary(lineSummary);
+    public void tradeSelectedValues(@NotNull List<String> selectedValues) {
+        selectedValues.forEach(lineSummary -> {
+            Product product = savedHandler.getProductFromLineSummary(lineSummary);
+            tradeHandler.addProductToBasket(product);
+            savedHandler.deleteProductFromBasket(product);
+        });
+        setTradeList(tradeHandler.getListModel());
+        setTradePrice(tradeHandler.getBasketPrice());
+        setSavedList(savedHandler.getListModel());
     }
 
     public int getBasketSize() {
@@ -72,22 +95,6 @@ public class CustomerModel
         setTradeList(tradeHandler.getListModel());
         setTradePrice(tradeHandler.getBasketPrice());
         setSavedList(savedHandler.getListModel());
-    }
-
-    public void saveProduct(Product product) {
-        savedHandler.addProductToBasket(product);
-        tradeHandler.deleteProductFromBasket(product);
-        setTradeList(tradeHandler.getListModel());
-        setTradePrice(tradeHandler.getBasketPrice());
-        setSavedList(savedHandler.getListModel());
-    }
-
-    public void tradeProduct(Product product) {
-        tradeHandler.addProductToBasket(product);
-        savedHandler.deleteProductFromBasket(product);
-        setSavedList(savedHandler.getListModel());
-        setTradeList(tradeHandler.getListModel());
-        setTradePrice(savedHandler.getBasketPrice());
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {

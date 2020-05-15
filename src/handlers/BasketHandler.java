@@ -5,7 +5,6 @@ import trade.Basket;
 import trade.Product;
 
 import javax.swing.*;
-import java.util.ListIterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,10 +15,7 @@ public class BasketHandler {
     private Pattern isbnPattern = Pattern.compile("\\S+\\s+([0-9-]+)");
 
     public void addBasket(@NotNull Basket newBasket) {
-        ListIterator<Product> iterator = newBasket.listIterator();
-
-        while (iterator.hasNext()) {
-            Product product = iterator.next();
+        for (Product product : newBasket) {
             basket.add(product, product.getQuantity());
         }
         refreshListModel();
@@ -42,9 +38,9 @@ public class BasketHandler {
 
     public void refreshListModel() {
         DefaultListModel newListModel = new DefaultListModel();
-        basket.forEach(product -> {
-            newListModel.addElement(product.getLineSummary());
-        });
+        basket.forEach(product ->
+            newListModel.addElement(product.getLineSummary())
+        );
         listModel = newListModel;
     }
 
@@ -64,5 +60,4 @@ public class BasketHandler {
         }
         return null;
     }
-
 }

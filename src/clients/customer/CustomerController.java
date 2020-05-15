@@ -5,23 +5,18 @@ import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import trade.Product;
 
-public class CustomerController
-{
-    private CustomerModel model = null;
-    private CustomerView view = null;
+public class CustomerController {
+    private CustomerModel model;
+    private CustomerView view;
     
-    public CustomerController(CustomerView view, CustomerModel model)
-    {
+    public CustomerController(CustomerView view, CustomerModel model) {
         this.view = view;
         this.model = model;
     }
 
     public void login_loginButtonClicked(String user, String pass) {
         System.out.println("CustomerController:: LoginPanel::loginButton clicked");
-
-        if (model.verifyAccount(user, pass)) {
-            model.setState("Main");
-        }
+        model.login(user, pass);
     }
 
     public void login_registerButtonClicked() {
@@ -31,11 +26,7 @@ public class CustomerController
 
     public void register_confirmButtonClicked(String user, String pass, String passConfirm, String postcode, String email) {
         System.out.println("CustomerController:: RegisterPanel::confirmButton clicked");
-
-        model.makeAccount(user, pass, passConfirm, postcode, email);
-        if (model.verifyAccount(user, pass)) {
-            model.setState("Main");
-        }
+        model.register(user, pass, passConfirm, postcode, email);
     }
 
     public void register_cancelButtonClicked() {
@@ -67,33 +58,21 @@ public class CustomerController
 
     public void trade_savePopupClicked(@NotNull List<String> selectedValues) {
         System.out.println("CustomerController:: TradePanel::savePopup clicked");
-        selectedValues.forEach(lineSummary -> {
-            Product product = model.getTradeProductFromLineSummary(lineSummary);
-            model.saveProduct(product);
-        });
+        model.tradeSelectedValues(selectedValues);
     }
 
     public void trade_deletePopupClicked(@NotNull List<String> selectedValues) {
         System.out.println("CustomerController:: TradePanel::deletePopup clicked");
-        selectedValues.forEach(lineSummary -> {
-           Product product = model.getTradeProductFromLineSummary(lineSummary);
-           model.deleteProductFromTrade(product);
-        });
+        model.deleteTradeSelectedValues(selectedValues);
     }
 
     public void saved_tradePopupClicked(@NotNull List<String> selectedValues) {
         System.out.println("CustomerController:: SavedPanel::tradePopup clicked");
-        selectedValues.forEach(lineSummary -> {
-            Product product = model.getSavedProductFromLineSummary(lineSummary);
-            model.tradeProduct(product);
-        });
+        model.saveSelectedValues(selectedValues);
     }
 
     public void saved_deletePopupClicked(@NotNull List<String> selectedValues) {
         System.out.println("CustomerController:: SavedPanel::deletePopup clicked");
-        selectedValues.forEach(lineSummary -> {
-            Product product = model.getSavedProductFromLineSummary(lineSummary);
-            model.deleteProductFromSaved(product);
-        });
+        model.deleteSavedSelectedValues(selectedValues);
     }
 }
