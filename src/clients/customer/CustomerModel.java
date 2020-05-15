@@ -1,6 +1,6 @@
 package clients.customer;
 
-import handlers.LoginHandler;
+import handlers.AccountHandler;
 import handlers.SavedHandler;
 import handlers.TradeHandler;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +17,7 @@ public class CustomerModel {
     /**Initial GUI panel*/
     private String state = "Login";
 
-    private LoginHandler loginHandler = new LoginHandler();
+    private AccountHandler accountHandler = new AccountHandler();
     private TradeHandler tradeHandler = new TradeHandler();
     private SavedHandler savedHandler = new SavedHandler();
 
@@ -25,7 +25,7 @@ public class CustomerModel {
      * Make a new account and log in
      */
     public void register(String user, String pass, String passConfirm, String postcode, String email) {
-        loginHandler.makeAccount(user, pass, passConfirm, postcode, email);
+        accountHandler.makeAccount(user, pass, passConfirm, postcode, email);
         login(user, pass);
     }
 
@@ -33,7 +33,7 @@ public class CustomerModel {
      * Verify login details and move to Main panel
      */
     public void login(String user, String pass) {
-        if (loginHandler.verifyAccount(user, pass)) {
+        if (accountHandler.verifyAccount(user, pass)) {
             setState("Main");
         }
     }
