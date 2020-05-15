@@ -54,7 +54,7 @@ public class CustomerModel {
 
     /**
      * Check if a Product with given ISBN exists in Products table
-     * @param isbn
+     * @param isbn  String
      * @return  Product if it exists, else null
      */
     public Product checkProduct(String isbn) {
@@ -160,19 +160,18 @@ public class CustomerModel {
 
     /**
      * Change the active Panel
-     * @param state
+     * @param state String
      */
     public void setState(String state) {
         String oldValue = this.state;
-        String newValue = state;
         this.state = state;
         System.out.println("CustomerModel::setState:: New state: " + state);
-        pcs.firePropertyChange("state", oldValue, newValue);
+        pcs.firePropertyChange("state", oldValue, state);
     }
 
     /**
      * Change the HomePanel output text
-     * @param newValue
+     * @param newValue  String
      */
     public void setHomeOutput(String newValue) {
         pcs.firePropertyChange("homeOutput", null, newValue);
@@ -180,7 +179,7 @@ public class CustomerModel {
 
     /**
      * Change the TradePanel priceLabel text
-     * @param newValue
+     * @param newValue  float
      */
     public void setTradePrice(float newValue) {
         pcs.firePropertyChange("tradePrice", null, newValue);
@@ -188,7 +187,7 @@ public class CustomerModel {
 
     /**
      * Change the TradePanel tradeList contents
-     * @param newValue
+     * @param newValue  DefaultListModel
      */
     public void setTradeList(DefaultListModel newValue) {
         pcs.firePropertyChange("tradeList", null, newValue);
@@ -196,7 +195,7 @@ public class CustomerModel {
 
     /**
      * Changed the SavedPanel savedList contents
-     * @param newValue
+     * @param newValue  DefaultListModel
      */
     public void setSavedList(DefaultListModel newValue) {
         pcs.firePropertyChange("savedList", null, newValue);
