@@ -51,16 +51,9 @@ public class CustomerController {
 
     //=== Trade Panel ===//
 
-    public void trade_tradeButtonClicked() {
+    public String trade_tradeButtonClicked() {
         System.out.println("CustomerController:: TradePanel::tradeButton clicked");
-        float price = model.getBasketPrice();
-        int size = model.getTradeBasketSize();
-
-        if (price >= 10 && (size >= 10 && size <= 100)) {
-            System.out.println("Trade allowed");
-        } else {
-            System.out.println("Trade not allowed");
-        }
+        return model.processTrade();
     }
 
     public void trade_saveButtonClicked() {

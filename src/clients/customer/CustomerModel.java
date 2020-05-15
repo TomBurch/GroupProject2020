@@ -124,6 +124,21 @@ public class CustomerModel {
     }
 
     /**
+     * Attempt to trade the contents of the Trade basket (currently non-functional)
+     * @return String - Success/Fail message for dialog
+     */
+    public String processTrade() {
+        float price = tradeHandler.getBasketPrice();
+        int size = tradeHandler.getBasketSize();
+
+        if (price >= 10 && (size >= 10 && size <= 100)) {
+            return "Trade successful";
+        } else {
+            return "Trade failed\nMust contain between 10 and 100 products worth over £10";
+        }
+    }
+
+    /**
      * Move all products in the Trade basket to the Saved basket
      */
     public void saveBasket() {
@@ -132,24 +147,6 @@ public class CustomerModel {
         setTradeList(tradeHandler.getListModel());
         setTradePrice(tradeHandler.getBasketPrice());
         setSavedList(savedHandler.getListModel());
-    }
-
-    //=== To be replaced ===//
-
-    /**
-     * Get total price of the Trade basket (sum of Product.quantity * Product.price)
-     * @return  float - Basket price
-     */
-    public float getBasketPrice() {
-        return tradeHandler.getBasketPrice();
-    }
-
-    /**
-     * Get total size of the Trade basket (sum of Product.quantity)
-     * @return  int - Basket size
-     */
-    public int getTradeBasketSize() {
-        return tradeHandler.getBasketSize();
     }
 
     //=== PropertyChange methods ===//

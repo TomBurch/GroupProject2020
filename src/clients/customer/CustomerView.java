@@ -502,9 +502,10 @@ public class CustomerView implements PropertyChangeListener {
             tradeButton.setFont(new Font("sansserif", Font.PLAIN,12));
             tradeButton.setText("Confirm Trade");
             tradeButton.setVisible(true);
-            tradeButton.addActionListener(
-                    e -> controller.trade_tradeButtonClicked()
-            );
+            tradeButton.addActionListener(e -> {
+                String result = controller.trade_tradeButtonClicked();
+                JOptionPane.showMessageDialog(contentPane, result);
+            });
 
             saveButton = new JButton();
             saveButton.setBounds(30,245,160,35);
