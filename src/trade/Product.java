@@ -2,6 +2,9 @@ package trade;
 
 import java.util.Formatter;
 
+/**
+ * Class representing an item from the Products table
+ */
 public class Product {
     private String productID;
     private String isbn;
@@ -33,14 +36,18 @@ public class Product {
         return this.quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
     public float getPrice() { return this.price; }
 
     public String getISBN() { return this.isbn; }
 
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    /**
+     * Get a multiline description of the Product - used in HomePanel output
+     * @return  String
+     */
     public String getDetails() {
         StringBuilder sb = new StringBuilder(256);
         Formatter fr = new Formatter(sb);
@@ -56,6 +63,10 @@ public class Product {
         return sb.toString();
     }
 
+    /**
+     * Get a single-line summary of the Product - used in JLists
+     * @return  String
+     */
     public String getLineSummary() {
         return String.format("%sx  %s    £%5.2f    %s    %s", this.quantity, this.isbn, (this.price * this.quantity), this.title, this.author);
     }
@@ -71,7 +82,6 @@ public class Product {
         }
 
         Product pr = (Product) object;
-
         return this.productID.equals(pr.productID);
     }
 }

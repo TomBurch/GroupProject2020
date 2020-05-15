@@ -10,8 +10,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
 public class CustomerView implements PropertyChangeListener {
-    private CustomerController controller = null;
-    
+    private CustomerController controller;
+
     private JPanel mainPanel = new JPanel();
     private JTabbedPane tabbedPane = new JTabbedPane();
     private CardLayout cardLayout = new CardLayout();
@@ -23,8 +23,6 @@ public class CustomerView implements PropertyChangeListener {
     private JPanel tradePanel;
     private JPanel savedPanel;
     private JPanel historyPanel;
-    
-    private static final String IMAGE = "cog.jpg";
     
     public CustomerView() {
         loginPanel = new LoginPanel();
@@ -49,7 +47,7 @@ public class CustomerView implements PropertyChangeListener {
         } catch (Exception e) {
             System.out.println("CustomerView::Constructor:: " + e);
         }
-        
+
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(cardPanel, BorderLayout.CENTER);
 
@@ -73,7 +71,7 @@ public class CustomerView implements PropertyChangeListener {
                 cardLayout.show(cardPanel, (String) event.getNewValue());
                 break;
 
-            case "output":
+            case "homeOutput":
                 JTextArea output = (JTextArea) homePanel.getClientProperty("output");
                 output.setText((String) event.getNewValue());
                 break;
@@ -84,17 +82,20 @@ public class CustomerView implements PropertyChangeListener {
                 break;
 
             case "tradeList":
-                JList<String> tradeList = (JList<String>) tradePanel.getClientProperty("tradeList");
+                JList<?> tradeList = (JList<?>) tradePanel.getClientProperty("tradeList");
                 tradeList.setModel((DefaultListModel) event.getNewValue());
                 break;
 
             case "savedList":
-                JList<String> savedList = (JList<String>) savedPanel.getClientProperty("savedList");
+                JList<?> savedList = (JList<?>) savedPanel.getClientProperty("savedList");
                 savedList.setModel((DefaultListModel) event.getNewValue());
                 break;
         }
     }
-    
+
+    /**
+     * Panel for logging in to an existing account
+     */
     public class LoginPanel extends JPanel {
         private JLabel title;
         private JTextField userEntry;
@@ -117,7 +118,7 @@ public class CustomerView implements PropertyChangeListener {
             title.setBackground(new Color(214,217,223));
             title.setForeground(new Color(0,0,0));
             title.setEnabled(true);
-            title.setFont(new Font("sansserif",0,12));
+            title.setFont(new Font("sansserif", Font.PLAIN,12));
             title.setText("Login or Register");
             title.setVisible(true);
     
@@ -126,7 +127,7 @@ public class CustomerView implements PropertyChangeListener {
             userEntry.setBackground(new Color(255,255,255));
             userEntry.setForeground(new Color(0,0,0));
             userEntry.setEnabled(true);
-            userEntry.setFont(new Font("sansserif",0,12));
+            userEntry.setFont(new Font("sansserif", Font.PLAIN,12));
             userEntry.setText("");
             userEntry.setVisible(true);
     
@@ -135,7 +136,7 @@ public class CustomerView implements PropertyChangeListener {
             userLabel.setBackground(new Color(214,217,223));
             userLabel.setForeground(new Color(0,0,0));
             userLabel.setEnabled(true);
-            userLabel.setFont(new Font("sansserif",0,12));
+            userLabel.setFont(new Font("sansserif", Font.PLAIN,12));
             userLabel.setText("Username: ");
             userLabel.setVisible(true);
 
@@ -144,7 +145,7 @@ public class CustomerView implements PropertyChangeListener {
             passEntry.setBackground(new Color(255,255,255));
             passEntry.setForeground(new Color(0,0,0));
             passEntry.setEnabled(true);
-            passEntry.setFont(new Font("sansserif",0,12));
+            passEntry.setFont(new Font("sansserif", Font.PLAIN,12));
             passEntry.setVisible(true);
 
             passLabel = new JLabel();
@@ -152,7 +153,7 @@ public class CustomerView implements PropertyChangeListener {
             passLabel.setBackground(new Color(214,217,223));
             passLabel.setForeground(new Color(0,0,0));
             passLabel.setEnabled(true);
-            passLabel.setFont(new Font("sansserif",0,12));
+            passLabel.setFont(new Font("sansserif", Font.PLAIN,12));
             passLabel.setText("Password:");
             passLabel.setVisible(true);
 
@@ -161,7 +162,7 @@ public class CustomerView implements PropertyChangeListener {
             loginButton.setBackground(new Color(214,217,223));
             loginButton.setForeground(new Color(0,0,0));
             loginButton.setEnabled(true);
-            loginButton.setFont(new Font("sansserif",0,12));
+            loginButton.setFont(new Font("sansserif", Font.PLAIN,12));
             loginButton.setText("Login");
             loginButton.setVisible(true);
             loginButton.addActionListener(
@@ -176,7 +177,7 @@ public class CustomerView implements PropertyChangeListener {
             registerButton.setBackground(new Color(214,217,223));
             registerButton.setForeground(new Color(0,0,0));
             registerButton.setEnabled(true);
-            registerButton.setFont(new Font("sansserif",0,12));
+            registerButton.setFont(new Font("sansserif", Font.PLAIN,12));
             registerButton.setText("Register");
             registerButton.setVisible(true);
             registerButton.addActionListener(
@@ -195,8 +196,11 @@ public class CustomerView implements PropertyChangeListener {
             this.add(contentPane);
             this.setVisible(true);
         }  
-    }  
-    
+    }
+
+    /**
+     * Panel for registering a new account
+     */
     public class RegisterPanel extends JPanel{
         private JButton confirmButton;
         private JButton cancelButton;
@@ -224,7 +228,7 @@ public class CustomerView implements PropertyChangeListener {
             title.setBackground(new Color(214,217,223));
             title.setForeground(new Color(0,0,0));
             title.setEnabled(true);
-            title.setFont(new Font("sansserif",0,12));
+            title.setFont(new Font("sansserif", Font.PLAIN,12));
             title.setText("Register a new account");
             title.setVisible(true);
 
@@ -233,7 +237,7 @@ public class CustomerView implements PropertyChangeListener {
             userEntry.setBackground(new Color(255,255,255));
             userEntry.setForeground(new Color(0,0,0));
             userEntry.setEnabled(true);
-            userEntry.setFont(new Font("sansserif",0,12));
+            userEntry.setFont(new Font("sansserif", Font.PLAIN,12));
             userEntry.setText("");
             userEntry.setVisible(true);
 
@@ -242,7 +246,7 @@ public class CustomerView implements PropertyChangeListener {
             userLabel.setBackground(new Color(214,217,223));
             userLabel.setForeground(new Color(0,0,0));
             userLabel.setEnabled(true);
-            userLabel.setFont(new Font("sansserif",0,12));
+            userLabel.setFont(new Font("sansserif", Font.PLAIN,12));
             userLabel.setText("Username: ");
             userLabel.setVisible(true);
 
@@ -251,7 +255,7 @@ public class CustomerView implements PropertyChangeListener {
             passEntry.setBackground(new Color(255,255,255));
             passEntry.setForeground(new Color(0,0,0));
             passEntry.setEnabled(true);
-            passEntry.setFont(new Font("sansserif",0,12));
+            passEntry.setFont(new Font("sansserif", Font.PLAIN,12));
             passEntry.setVisible(true);
 
             passLabel = new JLabel();
@@ -259,7 +263,7 @@ public class CustomerView implements PropertyChangeListener {
             passLabel.setBackground(new Color(214,217,223));
             passLabel.setForeground(new Color(0,0,0));
             passLabel.setEnabled(true);
-            passLabel.setFont(new Font("sansserif",0,12));
+            passLabel.setFont(new Font("sansserif", Font.PLAIN,12));
             passLabel.setText("Password:");
             passLabel.setVisible(true);
 
@@ -268,7 +272,7 @@ public class CustomerView implements PropertyChangeListener {
             passConfirmEntry.setBackground(new Color(255,255,255));
             passConfirmEntry.setForeground(new Color(0,0,0));
             passConfirmEntry.setEnabled(true);
-            passConfirmEntry.setFont(new Font("sansserif",0,12));
+            passConfirmEntry.setFont(new Font("sansserif", Font.PLAIN,12));
             passConfirmEntry.setVisible(true);
 
             passConfirmLabel = new JLabel();
@@ -276,7 +280,7 @@ public class CustomerView implements PropertyChangeListener {
             passConfirmLabel.setBackground(new Color(214,217,223));
             passConfirmLabel.setForeground(new Color(0,0,0));
             passConfirmLabel.setEnabled(true);
-            passConfirmLabel.setFont(new Font("sansserif",0,12));
+            passConfirmLabel.setFont(new Font("sansserif", Font.PLAIN,12));
             passConfirmLabel.setText("Confirm Password:");
             passConfirmLabel.setVisible(true);
 
@@ -285,7 +289,7 @@ public class CustomerView implements PropertyChangeListener {
             postcodeEntry.setBackground(new Color(255,255,255));
             postcodeEntry.setForeground(new Color(0,0,0));
             postcodeEntry.setEnabled(true);
-            postcodeEntry.setFont(new Font("sansserif",0,12));
+            postcodeEntry.setFont(new Font("sansserif", Font.PLAIN,12));
             postcodeEntry.setVisible(true);
 
             postcodeLabel = new JLabel();
@@ -293,7 +297,7 @@ public class CustomerView implements PropertyChangeListener {
             postcodeLabel.setBackground(new Color(214,217,223));
             postcodeLabel.setForeground(new Color(0,0,0));
             postcodeLabel.setEnabled(true);
-            postcodeLabel.setFont(new Font("sansserif",0,12));
+            postcodeLabel.setFont(new Font("sansserif", Font.PLAIN,12));
             postcodeLabel.setText("Postcode:");
             postcodeLabel.setVisible(true);
 
@@ -302,7 +306,7 @@ public class CustomerView implements PropertyChangeListener {
             emailEntry.setBackground(new Color(255,255,255));
             emailEntry.setForeground(new Color(0,0,0));
             emailEntry.setEnabled(true);
-            emailEntry.setFont(new Font("sansserif",0,12));
+            emailEntry.setFont(new Font("sansserif", Font.PLAIN,12));
             emailEntry.setVisible(true);
 
             emailLabel = new JLabel();
@@ -310,7 +314,7 @@ public class CustomerView implements PropertyChangeListener {
             emailLabel.setBackground(new Color(214,217,223));
             emailLabel.setForeground(new Color(0,0,0));
             emailLabel.setEnabled(true);
-            emailLabel.setFont(new Font("sansserif",0,12));
+            emailLabel.setFont(new Font("sansserif", Font.PLAIN,12));
             emailLabel.setText("E-Mail:");
             emailLabel.setVisible(true);
 
@@ -319,7 +323,7 @@ public class CustomerView implements PropertyChangeListener {
             confirmButton.setBackground(new Color(214,217,223));
             confirmButton.setForeground(new Color(0,0,0));
             confirmButton.setEnabled(true);
-            confirmButton.setFont(new Font("sansserif",0,12));
+            confirmButton.setFont(new Font("sansserif", Font.PLAIN,12));
             confirmButton.setText("Confirm");
             confirmButton.setVisible(true);
             confirmButton.addActionListener(
@@ -337,7 +341,7 @@ public class CustomerView implements PropertyChangeListener {
             cancelButton.setBackground(new Color(214,217,223));
             cancelButton.setForeground(new Color(0,0,0));
             cancelButton.setEnabled(true);
-            cancelButton.setFont(new Font("sansserif",0,12));
+            cancelButton.setFont(new Font("sansserif", Font.PLAIN,12));
             cancelButton.setText("Cancel");
             cancelButton.setVisible(true);
             cancelButton.addActionListener(
@@ -363,6 +367,9 @@ public class CustomerView implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Panel for entering ISBNs to view products, and adding them to the Trade basket
+     */
     public class HomePanel extends JPanel {
         private JButton submitButton;
         private JTextField isbnEntry;
@@ -383,7 +390,7 @@ public class CustomerView implements PropertyChangeListener {
             submitButton.setBackground(new Color(214,217,223));
             submitButton.setForeground(new Color(0,0,0));
             submitButton.setEnabled(true);
-            submitButton.setFont(new Font("sansserif",0,12));
+            submitButton.setFont(new Font("sansserif", Font.PLAIN,12));
             submitButton.setText("Submit");
             submitButton.setVisible(true);
             submitButton.addActionListener(
@@ -395,7 +402,7 @@ public class CustomerView implements PropertyChangeListener {
             isbnEntry.setBackground(new Color(255,255,255));
             isbnEntry.setForeground(new Color(0,0,0));
             isbnEntry.setEnabled(true);
-            isbnEntry.setFont(new Font("sansserif",0,12));
+            isbnEntry.setFont(new Font("sansserif", Font.PLAIN,12));
             isbnEntry.setText("");
             isbnEntry.setVisible(true);
     
@@ -404,7 +411,7 @@ public class CustomerView implements PropertyChangeListener {
             isbnLabel.setBackground(new Color(214,217,223));
             isbnLabel.setForeground(new Color(0,0,0));
             isbnLabel.setEnabled(true);
-            isbnLabel.setFont(new Font("sansserif",0,12));
+            isbnLabel.setFont(new Font("sansserif", Font.PLAIN,12));
             isbnLabel.setText("Enter ISBN: ");
             isbnLabel.setVisible(true);
     
@@ -413,7 +420,7 @@ public class CustomerView implements PropertyChangeListener {
             output.setBackground(new Color(255,255,255));
             output.setForeground(new Color(0,0,0));
             output.setEnabled(true);
-            output.setFont(new Font("sansserif",0,12));
+            output.setFont(new Font("sansserif", Font.PLAIN,12));
             output.setText("");
             output.setVisible(true);
             this.putClientProperty("output", output);
@@ -429,7 +436,10 @@ public class CustomerView implements PropertyChangeListener {
             this.setVisible(true);
         }
     }
-    
+
+    /**
+     * Panel for viewing the Trade basket
+     */
     public class TradePanel extends JPanel {
         private JList<String> tradeList;
         private JScrollPane scrollPane;
@@ -443,18 +453,17 @@ public class CustomerView implements PropertyChangeListener {
 
         public TradePanel() {
             this.setSize(400,300);
-    
-            //pane with null layout
+
             JPanel contentPane = new JPanel(null);
             contentPane.setPreferredSize(new Dimension(400,300));
             contentPane.setBackground(new Color(192,192,192));
 
-            tradeList = new JList<String>();
+            tradeList = new JList<>();
             tradeList.setBounds(50, 25, 300, 150);
             tradeList.setBackground(new Color(255,255,255));
             tradeList.setForeground(new Color(0,0,0));
             tradeList.setEnabled(true);
-            tradeList.setFont(new Font("sansserif",0,12));
+            tradeList.setFont(new Font("sansserif", Font.PLAIN,12));
             tradeList.setVisible(true);
             this.putClientProperty("tradeList", tradeList);
 
@@ -467,7 +476,7 @@ public class CustomerView implements PropertyChangeListener {
             priceLabel.setBackground(new Color(214,217,223));
             priceLabel.setForeground(new Color(0,0,0));
             priceLabel.setEnabled(true);
-            priceLabel.setFont(new Font("sansserif",0,12));
+            priceLabel.setFont(new Font("sansserif", Font.PLAIN,12));
             priceLabel.setText("Total Price: £0.00");
             priceLabel.setVisible(true);
             this.putClientProperty("priceLabel", priceLabel);
@@ -477,7 +486,7 @@ public class CustomerView implements PropertyChangeListener {
             tradeButton.setBackground(new Color(214,217,223));
             tradeButton.setForeground(new Color(0,0,0));
             tradeButton.setEnabled(true);
-            tradeButton.setFont(new Font("sansserif",0,12));
+            tradeButton.setFont(new Font("sansserif", Font.PLAIN,12));
             tradeButton.setText("Confirm Trade");
             tradeButton.setVisible(true);
             tradeButton.addActionListener(
@@ -489,7 +498,7 @@ public class CustomerView implements PropertyChangeListener {
             saveButton.setBackground(new Color(214,217,223));
             saveButton.setForeground(new Color(0,0,0));
             saveButton.setEnabled(true);
-            saveButton.setFont(new Font("sansserif",0,12));
+            saveButton.setFont(new Font("sansserif", Font.PLAIN,12));
             saveButton.setText("Save For Later");
             saveButton.setVisible(true);
             saveButton.addActionListener(
@@ -520,16 +529,22 @@ public class CustomerView implements PropertyChangeListener {
             contentPane.add(priceLabel);
             contentPane.add(tradeButton);
             contentPane.add(saveButton);
-    
-            //adding panel to JFrame and seting of window position and close operation
+
             this.add(contentPane);
             this.setVisible(true);
         }
     }
-    
+
+    /**
+     * Panel for viewing the Saved basket
+     */
     public class SavedPanel extends JPanel {
         private JList<String> savedList;
         private JScrollPane scrollPane;
+
+        private JPopupMenu popupMenu;
+        private JMenuItem tradePopup;
+        private JMenuItem deletePopup;
 
         public SavedPanel() {
             this.setSize(400,300);
@@ -538,12 +553,12 @@ public class CustomerView implements PropertyChangeListener {
             contentPane.setPreferredSize(new Dimension(400,300));
             contentPane.setBackground(new Color(192,192,192));
 
-            savedList = new JList<String>();
+            savedList = new JList<>();
             savedList.setBounds(50, 25, 300, 150);
             savedList.setBackground(new Color(255,255,255));
             savedList.setForeground(new Color(0,0,0));
             savedList.setEnabled(true);
-            savedList.setFont(new Font("sansserif",0,12));
+            savedList.setFont(new Font("sansserif", Font.PLAIN,12));
             savedList.setVisible(true);
             this.putClientProperty("savedList", savedList);
 
@@ -551,14 +566,37 @@ public class CustomerView implements PropertyChangeListener {
             scrollPane.setBounds(50, 25, 300, 150);
             scrollPane.getViewport().add(savedList);
 
+            popupMenu = new JPopupMenu("Saved");
+
+            tradePopup = new JMenuItem("Add to trade");
+            tradePopup.addActionListener(
+                    e -> controller.saved_tradePopupClicked(
+                            savedList.getSelectedValuesList()
+                    )
+            );
+
+            deletePopup = new JMenuItem("Delete");
+            deletePopup.addActionListener(
+                    e -> controller.saved_deletePopupClicked(
+                            savedList.getSelectedValuesList()
+                    )
+            );
+
+            popupMenu.add(tradePopup);
+            popupMenu.add(deletePopup);
+            savedList.setComponentPopupMenu(popupMenu);
+            contentPane.setComponentPopupMenu(popupMenu);
+
             contentPane.add(scrollPane);
-    
-            //adding panel to JFrame and setting of window position and close operation
+
             this.add(contentPane);
             this.setVisible(true);
         }
     }
-    
+
+    /**
+     * Panel for viewing the Trade history (to be made)
+     */
     public class HistoryPanel extends JPanel {
         private JLabel label;
         public HistoryPanel() {
@@ -574,7 +612,7 @@ public class CustomerView implements PropertyChangeListener {
             label.setBackground(new Color(214,217,223));
             label.setForeground(new Color(0,0,0));
             label.setEnabled(true);
-            label.setFont(new Font("sansserif",0,12));
+            label.setFont(new Font("sansserif", Font.PLAIN,12));
             label.setText("History");
             label.setVisible(true);
             
@@ -585,13 +623,15 @@ public class CustomerView implements PropertyChangeListener {
             this.setVisible(true);        
         }
     }
-    
+
+    /**
+     * Panel for viewing and editing account details (to be made)
+     */
     public class AccountPanel extends JPanel {
         private JLabel label;
         public AccountPanel() {
             this.setSize(400,300);
-    
-            //pane with null layout
+
             JPanel contentPane = new JPanel(null);
             contentPane.setPreferredSize(new Dimension(400,300));
             contentPane.setBackground(new Color(192,192,192));            
@@ -601,7 +641,7 @@ public class CustomerView implements PropertyChangeListener {
             label.setBackground(new Color(214,217,223));
             label.setForeground(new Color(0,0,0));
             label.setEnabled(true);
-            label.setFont(new Font("sansserif",0,12));
+            label.setFont(new Font("sansserif", Font.PLAIN,12));
             label.setText("Account");
             label.setVisible(true);
             

@@ -7,14 +7,19 @@ import java.sql.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Modified BasketHandler for handling the Trade basket
+ */
 public class TradeHandler extends BasketHandler {
+    /**Manages access to the Products table*/
     private ProductsManager prodManager = new ProductsManager();
 
+    /**Regex pattern for verifying ISBNs (10 and 13 digits) */
     private final Pattern regexISBN = Pattern.compile("^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$");
-    
-    public TradeHandler() {      
-    }
-    
+
+    /**
+     * @return  Product or null
+     */
     public Product getProductFromISBN(String isbn) {
         if (!validateISBN(isbn)) {
             System.out.println("TradeHandler::getProduct:: Invalid ISBN number");
@@ -47,8 +52,13 @@ public class TradeHandler extends BasketHandler {
         return null;
     }
 
-    public boolean validateISBN(String ISBN) {
-        Matcher matcher = regexISBN.matcher(ISBN);
+    /**
+     * Validate the given String against the ISBN regex pattern
+     * @param isbn  String
+     * @return  True if matches pattern, else False
+     */
+    public boolean validateISBN(String isbn) {
+        Matcher matcher = regexISBN.matcher(isbn);
         return matcher.matches();
     }
 }

@@ -4,12 +4,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+/**
+ * ArrayList of Products
+ */
 public class Basket extends ArrayList<Product> {
+    /**Comparator used to sort the Basket*/
     private final ProductIDComparator comparator = new ProductIDComparator();
 
-    public Basket() {
-    }
-
+    /**
+     * Search the Basket for a Product with the given ISBN
+     * @param isbn  String
+     * @return  Product or null
+     */
     public Product getProductFromISBN(String isbn) {
         return super.stream()
                 .filter(product -> product.getISBN().equals(isbn))
@@ -17,10 +23,18 @@ public class Basket extends ArrayList<Product> {
                 .orElse(null);
     }
 
+    /**
+     * Get the total size of the Basket (sum of Product.quantity)
+     * @return  int
+     */
     public int getTotalSize() {
         return super.stream().mapToInt(Product::getQuantity).sum();
     }
 
+    /**
+     * Get the total price of the Basket (sum of Product.quantity * Product.price)
+     * @return  float
+     */
     public float getTotalPrice() {
         float price = 0;
         ListIterator<Product> iterator = super.listIterator();
@@ -34,13 +48,18 @@ public class Basket extends ArrayList<Product> {
         return price;
     }
 
+    /**
+     * Add the given quantity of the Product to the Basket
+     * @param product   Product
+     * @param quantity  int
+     */
     public void add(Product product, int quantity) {
         int i = super.indexOf(product);
 
-        if (i != -1) {
+        if (i != -1) {  // Product already in Basket, just change its quantity
             Product existingProduct = super.get(i);
             existingProduct.setQuantity(existingProduct.getQuantity() + quantity);
-        } else {
+        } else {  // Product not in Basket, add it and sort
             super.add(product);
             super.sort(comparator);
         }
@@ -63,6 +82,9 @@ public class Basket extends ArrayList<Product> {
         return result;
     }
 
+    /**
+     * Comparator for sorting the Basket by ProductID
+     */
     static class ProductIDComparator implements Comparator<Product> {
         public int compare(@NotNull Product p1, @NotNull Product p2) {
             String p1ID = p1.getProductID();
