@@ -2,21 +2,13 @@ package DBAccess;
 
 import java.sql.*;
 
+/**
+ * DBManager for creating and managing access to the Accounts table
+ */
 public class AccountsManager extends DBManager
 {
-    public AccountsManager() {
-       setup();
-    }
-    
     @Override
     protected void setup() {
-        //try {
-        //    PreparedStatement dropState = conn.prepareStatement("DROP TABLE ACCOUNTS");
-        //    dropState.executeUpdate();
-        //} catch (SQLException e) {
-        //    System.out.println("AccountsManager::Setup:: " + e);
-        //}
-
         try {
             if (!checkTable("ACCOUNTS")) {
                System.out.println("AccountsManager::Setup:: Table accounts doesn't exist");

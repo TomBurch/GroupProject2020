@@ -1,10 +1,11 @@
 package clients.customer;
 
+/**
+ * Standalone Customer client
+ */
 public class CustomerClient {
-    public CustomerClient() {
-    }
 
-    public static void Main(String[] args) {
+    public static void main(String[] args) {
         createCustomerGUI();
     }
 

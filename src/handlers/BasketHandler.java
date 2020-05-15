@@ -8,12 +8,19 @@ import javax.swing.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Class for handling management of a Basket
+ */
 public class BasketHandler {
     private Basket basket = new Basket();
+    /**List of Product line summaries, used in JLists*/
     private DefaultListModel listModel = new DefaultListModel();
-
+    /**Pattern used to extract ISBN from Product line summaries*/
     private Pattern isbnPattern = Pattern.compile("\\S+\\s+([0-9-]+)");
 
+    /**
+     * Copy all Products from given Basket into this Basket
+     */
     public void addBasket(@NotNull Basket newBasket) {
         for (Product product : newBasket) {
             basket.add(product, product.getQuantity());
@@ -36,6 +43,9 @@ public class BasketHandler {
         refreshListModel();
     }
 
+    /**
+     * Remake the listModel, used when Basket has been updated
+     */
     public void refreshListModel() {
         DefaultListModel newListModel = new DefaultListModel();
         basket.forEach(product ->
@@ -44,14 +54,23 @@ public class BasketHandler {
         listModel = newListModel;
     }
 
+    public Basket getBasket() { return basket; }
+
+    /**
+     * Get total size of the basket (sum of Product.quantity)
+     */
     public int getBasketSize() { return basket.getTotalSize(); }
 
+    /**
+     * Get total price of the basket (sum of Product.quantity * Product.price)
+     */
     public float getBasketPrice() { return basket.getTotalPrice(); }
-
-    public Basket getBasket() { return basket; }
 
     public DefaultListModel getListModel() { return listModel; }
 
+    /**
+     * @return  Product or null
+     */
     public Product getProductFromLineSummary(String lineSummary) {
         Matcher matcher = isbnPattern.matcher(lineSummary);
         if (matcher.find()) {

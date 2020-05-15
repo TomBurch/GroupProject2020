@@ -10,8 +10,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 
 public class CustomerView implements PropertyChangeListener {
-    private CustomerController controller = null;
-    
+    private CustomerController controller;
+
     private JPanel mainPanel = new JPanel();
     private JTabbedPane tabbedPane = new JTabbedPane();
     private CardLayout cardLayout = new CardLayout();
@@ -47,7 +47,7 @@ public class CustomerView implements PropertyChangeListener {
         } catch (Exception e) {
             System.out.println("CustomerView::Constructor:: " + e);
         }
-        
+
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(cardPanel, BorderLayout.CENTER);
 
@@ -71,7 +71,7 @@ public class CustomerView implements PropertyChangeListener {
                 cardLayout.show(cardPanel, (String) event.getNewValue());
                 break;
 
-            case "output":
+            case "homeOutput":
                 JTextArea output = (JTextArea) homePanel.getClientProperty("output");
                 output.setText((String) event.getNewValue());
                 break;
@@ -92,7 +92,10 @@ public class CustomerView implements PropertyChangeListener {
                 break;
         }
     }
-    
+
+    /**
+     * Panel for logging in to an existing account
+     */
     public class LoginPanel extends JPanel {
         private JLabel title;
         private JTextField userEntry;
@@ -193,8 +196,11 @@ public class CustomerView implements PropertyChangeListener {
             this.add(contentPane);
             this.setVisible(true);
         }  
-    }  
-    
+    }
+
+    /**
+     * Panel for registering a new account
+     */
     public class RegisterPanel extends JPanel{
         private JButton confirmButton;
         private JButton cancelButton;
@@ -361,6 +367,9 @@ public class CustomerView implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Panel for entering ISBNs to view products, and adding them to the Trade basket
+     */
     public class HomePanel extends JPanel {
         private JButton submitButton;
         private JTextField isbnEntry;
@@ -427,7 +436,10 @@ public class CustomerView implements PropertyChangeListener {
             this.setVisible(true);
         }
     }
-    
+
+    /**
+     * Panel for viewing the Trade basket
+     */
     public class TradePanel extends JPanel {
         private JList<String> tradeList;
         private JScrollPane scrollPane;
@@ -522,7 +534,10 @@ public class CustomerView implements PropertyChangeListener {
             this.setVisible(true);
         }
     }
-    
+
+    /**
+     * Panel for viewing the Saved basket
+     */
     public class SavedPanel extends JPanel {
         private JList<String> savedList;
         private JScrollPane scrollPane;
@@ -578,7 +593,10 @@ public class CustomerView implements PropertyChangeListener {
             this.setVisible(true);
         }
     }
-    
+
+    /**
+     * Panel for viewing the Trade history (to be made)
+     */
     public class HistoryPanel extends JPanel {
         private JLabel label;
         public HistoryPanel() {
@@ -605,7 +623,10 @@ public class CustomerView implements PropertyChangeListener {
             this.setVisible(true);        
         }
     }
-    
+
+    /**
+     * Panel for viewing and editing account details (to be made)
+     */
     public class AccountPanel extends JPanel {
         private JLabel label;
         public AccountPanel() {

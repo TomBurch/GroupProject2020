@@ -3,7 +3,6 @@ package clients.customer;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-import trade.Product;
 
 public class CustomerController {
     private CustomerModel model;
@@ -13,6 +12,8 @@ public class CustomerController {
         this.view = view;
         this.model = model;
     }
+
+    //=== Login Panel ===//
 
     public void login_loginButtonClicked(String user, String pass) {
         System.out.println("CustomerController:: LoginPanel::loginButton clicked");
@@ -24,6 +25,8 @@ public class CustomerController {
         model.setState("Register");
     }
 
+    //=== Register Panel ===//
+
     public void register_confirmButtonClicked(String user, String pass, String passConfirm, String postcode, String email) {
         System.out.println("CustomerController:: RegisterPanel::confirmButton clicked");
         model.register(user, pass, passConfirm, postcode, email);
@@ -34,15 +37,19 @@ public class CustomerController {
         model.setState("Login");
     }
 
+    //=== Home Panel ===//
+
     public void home_submitButtonClicked(String isbn) {
         System.out.println("CustomerController:: HomePanel::submitButton clicked");
-        model.addProductToBasket(isbn);
+        model.addProductToTrade(isbn);
     }
+
+    //=== Trade Panel ===//
 
     public void trade_tradeButtonClicked() {
         System.out.println("CustomerController:: TradePanel::tradeButton clicked");
         float price = model.getBasketPrice();
-        int size = model.getBasketSize();
+        int size = model.getTradeBasketSize();
 
         if (price >= 10 && (size >= 10 && size <= 100)) {
             System.out.println("Trade allowed");
@@ -58,7 +65,7 @@ public class CustomerController {
 
     public void trade_savePopupClicked(@NotNull List<String> selectedValues) {
         System.out.println("CustomerController:: TradePanel::savePopup clicked");
-        model.tradeSelectedValues(selectedValues);
+        model.saveSelectedValues(selectedValues);
     }
 
     public void trade_deletePopupClicked(@NotNull List<String> selectedValues) {
@@ -66,9 +73,11 @@ public class CustomerController {
         model.deleteTradeSelectedValues(selectedValues);
     }
 
+    //=== Saved Panel ===//
+
     public void saved_tradePopupClicked(@NotNull List<String> selectedValues) {
         System.out.println("CustomerController:: SavedPanel::tradePopup clicked");
-        model.saveSelectedValues(selectedValues);
+        model.tradeSelectedValues(selectedValues);
     }
 
     public void saved_deletePopupClicked(@NotNull List<String> selectedValues) {

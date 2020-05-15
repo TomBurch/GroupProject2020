@@ -12,12 +12,22 @@ import java.sql.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Class for handling account registration and validation
+ */
 public class LoginHandler {
+    /**Manages access to the Accounts table*/
     private AccountsManager accManager = new AccountsManager();
 
+    /**UK Government regex pattern for postcodes*/
     private final Pattern regexPostcode = Pattern.compile("^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([AZa-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))[0-9][A-Za-z]{2})$");
+    /**Regex pattern for email addresses*/
     private final Pattern regexEmail = Pattern.compile("^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
 
+    /**
+     * Check user and pass against the Accounts table
+     * @return  True if details correct, else False
+     */
     public boolean verifyAccount(String user, String pass) {
         try {  
             Connection conn = accManager.getConnection();
@@ -42,7 +52,11 @@ public class LoginHandler {
         System.out.println("LoginHandler::verifyAccount:: Unable to verify account '" + user + "'");
         return false;
     }
-    
+
+    /**
+     * Check if enteredPass matches the passHashSalt
+     * @return True if they match, else False
+     */
     public boolean verifyPassword(String enteredPass, @NotNull String passHashSalt) {
         //Split PasswordHash entry from accounts into hash + salt
         String passSalt = passHashSalt.substring(passHashSalt.indexOf(":") + 1);
@@ -53,7 +67,11 @@ public class LoginHandler {
 
         return enteredPassHash.equals(passHash);
     }
-    
+
+    /**
+     * Validate all the entered details,
+     * if they're good then make a new account in Accounts table
+     */
     public void makeAccount(String user, @NotNull String pass, String passConfirm, String postcode, String email) {
         if (!pass.equals(passConfirm)) {
             System.out.println("LoginHandler::makeAccount:: Passwords do not match");
@@ -98,24 +116,6 @@ public class LoginHandler {
         System.out.println("LoginHandler::makeAccount:: Made new account '" + user + "'");
     }
 
-    private boolean validateUsername(@NotNull String user) {
-        return user.length() >= 5;
-    }
-    
-    private boolean validatePassword(@NotNull String pass) {
-        return (pass.length() >= 5 && pass.length() <= 15);
-    }
-
-    private boolean validatePostcode(@NotNull String postcode) {
-        Matcher matcher = regexPostcode.matcher(postcode);
-        return matcher.matches();
-    }
-
-    private boolean validateEmail(@NotNull String email) {
-        Matcher matcher = regexEmail.matcher(email);
-        return matcher.matches();
-    }
-
     private byte[] hash(String pass, byte[] salt) {
         byte[] passHash = null;
         
@@ -139,5 +139,25 @@ public class LoginHandler {
         salt = Base64.getEncoder().encode(salt);
         
         return salt;
+    }
+
+    //=== Validation methods ===//
+
+    private boolean validateUsername(@NotNull String user) {
+        return user.length() >= 5;
+    }
+
+    private boolean validatePassword(@NotNull String pass) {
+        return (pass.length() >= 5 && pass.length() <= 15);
+    }
+
+    private boolean validatePostcode(@NotNull String postcode) {
+        Matcher matcher = regexPostcode.matcher(postcode);
+        return matcher.matches();
+    }
+
+    private boolean validateEmail(@NotNull String email) {
+        Matcher matcher = regexEmail.matcher(email);
+        return matcher.matches();
     }
 }

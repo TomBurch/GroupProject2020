@@ -2,12 +2,11 @@ package DBAccess;
 
 import java.sql.*;
 
+/**
+ * DBManager for creating and managing access to the Products table
+ */
 public class ProductsManager extends DBManager
 {
-    public ProductsManager() {
-       setup();
-    }
-    
     @Override
     protected void setup() {
         try {
