@@ -3,6 +3,7 @@ package handlers;
 
 import DBAccess.AccountsManager;
 import org.jetbrains.annotations.NotNull;
+import trade.Account;
 
 import java.security.SecureRandom;
 import javax.crypto.spec.PBEKeySpec;
@@ -18,6 +19,8 @@ import java.util.regex.Pattern;
 public class AccountHandler {
     /**Manages access to the Accounts table*/
     private AccountsManager accManager = new AccountsManager();
+    /**Details of logged in account*/
+    private Account account;
 
     /**UK Government regex pattern for postcodes*/
     private final Pattern regexPostcode = Pattern.compile("^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([AZa-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))[0-9][A-Za-z]{2})$");
@@ -114,6 +117,36 @@ public class AccountHandler {
             System.out.println("AccountHandler::makeAccount:: " + e);
         }
         System.out.println("AccountHandler::makeAccount:: Made new account '" + user + "'");
+    }
+
+    /**
+     * Set account from the given username
+     * @param username  String
+     */
+    public void setAccount(String username) {
+        try {
+            Connection conn = accManager.getConnection();
+            PreparedStatement statement = conn.prepareStatement("SELECT * FROM ACCOUNTS WHERE Username = ?");
+            statement.setString(1, username);
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                int accountID = rs.getInt("AccountID");
+                String email = rs.getString("Email");
+                String postcode = rs.getString("Postcode");
+
+                account = new Account(accountID, username, email, postcode);
+                System.out.println("AccountHandler::SetAccount:: Set account to " + username);
+            } else {
+                System.out.println("AccountHandler::SetAccount:: Unable to find user");
+            }
+        } catch (SQLException e) {
+            System.out.println("AccountHandler::setAccount:: " + e);
+        }
+    }
+
+    public int getAccountID() {
+        return account.getAccountID();
     }
 
     private byte[] hash(String pass, byte[] salt) {

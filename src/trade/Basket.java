@@ -8,9 +8,6 @@ import java.util.*;
  * ArrayList of Products
  */
 public class Basket extends ArrayList<Product> {
-    /**Comparator used to sort the Basket*/
-    private final ProductIDComparator comparator = new ProductIDComparator();
-
     /**
      * Search the Basket for a Product with the given ISBN
      * @param isbn  String
@@ -61,7 +58,6 @@ public class Basket extends ArrayList<Product> {
             existingProduct.setQuantity(existingProduct.getQuantity() + quantity);
         } else {  // Product not in Basket, add it and sort
             super.add(product);
-            super.sort(comparator);
         }
     }
 
@@ -76,20 +72,8 @@ public class Basket extends ArrayList<Product> {
             result = true;
         } else {
             result = super.add(product);
-            super.sort(comparator);
         }
 
         return result;
-    }
-
-    /**
-     * Comparator for sorting the Basket by ProductID
-     */
-    static class ProductIDComparator implements Comparator<Product> {
-        public int compare(@NotNull Product p1, @NotNull Product p2) {
-            String p1ID = p1.getProductID();
-            String p2ID = p2.getProductID();
-            return p1ID.compareTo(p2ID);
-        }
     }
 }

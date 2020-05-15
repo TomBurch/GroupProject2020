@@ -4,6 +4,7 @@ import handlers.AccountHandler;
 import handlers.SavedHandler;
 import handlers.TradeHandler;
 import org.jetbrains.annotations.NotNull;
+import trade.Basket;
 import trade.Product;
 
 import javax.swing.*;
@@ -34,6 +35,12 @@ public class CustomerModel {
      */
     public void login(String user, String pass) {
         if (accountHandler.verifyAccount(user, pass)) {
+            accountHandler.setAccount(user);
+            Basket savedBasket = savedHandler.getUsersSavedBasket(accountHandler.getAccountID());
+            if (savedBasket != null) {
+                savedHandler.addBasket(savedBasket);
+                setSavedList(savedHandler.getListModel());
+            }
             setState("Main");
         }
     }
@@ -78,6 +85,7 @@ public class CustomerModel {
             Product product = savedHandler.getProductFromLineSummary(lineSummary);
             savedHandler.deleteProductFromBasket(product);
         });
+        savedHandler.updateUsersSavedBasket(accountHandler.getAccountID());
         setSavedList(savedHandler.getListModel());
     }
 
@@ -103,6 +111,7 @@ public class CustomerModel {
             savedHandler.addProductToBasket(product);
             tradeHandler.deleteProductFromBasket(product);
         });
+        savedHandler.updateUsersSavedBasket(accountHandler.getAccountID());
         setSavedList(savedHandler.getListModel());
         setTradeList(tradeHandler.getListModel());
         setTradePrice(tradeHandler.getBasketPrice());
@@ -143,6 +152,7 @@ public class CustomerModel {
      */
     public void saveBasket() {
         savedHandler.addBasket(tradeHandler.getBasket());
+        savedHandler.updateUsersSavedBasket(accountHandler.getAccountID());
         tradeHandler.clearBasket();
         setTradeList(tradeHandler.getListModel());
         setTradePrice(tradeHandler.getBasketPrice());
