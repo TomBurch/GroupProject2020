@@ -670,6 +670,7 @@ public class CustomerView implements PropertyChangeListener {
         private JTextField postcodeEntry;
         private JButton updatePostcodeButton;
         private JButton deleteAccountButton;
+        private JButton logoutButton;
 
         public AccountPanel() {
             this.setSize(400,300);
@@ -725,7 +726,7 @@ public class CustomerView implements PropertyChangeListener {
             });
 
             deleteAccountButton = new JButton();
-            deleteAccountButton.setBounds(231,260,120,35);
+            deleteAccountButton.setBounds(50,245,120,35);
             deleteAccountButton.setBackground(new Color(214,217,223));
             deleteAccountButton.setForeground(new Color(0,0,0));
             deleteAccountButton.setEnabled(true);
@@ -737,11 +738,24 @@ public class CustomerView implements PropertyChangeListener {
                 JOptionPane.showMessageDialog(contentPane, result);
             });
 
+            logoutButton = new JButton();
+            logoutButton.setBounds(230,245,120,35);
+            logoutButton.setBackground(new Color(214,217,223));
+            logoutButton.setForeground(new Color(0,0,0));
+            logoutButton.setEnabled(true);
+            logoutButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            logoutButton.setText("Log out");
+            logoutButton.setVisible(true);
+            logoutButton.addActionListener(
+                    e -> controller.account_logoutButtonClicked()
+            );
+
             contentPane.add(emailEntry);
             contentPane.add(updateEmailButton);
             contentPane.add(postcodeEntry);
             contentPane.add(updatePostcodeButton);
             contentPane.add(deleteAccountButton);
+            contentPane.add(logoutButton);
     
             //adding panel to JFrame and seting of window position and close operation
             this.add(contentPane);

@@ -99,4 +99,9 @@ public class CustomerController {
         System.out.println("CustomerController:: AccountPanel::deleteAccountButton clicked");
         return model.deleteAccount();
     }
+
+    public void account_logoutButtonClicked() {
+        System.out.println("CustomerController:: AccountPanel::logoutButton clicked");
+        model.logout();
+    }
 }

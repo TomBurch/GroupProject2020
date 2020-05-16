@@ -48,6 +48,17 @@ public class CustomerModel {
         }
     }
 
+    public void logout() {
+        setState("Login");
+
+        savedHandler.clearBasket();
+        setSavedList(savedHandler.getListModel());
+        tradeHandler.clearBasket();
+        setTradeList(tradeHandler.getListModel());
+        setTradePrice((tradeHandler.getBasketPrice()));
+        setResetView();
+    }
+
     /**
      * Add a product to the Trade basket
      * @param isbn  ISBN of the product
@@ -89,14 +100,7 @@ public class CustomerModel {
             savedHandler.clearBasket();
             savedHandler.updateUsersSavedBasket(accountHandler.getAccountID());
             accountHandler.deleteAccount(accountHandler.getAccountID());
-
-            // Reset CustomerView
-            setState("Login");
-            tradeHandler.clearBasket();
-            setSavedList(savedHandler.getListModel());
-            setTradeList(tradeHandler.getListModel());
-            setTradePrice((tradeHandler.getBasketPrice()));
-            setResetView();
+            logout();
 
             return "Account successfully deleted";
         } catch (Exception e) {
@@ -156,6 +160,7 @@ public class CustomerModel {
             tradeHandler.addProductToBasket(product);
             savedHandler.deleteProductFromBasket(product);
         });
+        savedHandler.updateUsersSavedBasket(accountHandler.getAccountID());
         setTradeList(tradeHandler.getListModel());
         setTradePrice(tradeHandler.getBasketPrice());
         setSavedList(savedHandler.getListModel());
