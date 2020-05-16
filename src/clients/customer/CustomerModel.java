@@ -36,6 +36,9 @@ public class CustomerModel {
     public void login(String user, String pass) {
         if (accountHandler.verifyAccount(user, pass)) {
             accountHandler.setAccount(user);
+            setAccountEmail(accountHandler.getAccountEmail());
+            setAccountPostcode(accountHandler.getAccountPostcode());
+
             Basket savedBasket = savedHandler.getUsersSavedBasket(accountHandler.getAccountID());
             if (savedBasket != null) {
                 savedHandler.addBasket(savedBasket);
@@ -185,6 +188,24 @@ public class CustomerModel {
         setSavedList(savedHandler.getListModel());
     }
 
+    public String updateEmail(String newEmail) {
+        if (accountHandler.setEmail(newEmail)) {
+            accountHandler.updateAccount(accountHandler.getAccountID());
+            return "E-Mail updated";
+        } else {
+            return "Invalid E-Mail";
+        }
+    }
+
+    public String updatePostcode(String newPostcode) {
+        if (accountHandler.setPostcode(newPostcode)) {
+            accountHandler.updateAccount(accountHandler.getAccountID());
+            return "Postcode updated";
+        } else {
+            return "Invalid postcode";
+        }
+    }
+
     //=== PropertyChange methods ===//
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -227,11 +248,27 @@ public class CustomerModel {
     }
 
     /**
-     * Changed the SavedPanel savedList contents
+     * Change the SavedPanel savedList contents
      * @param newValue  DefaultListModel
      */
     public void setSavedList(DefaultListModel newValue) {
         pcs.firePropertyChange("savedList", null, newValue);
+    }
+
+    /**
+     * Change the AccountPanel emailEntry contents
+     * @param newValue  String
+     */
+    public void setAccountEmail(String newValue) {
+        pcs.firePropertyChange("accountEmail", null, newValue);
+    }
+
+    /**
+     * Change the AccountPanel postcodeEntry contents
+     * @param newValue  String
+     */
+    public void setAccountPostcode(String newValue) {
+        pcs.firePropertyChange("accountPostcode", null, newValue);
     }
 
     /**

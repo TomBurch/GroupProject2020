@@ -28,4 +28,12 @@ public class Account {
     public String getPostcode() {
         return postcode;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
+    }
 }

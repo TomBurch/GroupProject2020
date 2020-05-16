@@ -92,6 +92,25 @@ public class AccountHandler {
         System.out.println("AccountHandler::makeAccount:: Deleted account " + accountID);
     }
 
+    public void updateAccount(int accountID) {
+        try {
+            Connection conn = accManager.getConnection();
+            PreparedStatement statement = conn.prepareStatement("UPDATE ACCOUNTS SET Email = ?, Postcode = ? WHERE AccountID = ?");
+            statement.setString(1, account.getEmail());
+            statement.setString(2, account.getPostcode());
+            statement.setInt(3, accountID);
+
+            int result = statement.executeUpdate();
+
+            if (result == 0) {
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("AccountHandler::updateAccount:: " + e);
+        }
+        System.out.println("AccountHandler::updateAccount:: Updated account " + accountID);
+    }
+
     /**
      * Validate all the entered details,
      * if they're good then make a new account in Accounts table
@@ -166,8 +185,32 @@ public class AccountHandler {
         }
     }
 
+    public boolean setEmail(String email) {
+        if (validateEmail(email)) {
+            account.setEmail(email);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean setPostcode(String postcode) {
+        if (validatePostcode(postcode)) {
+            account.setPostcode(postcode);
+            return true;
+        }
+        return false;
+    }
+
     public int getAccountID() {
         return account.getAccountID();
+    }
+
+    public String getAccountEmail() {
+        return account.getEmail();
+    }
+
+    public String getAccountPostcode() {
+        return account.getPostcode();
     }
 
     private byte[] hash(String pass, byte[] salt) {

@@ -85,6 +85,16 @@ public class CustomerController {
 
     //=== Account Panel ===//
 
+    public String account_updateEmailButtonClicked(String newEmail) {
+        System.out.println("CustomerController:: AccountPanel::updateEmailButton clicked");
+        return model.updateEmail(newEmail);
+    }
+
+    public String account_updatePostcodeButtonClicked(String newPostcode) {
+        System.out.println("CustomerController:: AccountPanel::updatePostcodeButton clicked");
+        return model.updatePostcode(newPostcode);
+    }
+
     public String account_deleteAccountButtonClicked() {
         System.out.println("CustomerController:: AccountPanel::deleteAccountButton clicked");
         return model.deleteAccount();

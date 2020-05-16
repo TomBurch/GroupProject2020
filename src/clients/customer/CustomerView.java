@@ -23,6 +23,7 @@ public class CustomerView implements PropertyChangeListener {
     private JPanel tradePanel;
     private JPanel savedPanel;
     private JPanel historyPanel;
+    private JPanel accountPanel;
     
     public CustomerView() {
         loginPanel = new LoginPanel();
@@ -35,6 +36,8 @@ public class CustomerView implements PropertyChangeListener {
         tradePanel = new TradePanel();
         savedPanel = new SavedPanel();
         historyPanel = new HistoryPanel();
+        accountPanel = new AccountPanel();
+
         tabbedPane.addTab("Home", homePanel);
         tabbedPane.addTab("Current Trade", tradePanel);
         tabbedPane.addTab("Saved Products", savedPanel);
@@ -43,7 +46,7 @@ public class CustomerView implements PropertyChangeListener {
             BufferedImage image = ImageIO.read(getClass().getResource("/resources/cog.png"));
             Image scaledImage = image.getScaledInstance(15, 15, Image.SCALE_DEFAULT);
             ImageIcon icon = new ImageIcon(scaledImage);
-            tabbedPane.addTab("", icon, new AccountPanel());
+            tabbedPane.addTab("", icon, accountPanel);
         } catch (Exception e) {
             System.out.println("CustomerView::Constructor:: " + e);
         }
@@ -91,10 +94,21 @@ public class CustomerView implements PropertyChangeListener {
                 savedList.setModel((DefaultListModel) event.getNewValue());
                 break;
 
+            case "accountEmail":
+                JTextField emailEntry = (JTextField) accountPanel.getClientProperty("emailEntry");
+                emailEntry.setText((String) event.getNewValue());
+                break;
+
+            case "accountPostcode":
+                JTextField postcodeEntry = (JTextField) accountPanel.getClientProperty("postcodeEntry");
+                postcodeEntry.setText((String) event.getNewValue());
+                break;
+
             case "resetView":
                 tabbedPane.setSelectedIndex(0);
                 ((JTextField) homePanel.getClientProperty("isbnEntry")).setText("");
                 ((JTextArea) homePanel.getClientProperty("output")).setText("");
+                break;
         }
     }
 
@@ -651,6 +665,10 @@ public class CustomerView implements PropertyChangeListener {
      * Panel for viewing and editing account details (to be made)
      */
     public class AccountPanel extends JPanel {
+        private JTextField emailEntry;
+        private JButton updateEmailButton;
+        private JTextField postcodeEntry;
+        private JButton updatePostcodeButton;
         private JButton deleteAccountButton;
 
         public AccountPanel() {
@@ -659,6 +677,52 @@ public class CustomerView implements PropertyChangeListener {
             JPanel contentPane = new JPanel(null);
             contentPane.setPreferredSize(new Dimension(400,300));
             contentPane.setBackground(new Color(192,192,192));
+
+            emailEntry = new JTextField();
+            emailEntry.setBounds(20,30,210,35);
+            emailEntry.setBackground(new Color(255,255,255));
+            emailEntry.setForeground(new Color(0,0,0));
+            emailEntry.setEnabled(true);
+            emailEntry.setFont(new Font("sansserif", Font.PLAIN,12));
+            emailEntry.setText("");
+            emailEntry.setVisible(true);
+            this.putClientProperty("emailEntry", emailEntry);
+
+            updateEmailButton = new JButton();
+            updateEmailButton.setBounds(245,30,120,35);
+            updateEmailButton.setBackground(new Color(214,217,223));
+            updateEmailButton.setForeground(new Color(0,0,0));
+            updateEmailButton.setEnabled(true);
+            updateEmailButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            updateEmailButton.setText("Update E-Mail");
+            updateEmailButton.setVisible(true);
+            updateEmailButton.addActionListener( e -> {
+                String result = controller.account_updateEmailButtonClicked(emailEntry.getText());
+                JOptionPane.showMessageDialog(contentPane, result);
+            });
+
+            postcodeEntry = new JTextField();
+            postcodeEntry.setBounds(20,75,210,35);
+            postcodeEntry.setBackground(new Color(255,255,255));
+            postcodeEntry.setForeground(new Color(0,0,0));
+            postcodeEntry.setEnabled(true);
+            postcodeEntry.setFont(new Font("sansserif", Font.PLAIN,12));
+            postcodeEntry.setText("");
+            postcodeEntry.setVisible(true);
+            this.putClientProperty("postcodeEntry", postcodeEntry);
+
+            updatePostcodeButton = new JButton();
+            updatePostcodeButton.setBounds(245,75,135,35);
+            updatePostcodeButton.setBackground(new Color(214,217,223));
+            updatePostcodeButton.setForeground(new Color(0,0,0));
+            updatePostcodeButton.setEnabled(true);
+            updatePostcodeButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            updatePostcodeButton.setText("Update Postcode");
+            updatePostcodeButton.setVisible(true);
+            updatePostcodeButton.addActionListener( e -> {
+                String result = controller.account_updatePostcodeButtonClicked(postcodeEntry.getText());
+                JOptionPane.showMessageDialog(contentPane, result);
+            });
 
             deleteAccountButton = new JButton();
             deleteAccountButton.setBounds(231,260,120,35);
@@ -672,7 +736,11 @@ public class CustomerView implements PropertyChangeListener {
                 String result = controller.account_deleteAccountButtonClicked();
                 JOptionPane.showMessageDialog(contentPane, result);
             });
-            
+
+            contentPane.add(emailEntry);
+            contentPane.add(updateEmailButton);
+            contentPane.add(postcodeEntry);
+            contentPane.add(updatePostcodeButton);
             contentPane.add(deleteAccountButton);
     
             //adding panel to JFrame and seting of window position and close operation
