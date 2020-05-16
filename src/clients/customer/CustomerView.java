@@ -2,39 +2,52 @@ package clients.customer;
 
 import org.jetbrains.annotations.NotNull;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class CustomerView implements PropertyChangeListener {
     private CustomerController controller;
 
+    private JFrame frame = new JFrame("Customer MVC");
     private JPanel mainPanel = new JPanel();
     private JTabbedPane tabbedPane = new JTabbedPane();
-    private CardLayout cardLayout = new CardLayout();
+    private CardLayout cardLayout = new PageViewer();
     private JPanel cardPanel = new JPanel(cardLayout);
 
     private JPanel loginPanel;
     private JPanel registerPanel;
+    private JPanel termsPanel;
     private JPanel homePanel;
     private JPanel tradePanel;
     private JPanel savedPanel;
     private JPanel historyPanel;
-    
+    private JPanel accountPanel;
+
     public CustomerView() {
         loginPanel = new LoginPanel();
         registerPanel = new RegisterPanel();
+        termsPanel = new TermsPanel();
         cardPanel.add(loginPanel, "Login");
         cardPanel.add(registerPanel, "Register");
+        cardPanel.add(termsPanel, "Terms");
         cardPanel.add(tabbedPane, "Main");
 
         homePanel = new HomePanel();
         tradePanel = new TradePanel();
         savedPanel = new SavedPanel();
         historyPanel = new HistoryPanel();
+        accountPanel = new AccountPanel();
+
         tabbedPane.addTab("Home", homePanel);
         tabbedPane.addTab("Current Trade", tradePanel);
         tabbedPane.addTab("Saved Products", savedPanel);
@@ -43,7 +56,7 @@ public class CustomerView implements PropertyChangeListener {
             BufferedImage image = ImageIO.read(getClass().getResource("/resources/cog.png"));
             Image scaledImage = image.getScaledInstance(15, 15, Image.SCALE_DEFAULT);
             ImageIcon icon = new ImageIcon(scaledImage);
-            tabbedPane.addTab("", icon, new AccountPanel());
+            tabbedPane.addTab("", icon, accountPanel);
         } catch (Exception e) {
             System.out.println("CustomerView::Constructor:: " + e);
         }
@@ -51,7 +64,6 @@ public class CustomerView implements PropertyChangeListener {
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(cardPanel, BorderLayout.CENTER);
 
-        JFrame frame = new JFrame("Customer MVC");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(mainPanel);
         frame.setResizable(false);
@@ -62,13 +74,14 @@ public class CustomerView implements PropertyChangeListener {
 
     public void setController(CustomerController controller) {
         this.controller = controller;
-    }   
-    
+    }
+
     @Override
     public void propertyChange(@NotNull PropertyChangeEvent event) {
         switch (event.getPropertyName()) {
             case "state":
                 cardLayout.show(cardPanel, (String) event.getNewValue());
+                frame.pack();
                 break;
 
             case "homeOutput":
@@ -90,6 +103,22 @@ public class CustomerView implements PropertyChangeListener {
                 JList<?> savedList = (JList<?>) savedPanel.getClientProperty("savedList");
                 savedList.setModel((DefaultListModel) event.getNewValue());
                 break;
+
+            case "accountEmail":
+                JTextField emailEntry = (JTextField) accountPanel.getClientProperty("emailEntry");
+                emailEntry.setText((String) event.getNewValue());
+                break;
+
+            case "accountPostcode":
+                JTextField postcodeEntry = (JTextField) accountPanel.getClientProperty("postcodeEntry");
+                postcodeEntry.setText((String) event.getNewValue());
+                break;
+
+            case "resetView":
+                tabbedPane.setSelectedIndex(0);
+                ((JTextField) homePanel.getClientProperty("isbnEntry")).setText("");
+                ((JTextArea) homePanel.getClientProperty("output")).setText("");
+                break;
         }
     }
 
@@ -105,85 +134,87 @@ public class CustomerView implements PropertyChangeListener {
         private JButton loginButton;
         private JButton registerButton;
 
-        //Constructor 
         public LoginPanel() {
-            this.setSize(400,300);
-            
+            this.setSize(400, 195);
+
             JPanel contentPane = new JPanel(null);
-            contentPane.setPreferredSize(new Dimension(400,300));
-            contentPane.setBackground(new Color(192,192,192));
-    
+            contentPane.setPreferredSize(new Dimension(400, 195));
+            contentPane.setBackground(new Color(192, 192, 192));
+
             title = new JLabel();
-            title.setBounds(146,6,108,34);
-            title.setBackground(new Color(214,217,223));
-            title.setForeground(new Color(0,0,0));
+            title.setBounds(146, 6, 108, 34);
+            title.setBackground(new Color(214, 217, 223));
+            title.setForeground(new Color(0, 0, 0));
             title.setEnabled(true);
-            title.setFont(new Font("sansserif", Font.PLAIN,12));
+            title.setFont(new Font("sansserif", Font.PLAIN, 12));
             title.setText("Login or Register");
             title.setVisible(true);
-    
+
             userEntry = new JTextField();
-            userEntry.setBounds(146,50,214,33);
-            userEntry.setBackground(new Color(255,255,255));
-            userEntry.setForeground(new Color(0,0,0));
+            userEntry.setBounds(146, 50, 214, 33);
+            userEntry.setBackground(new Color(255, 255, 255));
+            userEntry.setForeground(new Color(0, 0, 0));
             userEntry.setEnabled(true);
-            userEntry.setFont(new Font("sansserif", Font.PLAIN,12));
+            userEntry.setFont(new Font("sansserif", Font.PLAIN, 12));
             userEntry.setText("");
             userEntry.setVisible(true);
-    
+
             userLabel = new JLabel();
-            userLabel.setBounds(48,50,90,35);
-            userLabel.setBackground(new Color(214,217,223));
-            userLabel.setForeground(new Color(0,0,0));
+            userLabel.setBounds(48, 50, 90, 35);
+            userLabel.setBackground(new Color(214, 217, 223));
+            userLabel.setForeground(new Color(0, 0, 0));
             userLabel.setEnabled(true);
-            userLabel.setFont(new Font("sansserif", Font.PLAIN,12));
+            userLabel.setFont(new Font("sansserif", Font.PLAIN, 12));
             userLabel.setText("Username: ");
             userLabel.setVisible(true);
 
             passEntry = new JPasswordField();
-            passEntry.setBounds(146,92,214,33);
-            passEntry.setBackground(new Color(255,255,255));
-            passEntry.setForeground(new Color(0,0,0));
+            passEntry.setBounds(146, 92, 214, 33);
+            passEntry.setBackground(new Color(255, 255, 255));
+            passEntry.setForeground(new Color(0, 0, 0));
             passEntry.setEnabled(true);
-            passEntry.setFont(new Font("sansserif", Font.PLAIN,12));
+            passEntry.setFont(new Font("sansserif", Font.PLAIN, 12));
             passEntry.setVisible(true);
 
             passLabel = new JLabel();
-            passLabel.setBounds(48,92,90,35);
-            passLabel.setBackground(new Color(214,217,223));
-            passLabel.setForeground(new Color(0,0,0));
+            passLabel.setBounds(48, 92, 90, 35);
+            passLabel.setBackground(new Color(214, 217, 223));
+            passLabel.setForeground(new Color(0, 0, 0));
             passLabel.setEnabled(true);
-            passLabel.setFont(new Font("sansserif", Font.PLAIN,12));
+            passLabel.setFont(new Font("sansserif", Font.PLAIN, 12));
             passLabel.setText("Password:");
             passLabel.setVisible(true);
 
             loginButton = new JButton();
-            loginButton.setBounds(231,260,90,35);
-            loginButton.setBackground(new Color(214,217,223));
-            loginButton.setForeground(new Color(0,0,0));
+            loginButton.setBounds(231, 145, 90, 35);
+            loginButton.setBackground(new Color(214, 217, 223));
+            loginButton.setForeground(new Color(0, 0, 0));
             loginButton.setEnabled(true);
-            loginButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            loginButton.setFont(new Font("sansserif", Font.PLAIN, 12));
             loginButton.setText("Login");
             loginButton.setVisible(true);
-            loginButton.addActionListener(
-                    e -> controller.login_loginButtonClicked(
-                            userEntry.getText(),
-                            passEntry.getText()
-                    )
-            );
+            loginButton.addActionListener(e -> {
+                String result = controller.login_loginButtonClicked(userEntry.getText(), passEntry.getText());
+                if (!result.equals("success")) {
+                    JOptionPane.showMessageDialog(contentPane, result);
+                } else {
+                    userEntry.setText("");
+                    passEntry.setText("");
+                }
+            });
 
             registerButton = new JButton();
-            registerButton.setBounds(69,260,90,35);
-            registerButton.setBackground(new Color(214,217,223));
-            registerButton.setForeground(new Color(0,0,0));
+            registerButton.setBounds(69, 145, 90, 35);
+            registerButton.setBackground(new Color(214, 217, 223));
+            registerButton.setForeground(new Color(0, 0, 0));
             registerButton.setEnabled(true);
-            registerButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            registerButton.setFont(new Font("sansserif", Font.PLAIN, 12));
             registerButton.setText("Register");
             registerButton.setVisible(true);
             registerButton.addActionListener(
                     e -> controller.login_registerButtonClicked()
             );
-    
+
             //adding components to contentPane panel
             contentPane.add(title);
             contentPane.add(userEntry);
@@ -192,156 +223,177 @@ public class CustomerView implements PropertyChangeListener {
             contentPane.add(passLabel);
             contentPane.add(loginButton);
             contentPane.add(registerButton);
-    
+
             this.add(contentPane);
             this.setVisible(true);
-        }  
+        }
     }
 
     /**
      * Panel for registering a new account
      */
-    public class RegisterPanel extends JPanel{
+    public class RegisterPanel extends JPanel {
+        private JLabel title;
+        private JLabel userLabel;
+        private JTextField userEntry;
+        private JLabel passLabel;
+        private JPasswordField passEntry;
+        private JLabel passConfirmLabel;
+        private JPasswordField passConfirmEntry;
+        private JLabel postcodeLabel;
+        private JTextField postcodeEntry;
+        private JLabel emailLabel;
+        private JTextField emailEntry;
+        private JCheckBox ageCheckbox;
         private JButton confirmButton;
         private JButton cancelButton;
-        private JLabel title;
-        private JTextField userEntry;
-        private JLabel userLabel;
-        private JPasswordField passEntry;
-        private JLabel passLabel;
-        private JPasswordField passConfirmEntry;
-        private JLabel passConfirmLabel;
-        private JTextField postcodeEntry;
-        private JLabel postcodeLabel;
-        private JTextField emailEntry;
-        private JLabel emailLabel;
 
         public RegisterPanel() {
-            this.setSize(400,300);
+            this.setSize(400, 350);
 
             JPanel contentPane = new JPanel(null);
-            contentPane.setPreferredSize(new Dimension(400,300));
-            contentPane.setBackground(new Color(192,192,192));
+            contentPane.setPreferredSize(new Dimension(400, 350));
+            contentPane.setBackground(new Color(192, 192, 192));
 
             title = new JLabel();
-            title.setBounds(126,6,200,34);
-            title.setBackground(new Color(214,217,223));
-            title.setForeground(new Color(0,0,0));
+            title.setBounds(126, 6, 200, 34);
+            title.setBackground(new Color(214, 217, 223));
+            title.setForeground(new Color(0, 0, 0));
             title.setEnabled(true);
-            title.setFont(new Font("sansserif", Font.PLAIN,12));
+            title.setFont(new Font("sansserif", Font.PLAIN, 12));
             title.setText("Register a new account");
             title.setVisible(true);
 
             userEntry = new JTextField();
-            userEntry.setBounds(146,50,214,33);
-            userEntry.setBackground(new Color(255,255,255));
-            userEntry.setForeground(new Color(0,0,0));
+            userEntry.setBounds(146, 50, 214, 33);
+            userEntry.setBackground(new Color(255, 255, 255));
+            userEntry.setForeground(new Color(0, 0, 0));
             userEntry.setEnabled(true);
-            userEntry.setFont(new Font("sansserif", Font.PLAIN,12));
+            userEntry.setFont(new Font("sansserif", Font.PLAIN, 12));
             userEntry.setText("");
             userEntry.setVisible(true);
 
             userLabel = new JLabel();
-            userLabel.setBounds(48,50,90,35);
-            userLabel.setBackground(new Color(214,217,223));
-            userLabel.setForeground(new Color(0,0,0));
+            userLabel.setBounds(48, 50, 90, 35);
+            userLabel.setBackground(new Color(214, 217, 223));
+            userLabel.setForeground(new Color(0, 0, 0));
             userLabel.setEnabled(true);
-            userLabel.setFont(new Font("sansserif", Font.PLAIN,12));
+            userLabel.setFont(new Font("sansserif", Font.PLAIN, 12));
             userLabel.setText("Username: ");
             userLabel.setVisible(true);
 
             passEntry = new JPasswordField();
-            passEntry.setBounds(146,92,214,33);
-            passEntry.setBackground(new Color(255,255,255));
-            passEntry.setForeground(new Color(0,0,0));
+            passEntry.setBounds(146, 92, 214, 33);
+            passEntry.setBackground(new Color(255, 255, 255));
+            passEntry.setForeground(new Color(0, 0, 0));
             passEntry.setEnabled(true);
-            passEntry.setFont(new Font("sansserif", Font.PLAIN,12));
+            passEntry.setFont(new Font("sansserif", Font.PLAIN, 12));
             passEntry.setVisible(true);
 
             passLabel = new JLabel();
-            passLabel.setBounds(48,92,90,35);
-            passLabel.setBackground(new Color(214,217,223));
-            passLabel.setForeground(new Color(0,0,0));
+            passLabel.setBounds(48, 92, 90, 35);
+            passLabel.setBackground(new Color(214, 217, 223));
+            passLabel.setForeground(new Color(0, 0, 0));
             passLabel.setEnabled(true);
-            passLabel.setFont(new Font("sansserif", Font.PLAIN,12));
+            passLabel.setFont(new Font("sansserif", Font.PLAIN, 12));
             passLabel.setText("Password:");
             passLabel.setVisible(true);
 
             passConfirmEntry = new JPasswordField();
-            passConfirmEntry.setBounds(146,134,214,33);
-            passConfirmEntry.setBackground(new Color(255,255,255));
-            passConfirmEntry.setForeground(new Color(0,0,0));
+            passConfirmEntry.setBounds(146, 134, 214, 33);
+            passConfirmEntry.setBackground(new Color(255, 255, 255));
+            passConfirmEntry.setForeground(new Color(0, 0, 0));
             passConfirmEntry.setEnabled(true);
-            passConfirmEntry.setFont(new Font("sansserif", Font.PLAIN,12));
+            passConfirmEntry.setFont(new Font("sansserif", Font.PLAIN, 12));
             passConfirmEntry.setVisible(true);
 
             passConfirmLabel = new JLabel();
-            passConfirmLabel.setBounds(30,134,140,35);
-            passConfirmLabel.setBackground(new Color(214,217,223));
-            passConfirmLabel.setForeground(new Color(0,0,0));
+            passConfirmLabel.setBounds(30, 134, 140, 35);
+            passConfirmLabel.setBackground(new Color(214, 217, 223));
+            passConfirmLabel.setForeground(new Color(0, 0, 0));
             passConfirmLabel.setEnabled(true);
-            passConfirmLabel.setFont(new Font("sansserif", Font.PLAIN,12));
+            passConfirmLabel.setFont(new Font("sansserif", Font.PLAIN, 12));
             passConfirmLabel.setText("Confirm Password:");
             passConfirmLabel.setVisible(true);
 
             postcodeEntry = new JTextField();
-            postcodeEntry.setBounds(146,176,214,33);
-            postcodeEntry.setBackground(new Color(255,255,255));
-            postcodeEntry.setForeground(new Color(0,0,0));
+            postcodeEntry.setBounds(146, 176, 214, 33);
+            postcodeEntry.setBackground(new Color(255, 255, 255));
+            postcodeEntry.setForeground(new Color(0, 0, 0));
             postcodeEntry.setEnabled(true);
-            postcodeEntry.setFont(new Font("sansserif", Font.PLAIN,12));
+            postcodeEntry.setFont(new Font("sansserif", Font.PLAIN, 12));
             postcodeEntry.setVisible(true);
 
             postcodeLabel = new JLabel();
-            postcodeLabel.setBounds(48,176,140,35);
-            postcodeLabel.setBackground(new Color(214,217,223));
-            postcodeLabel.setForeground(new Color(0,0,0));
+            postcodeLabel.setBounds(48, 176, 140, 35);
+            postcodeLabel.setBackground(new Color(214, 217, 223));
+            postcodeLabel.setForeground(new Color(0, 0, 0));
             postcodeLabel.setEnabled(true);
-            postcodeLabel.setFont(new Font("sansserif", Font.PLAIN,12));
+            postcodeLabel.setFont(new Font("sansserif", Font.PLAIN, 12));
             postcodeLabel.setText("Postcode:");
             postcodeLabel.setVisible(true);
 
             emailEntry = new JTextField();
-            emailEntry.setBounds(146,218,214,33);
-            emailEntry.setBackground(new Color(255,255,255));
-            emailEntry.setForeground(new Color(0,0,0));
+            emailEntry.setBounds(146, 218, 214, 33);
+            emailEntry.setBackground(new Color(255, 255, 255));
+            emailEntry.setForeground(new Color(0, 0, 0));
             emailEntry.setEnabled(true);
-            emailEntry.setFont(new Font("sansserif", Font.PLAIN,12));
+            emailEntry.setFont(new Font("sansserif", Font.PLAIN, 12));
             emailEntry.setVisible(true);
 
             emailLabel = new JLabel();
-            emailLabel.setBounds(48,218,140,35);
-            emailLabel.setBackground(new Color(214,217,223));
-            emailLabel.setForeground(new Color(0,0,0));
+            emailLabel.setBounds(55, 218, 140, 35);
+            emailLabel.setBackground(new Color(214, 217, 223));
+            emailLabel.setForeground(new Color(0, 0, 0));
             emailLabel.setEnabled(true);
-            emailLabel.setFont(new Font("sansserif", Font.PLAIN,12));
-            emailLabel.setText("E-Mail:");
+            emailLabel.setFont(new Font("sansserif", Font.PLAIN, 12));
+            emailLabel.setText("E-mail:");
             emailLabel.setVisible(true);
 
+            ageCheckbox = new JCheckBox();
+            ageCheckbox.setBounds(145, 265, 120, 35);
+            ageCheckbox.setBackground(new Color(192, 192, 192));
+            ageCheckbox.setForeground(new Color(0, 0, 0));
+            ageCheckbox.setEnabled(true);
+            ageCheckbox.setFont(new Font("sansserif", Font.PLAIN, 12));
+            ageCheckbox.setText("I am over 18");
+            ageCheckbox.setVisible(true);
+
             confirmButton = new JButton();
-            confirmButton.setBounds(231,260,90,35);
-            confirmButton.setBackground(new Color(214,217,223));
-            confirmButton.setForeground(new Color(0,0,0));
+            confirmButton.setBounds(231, 305, 90, 35);
+            confirmButton.setBackground(new Color(214, 217, 223));
+            confirmButton.setForeground(new Color(0, 0, 0));
             confirmButton.setEnabled(true);
-            confirmButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            confirmButton.setFont(new Font("sansserif", Font.PLAIN, 12));
             confirmButton.setText("Confirm");
             confirmButton.setVisible(true);
-            confirmButton.addActionListener(
-                    e -> controller.register_confirmButtonClicked(
-                            userEntry.getText(),
-                            passEntry.getText(),
-                            passConfirmEntry.getText(),
-                            postcodeEntry.getText(),
-                            emailEntry.getText()
-                    )
-            );
+            confirmButton.addActionListener(e -> {
+                String result = controller.register_confirmButtonClicked(
+                        ageCheckbox.isSelected(),
+                        userEntry.getText(),
+                        passEntry.getText(),
+                        passConfirmEntry.getText(),
+                        postcodeEntry.getText(),
+                        emailEntry.getText()
+                );
+                if (!result.equals("success")) {
+                    JOptionPane.showMessageDialog(contentPane, result);
+                } else {
+                    userEntry.setText("");
+                    passEntry.setText("");
+                    passConfirmEntry.setText("");
+                    postcodeEntry.setText("");
+                    emailEntry.setText("");
+                    ageCheckbox.setSelected(false);
+                }
+            });
 
             cancelButton = new JButton();
-            cancelButton.setBounds(69,260,90,35);
-            cancelButton.setBackground(new Color(214,217,223));
-            cancelButton.setForeground(new Color(0,0,0));
+            cancelButton.setBounds(69, 305, 90, 35);
+            cancelButton.setBackground(new Color(214, 217, 223));
+            cancelButton.setForeground(new Color(0, 0, 0));
             cancelButton.setEnabled(true);
-            cancelButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            cancelButton.setFont(new Font("sansserif", Font.PLAIN, 12));
             cancelButton.setText("Cancel");
             cancelButton.setVisible(true);
             cancelButton.addActionListener(
@@ -359,8 +411,94 @@ public class CustomerView implements PropertyChangeListener {
             contentPane.add(postcodeLabel);
             contentPane.add(emailEntry);
             contentPane.add(emailLabel);
+            contentPane.add(ageCheckbox);
             contentPane.add(confirmButton);
             contentPane.add(cancelButton);
+
+            this.add(contentPane);
+            this.setVisible(true);
+        }
+    }
+
+    /**
+     * Panel displaying terms and conditions
+     */
+    public class TermsPanel extends JPanel {
+        private JTextArea textArea;
+        private JScrollPane scrollPane;
+        private JCheckBox agreeCheckbox;
+        private JButton cancelButton;
+        private JButton confirmButton;
+
+        public TermsPanel() {
+            this.setSize(400, 350);
+
+            JPanel contentPane = new JPanel(null);
+            contentPane.setPreferredSize(new Dimension(400, 350));
+            contentPane.setBackground(new Color(192, 192, 192));
+
+            try {
+                Path termsPath = Paths.get(getClass().getResource("/resources/terms.txt").toURI());
+
+                textArea = new JTextArea();
+                textArea.setBounds(10, 5, 380, 260);
+                textArea.setBackground(new Color(255, 255, 255));
+                textArea.setForeground(new Color(0, 0, 0));
+                textArea.setEnabled(true);
+                textArea.setFont(new Font("sansserif", Font.PLAIN, 12));
+                textArea.setText(Files.readString(termsPath, StandardCharsets.UTF_8));
+                textArea.setVisible(true);
+
+                scrollPane = new JScrollPane();
+                scrollPane.setBounds(10, 5, 380, 260);
+                scrollPane.getViewport().add(textArea);
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+            agreeCheckbox = new JCheckBox();
+            agreeCheckbox.setBounds(90, 265, 225, 35);
+            agreeCheckbox.setBackground(new Color(192, 192, 192));
+            agreeCheckbox.setForeground(new Color(0, 0, 0));
+            agreeCheckbox.setEnabled(true);
+            agreeCheckbox.setFont(new Font("sansserif", Font.PLAIN, 12));
+            agreeCheckbox.setText("I agree to the terms and conditions");
+            agreeCheckbox.setVisible(true);
+
+            cancelButton = new JButton();
+            cancelButton.setBounds(60, 305, 90, 35);
+            cancelButton.setBackground(new Color(214, 217, 223));
+            cancelButton.setForeground(new Color(0, 0, 0));
+            cancelButton.setEnabled(true);
+            cancelButton.setFont(new Font("sansserif", Font.PLAIN, 12));
+            cancelButton.setText("Cancel");
+            cancelButton.setVisible(true);
+            cancelButton.addActionListener(e -> {
+                controller.terms_cancelButtonClicked();
+                agreeCheckbox.setSelected(false);
+            });
+
+            confirmButton = new JButton();
+            confirmButton.setBounds(230, 305, 90, 35);
+            confirmButton.setBackground(new Color(214, 217, 223));
+            confirmButton.setForeground(new Color(0, 0, 0));
+            confirmButton.setEnabled(true);
+            confirmButton.setFont(new Font("sansserif", Font.PLAIN, 12));
+            confirmButton.setText("Confirm");
+            confirmButton.setVisible(true);
+            confirmButton.addActionListener(e -> {
+                String result = controller.terms_confirmButtonClicked(agreeCheckbox.isSelected());
+                if (!result.equals("success")) {
+                    JOptionPane.showMessageDialog(contentPane, result);
+                } else {
+                    agreeCheckbox.setSelected(false);
+                }
+            });
+
+            contentPane.add(scrollPane);
+            contentPane.add(agreeCheckbox);
+            contentPane.add(cancelButton);
+            contentPane.add(confirmButton);
 
             this.add(contentPane);
             this.setVisible(true);
@@ -375,75 +513,79 @@ public class CustomerView implements PropertyChangeListener {
         private JButton tradeButton;
         private JTextField isbnEntry;
         private JLabel isbnLabel;
-        public JTextArea output;
-    
-        //Constructor 
-        public HomePanel(){
-            this.setSize(400,300);
-    
-            //pane with null layout
+        private JTextArea output;
+        private JScrollPane scrollPane;
+
+        public HomePanel() {
+            this.setSize(400, 300);
+
             JPanel contentPane = new JPanel(null);
-            contentPane.setPreferredSize(new Dimension(400,300));
-            contentPane.setBackground(new Color(192,192,192));
+            contentPane.setPreferredSize(new Dimension(400, 300));
+            contentPane.setBackground(new Color(192, 192, 192));
+
+            isbnLabel = new JLabel();
+            isbnLabel.setBounds(19, 22, 90, 35);
+            isbnLabel.setBackground(new Color(214, 217, 223));
+            isbnLabel.setForeground(new Color(0, 0, 0));
+            isbnLabel.setEnabled(true);
+            isbnLabel.setFont(new Font("sansserif", Font.PLAIN, 12));
+            isbnLabel.setText("Enter ISBN: ");
+            isbnLabel.setVisible(true);
+
+            isbnEntry = new JTextField();
+            isbnEntry.setBounds(109, 25, 267, 29);
+            isbnEntry.setBackground(new Color(255, 255, 255));
+            isbnEntry.setForeground(new Color(0, 0, 0));
+            isbnEntry.setEnabled(true);
+            isbnEntry.setFont(new Font("sansserif", Font.PLAIN, 12));
+            isbnEntry.setText("");
+            isbnEntry.setVisible(true);
+            this.putClientProperty("isbnEntry", isbnEntry);
 
             checkButton = new JButton();
             checkButton = new JButton();
-            checkButton.setBounds(65,94,120,35);
-            checkButton.setBackground(new Color(214,217,223));
-            checkButton.setForeground(new Color(0,0,0));
+            checkButton.setBounds(65, 75, 120, 35);
+            checkButton.setBackground(new Color(214, 217, 223));
+            checkButton.setForeground(new Color(0, 0, 0));
             checkButton.setEnabled(true);
-            checkButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            checkButton.setFont(new Font("sansserif", Font.PLAIN, 12));
             checkButton.setText("Check Product");
             checkButton.setVisible(true);
             checkButton.addActionListener(
                     e -> controller.home_checkButtonClicked(isbnEntry.getText())
             );
-    
+
             tradeButton = new JButton();
-            tradeButton.setBounds(215,94,120,35);
-            tradeButton.setBackground(new Color(214,217,223));
-            tradeButton.setForeground(new Color(0,0,0));
+            tradeButton.setBounds(215, 75, 120, 35);
+            tradeButton.setBackground(new Color(214, 217, 223));
+            tradeButton.setForeground(new Color(0, 0, 0));
             tradeButton.setEnabled(true);
-            tradeButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            tradeButton.setFont(new Font("sansserif", Font.PLAIN, 12));
             tradeButton.setText("Add To Trade");
             tradeButton.setVisible(true);
             tradeButton.addActionListener(
                     e -> controller.home_tradeButtonClicked(isbnEntry.getText())
             );
 
-            isbnEntry = new JTextField();
-            isbnEntry.setBounds(109,48,267,29);
-            isbnEntry.setBackground(new Color(255,255,255));
-            isbnEntry.setForeground(new Color(0,0,0));
-            isbnEntry.setEnabled(true);
-            isbnEntry.setFont(new Font("sansserif", Font.PLAIN,12));
-            isbnEntry.setText("");
-            isbnEntry.setVisible(true);
-    
-            isbnLabel = new JLabel();
-            isbnLabel.setBounds(19,45,90,35);
-            isbnLabel.setBackground(new Color(214,217,223));
-            isbnLabel.setForeground(new Color(0,0,0));
-            isbnLabel.setEnabled(true);
-            isbnLabel.setFont(new Font("sansserif", Font.PLAIN,12));
-            isbnLabel.setText("Enter ISBN: ");
-            isbnLabel.setVisible(true);
-    
             output = new JTextArea();
-            output.setBounds(79,150,243,109);
-            output.setBackground(new Color(255,255,255));
-            output.setForeground(new Color(0,0,0));
+            output.setBounds(65, 130, 270, 150);
+            output.setBackground(new Color(255, 255, 255));
+            output.setForeground(new Color(0, 0, 0));
             output.setEnabled(true);
-            output.setFont(new Font("sansserif", Font.PLAIN,12));
+            output.setFont(new Font("sansserif", Font.PLAIN, 12));
             output.setText("");
             output.setVisible(true);
             this.putClientProperty("output", output);
+
+            scrollPane = new JScrollPane();
+            scrollPane.setBounds(65, 130, 270, 150);
+            scrollPane.getViewport().add(output);
 
             contentPane.add(checkButton);
             contentPane.add(tradeButton);
             contentPane.add(isbnEntry);
             contentPane.add(isbnLabel);
-            contentPane.add(output);
+            contentPane.add(scrollPane);
 
             this.add(contentPane);
             this.setVisible(true);
@@ -465,18 +607,18 @@ public class CustomerView implements PropertyChangeListener {
         private JMenuItem deletePopup;
 
         public TradePanel() {
-            this.setSize(400,300);
+            this.setSize(400, 300);
 
             JPanel contentPane = new JPanel(null);
-            contentPane.setPreferredSize(new Dimension(400,300));
-            contentPane.setBackground(new Color(192,192,192));
+            contentPane.setPreferredSize(new Dimension(400, 300));
+            contentPane.setBackground(new Color(192, 192, 192));
 
             tradeList = new JList<>();
             tradeList.setBounds(50, 25, 300, 150);
-            tradeList.setBackground(new Color(255,255,255));
-            tradeList.setForeground(new Color(0,0,0));
+            tradeList.setBackground(new Color(255, 255, 255));
+            tradeList.setForeground(new Color(0, 0, 0));
             tradeList.setEnabled(true);
-            tradeList.setFont(new Font("sansserif", Font.PLAIN,12));
+            tradeList.setFont(new Font("sansserif", Font.PLAIN, 12));
             tradeList.setVisible(true);
             this.putClientProperty("tradeList", tradeList);
 
@@ -485,21 +627,21 @@ public class CustomerView implements PropertyChangeListener {
             scrollPane.getViewport().add(tradeList);
 
             priceLabel = new JLabel();
-            priceLabel.setBounds(147,200,160,35);
-            priceLabel.setBackground(new Color(214,217,223));
-            priceLabel.setForeground(new Color(0,0,0));
+            priceLabel.setBounds(147, 200, 160, 35);
+            priceLabel.setBackground(new Color(214, 217, 223));
+            priceLabel.setForeground(new Color(0, 0, 0));
             priceLabel.setEnabled(true);
-            priceLabel.setFont(new Font("sansserif", Font.PLAIN,12));
+            priceLabel.setFont(new Font("sansserif", Font.PLAIN, 12));
             priceLabel.setText("Total Price: £0.00");
             priceLabel.setVisible(true);
             this.putClientProperty("priceLabel", priceLabel);
 
             tradeButton = new JButton();
-            tradeButton.setBounds(210,245,160,35);
-            tradeButton.setBackground(new Color(214,217,223));
-            tradeButton.setForeground(new Color(0,0,0));
+            tradeButton.setBounds(210, 245, 160, 35);
+            tradeButton.setBackground(new Color(214, 217, 223));
+            tradeButton.setForeground(new Color(0, 0, 0));
             tradeButton.setEnabled(true);
-            tradeButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            tradeButton.setFont(new Font("sansserif", Font.PLAIN, 12));
             tradeButton.setText("Confirm Trade");
             tradeButton.setVisible(true);
             tradeButton.addActionListener(e -> {
@@ -508,11 +650,11 @@ public class CustomerView implements PropertyChangeListener {
             });
 
             saveButton = new JButton();
-            saveButton.setBounds(30,245,160,35);
-            saveButton.setBackground(new Color(214,217,223));
-            saveButton.setForeground(new Color(0,0,0));
+            saveButton.setBounds(30, 245, 160, 35);
+            saveButton.setBackground(new Color(214, 217, 223));
+            saveButton.setForeground(new Color(0, 0, 0));
             saveButton.setEnabled(true);
-            saveButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            saveButton.setFont(new Font("sansserif", Font.PLAIN, 12));
             saveButton.setText("Save For Later");
             saveButton.setVisible(true);
             saveButton.addActionListener(
@@ -561,23 +703,23 @@ public class CustomerView implements PropertyChangeListener {
         private JMenuItem deletePopup;
 
         public SavedPanel() {
-            this.setSize(400,300);
+            this.setSize(400, 300);
 
             JPanel contentPane = new JPanel(null);
-            contentPane.setPreferredSize(new Dimension(400,300));
-            contentPane.setBackground(new Color(192,192,192));
+            contentPane.setPreferredSize(new Dimension(400, 300));
+            contentPane.setBackground(new Color(192, 192, 192));
 
             savedList = new JList<>();
-            savedList.setBounds(50, 25, 300, 150);
-            savedList.setBackground(new Color(255,255,255));
-            savedList.setForeground(new Color(0,0,0));
+            savedList.setBounds(50, 25, 300, 235);
+            savedList.setBackground(new Color(255, 255, 255));
+            savedList.setForeground(new Color(0, 0, 0));
             savedList.setEnabled(true);
-            savedList.setFont(new Font("sansserif", Font.PLAIN,12));
+            savedList.setFont(new Font("sansserif", Font.PLAIN, 12));
             savedList.setVisible(true);
             this.putClientProperty("savedList", savedList);
 
             scrollPane = new JScrollPane();
-            scrollPane.setBounds(50, 25, 300, 150);
+            scrollPane.setBounds(50, 25, 300, 235);
             scrollPane.getViewport().add(savedList);
 
             popupMenu = new JPopupMenu("Saved");
@@ -612,58 +754,161 @@ public class CustomerView implements PropertyChangeListener {
      * Panel for viewing the Trade history (to be made)
      */
     public class HistoryPanel extends JPanel {
-        private JLabel label;
-        public HistoryPanel() {
-            this.setSize(400,300);
-    
-            //pane with null layout
-            JPanel contentPane = new JPanel(null);
-            contentPane.setPreferredSize(new Dimension(400,300));
-            contentPane.setBackground(new Color(192,192,192));            
+        private JList<String> historyList;
+        private JScrollPane scrollPane;
 
-            label = new JLabel();
-            label.setBounds(19,45,90,35);
-            label.setBackground(new Color(214,217,223));
-            label.setForeground(new Color(0,0,0));
-            label.setEnabled(true);
-            label.setFont(new Font("sansserif", Font.PLAIN,12));
-            label.setText("History");
-            label.setVisible(true);
-            
-            contentPane.add(label);
-    
+        public HistoryPanel() {
+            this.setSize(400, 300);
+
+            JPanel contentPane = new JPanel(null);
+            contentPane.setPreferredSize(new Dimension(400, 300));
+            contentPane.setBackground(new Color(192, 192, 192));
+
+            historyList = new JList<>();
+            historyList.setBounds(50, 25, 300, 235);
+            historyList.setBackground(new Color(255, 255, 255));
+            historyList.setForeground(new Color(0, 0, 0));
+            historyList.setEnabled(true);
+            historyList.setFont(new Font("sansserif", Font.PLAIN, 12));
+            historyList.setVisible(true);
+            this.putClientProperty("savedList", historyList);
+
+            scrollPane = new JScrollPane();
+            scrollPane.setBounds(50, 25, 300, 235);
+            scrollPane.getViewport().add(historyList);
+
+            contentPane.add(scrollPane);
+
             //adding panel to JFrame and seting of window position and close operation
             this.add(contentPane);
-            this.setVisible(true);        
+            this.setVisible(true);
         }
     }
 
     /**
-     * Panel for viewing and editing account details (to be made)
+     * Panel for viewing and editing account details
      */
     public class AccountPanel extends JPanel {
-        private JLabel label;
+        private JTextField emailEntry;
+        private JButton updateEmailButton;
+        private JTextField postcodeEntry;
+        private JButton updatePostcodeButton;
+        private JButton deleteAccountButton;
+        private JButton logoutButton;
+
         public AccountPanel() {
-            this.setSize(400,300);
+            this.setSize(400, 300);
 
             JPanel contentPane = new JPanel(null);
-            contentPane.setPreferredSize(new Dimension(400,300));
-            contentPane.setBackground(new Color(192,192,192));            
+            contentPane.setPreferredSize(new Dimension(400, 300));
+            contentPane.setBackground(new Color(192, 192, 192));
 
-            label = new JLabel();
-            label.setBounds(19,45,90,35);
-            label.setBackground(new Color(214,217,223));
-            label.setForeground(new Color(0,0,0));
-            label.setEnabled(true);
-            label.setFont(new Font("sansserif", Font.PLAIN,12));
-            label.setText("Account");
-            label.setVisible(true);
-            
-            contentPane.add(label);
-    
+            emailEntry = new JTextField();
+            emailEntry.setBounds(20, 30, 210, 35);
+            emailEntry.setBackground(new Color(255, 255, 255));
+            emailEntry.setForeground(new Color(0, 0, 0));
+            emailEntry.setEnabled(true);
+            emailEntry.setFont(new Font("sansserif", Font.PLAIN, 12));
+            emailEntry.setText("");
+            emailEntry.setVisible(true);
+            this.putClientProperty("emailEntry", emailEntry);
+
+            updateEmailButton = new JButton();
+            updateEmailButton.setBounds(245, 30, 135, 35);
+            updateEmailButton.setBackground(new Color(214, 217, 223));
+            updateEmailButton.setForeground(new Color(0, 0, 0));
+            updateEmailButton.setEnabled(true);
+            updateEmailButton.setFont(new Font("sansserif", Font.PLAIN, 12));
+            updateEmailButton.setText("Update E-mail");
+            updateEmailButton.setVisible(true);
+            updateEmailButton.addActionListener(e -> {
+                String result = controller.account_updateEmailButtonClicked(emailEntry.getText());
+                JOptionPane.showMessageDialog(contentPane, result);
+            });
+
+            postcodeEntry = new JTextField();
+            postcodeEntry.setBounds(20, 75, 210, 35);
+            postcodeEntry.setBackground(new Color(255, 255, 255));
+            postcodeEntry.setForeground(new Color(0, 0, 0));
+            postcodeEntry.setEnabled(true);
+            postcodeEntry.setFont(new Font("sansserif", Font.PLAIN, 12));
+            postcodeEntry.setText("");
+            postcodeEntry.setVisible(true);
+            this.putClientProperty("postcodeEntry", postcodeEntry);
+
+            updatePostcodeButton = new JButton();
+            updatePostcodeButton.setBounds(245, 75, 135, 35);
+            updatePostcodeButton.setBackground(new Color(214, 217, 223));
+            updatePostcodeButton.setForeground(new Color(0, 0, 0));
+            updatePostcodeButton.setEnabled(true);
+            updatePostcodeButton.setFont(new Font("sansserif", Font.PLAIN, 12));
+            updatePostcodeButton.setText("Update Postcode");
+            updatePostcodeButton.setVisible(true);
+            updatePostcodeButton.addActionListener(e -> {
+                String result = controller.account_updatePostcodeButtonClicked(postcodeEntry.getText());
+                JOptionPane.showMessageDialog(contentPane, result);
+            });
+
+            deleteAccountButton = new JButton();
+            deleteAccountButton.setBounds(50, 245, 120, 35);
+            deleteAccountButton.setBackground(new Color(214, 217, 223));
+            deleteAccountButton.setForeground(new Color(0, 0, 0));
+            deleteAccountButton.setEnabled(true);
+            deleteAccountButton.setFont(new Font("sansserif", Font.PLAIN, 12));
+            deleteAccountButton.setText("Delete Account");
+            deleteAccountButton.setVisible(true);
+            deleteAccountButton.addActionListener(e -> {
+                String result = controller.account_deleteAccountButtonClicked();
+                JOptionPane.showMessageDialog(contentPane, result);
+            });
+
+            logoutButton = new JButton();
+            logoutButton.setBounds(230, 245, 120, 35);
+            logoutButton.setBackground(new Color(214, 217, 223));
+            logoutButton.setForeground(new Color(0, 0, 0));
+            logoutButton.setEnabled(true);
+            logoutButton.setFont(new Font("sansserif", Font.PLAIN, 12));
+            logoutButton.setText("Log out");
+            logoutButton.setVisible(true);
+            logoutButton.addActionListener(
+                    e -> controller.account_logoutButtonClicked()
+            );
+
+            contentPane.add(emailEntry);
+            contentPane.add(updateEmailButton);
+            contentPane.add(postcodeEntry);
+            contentPane.add(updatePostcodeButton);
+            contentPane.add(deleteAccountButton);
+            contentPane.add(logoutButton);
+
             //adding panel to JFrame and seting of window position and close operation
             this.add(contentPane);
-            this.setVisible(true);        
+            this.setVisible(true);
+        }
+    }
+
+    // Credit: https://stackoverflow.com/questions/23881651/cardlayout-with-different-sizes
+    public static class PageViewer extends CardLayout {
+        @Override
+        public Dimension preferredLayoutSize(Container parent) {
+            Component current = findCurrentComponent(parent);
+            if (current != null) {
+                Insets insets = parent.getInsets();
+                Dimension pref = current.getPreferredSize();
+                pref.width += insets.left + insets.right;
+                pref.height += insets.top + insets.bottom;
+                return pref;
+            }
+            return super.preferredLayoutSize(parent);
+        }
+
+        public Component findCurrentComponent(@NotNull Container parent) {
+            for (Component comp : parent.getComponents()) {
+                if (comp.isVisible()) {
+                    return comp;
+                }
+            }
+            return null;
         }
     }
 }

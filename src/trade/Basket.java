@@ -1,8 +1,7 @@
 package trade;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.ListIterator;
 
 /**
  * ArrayList of Products
@@ -10,8 +9,9 @@ import java.util.*;
 public class Basket extends ArrayList<Product> {
     /**
      * Search the Basket for a Product with the given ISBN
-     * @param isbn  String
-     * @return  Product or null
+     *
+     * @param isbn String
+     * @return Product or null
      */
     public Product getProductFromISBN(String isbn) {
         return super.stream()
@@ -22,7 +22,8 @@ public class Basket extends ArrayList<Product> {
 
     /**
      * Get the total size of the Basket (sum of Product.quantity)
-     * @return  int
+     *
+     * @return int
      */
     public int getTotalSize() {
         return super.stream().mapToInt(Product::getQuantity).sum();
@@ -30,7 +31,8 @@ public class Basket extends ArrayList<Product> {
 
     /**
      * Get the total price of the Basket (sum of Product.quantity * Product.price)
-     * @return  float
+     *
+     * @return float
      */
     public float getTotalPrice() {
         float price = 0;
@@ -47,8 +49,9 @@ public class Basket extends ArrayList<Product> {
 
     /**
      * Add the given quantity of the Product to the Basket
-     * @param product   Product
-     * @param quantity  int
+     *
+     * @param product  Product
+     * @param quantity int
      */
     public void add(Product product, int quantity) {
         int i = super.indexOf(product);

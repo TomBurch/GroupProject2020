@@ -3,7 +3,9 @@ package handlers;
 import DBAccess.ProductsManager;
 import trade.Product;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,14 +13,18 @@ import java.util.regex.Pattern;
  * Modified BasketHandler for handling the Trade basket
  */
 public class TradeHandler extends BasketHandler {
-    /**Manages access to the Products table*/
+    /**
+     * Manages access to the Products table
+     */
     private ProductsManager prodManager = new ProductsManager();
 
-    /**Regex pattern for verifying ISBNs (10 and 13 digits) */
+    /**
+     * Regex pattern for verifying ISBNs (10 and 13 digits)
+     */
     private final Pattern regexISBN = Pattern.compile("^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$");
 
     /**
-     * @return  Product or null
+     * @return Product or null
      */
     public Product getProductFromISBN(String isbn) {
         if (!validateISBN(isbn)) {
@@ -41,7 +47,7 @@ public class TradeHandler extends BasketHandler {
                 String description = rs.getString("Description");
 
                 return new Product(isbn, title, price, author, publisher, yearPublished, description, 1);
-            }  else {
+            } else {
                 System.out.println("TradeHandler::getProduct:: Product not in database");
                 return null;
             }
@@ -53,8 +59,9 @@ public class TradeHandler extends BasketHandler {
 
     /**
      * Validate the given String against the ISBN regex pattern
-     * @param isbn  String
-     * @return  True if matches pattern, else False
+     *
+     * @param isbn String
+     * @return True if matches pattern, else False
      */
     public boolean validateISBN(String isbn) {
         Matcher matcher = regexISBN.matcher(isbn);

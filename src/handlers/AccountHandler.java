@@ -1,15 +1,14 @@
-
 package handlers;
 
 import DBAccess.AccountsManager;
 import org.jetbrains.annotations.NotNull;
 import trade.Account;
 
-import java.security.SecureRandom;
-import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
-import java.util.Base64;
+import javax.crypto.spec.PBEKeySpec;
+import java.security.SecureRandom;
 import java.sql.*;
+import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,30 +16,39 @@ import java.util.regex.Pattern;
  * Class for handling accounts
  */
 public class AccountHandler {
-    /**Manages access to the Accounts table*/
+    /**
+     * Manages access to the Accounts table
+     */
     private AccountsManager accManager = new AccountsManager();
-    /**Details of logged in account*/
+    /**
+     * Details of logged in account
+     */
     private Account account;
 
-    /**UK Government regex pattern for postcodes*/
+    /**
+     * UK Government regex pattern for postcodes
+     */
     private final Pattern regexPostcode = Pattern.compile("^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([AZa-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))[0-9][A-Za-z]{2})$");
-    /**Regex pattern for email addresses*/
+    /**
+     * Regex pattern for email addresses
+     */
     private final Pattern regexEmail = Pattern.compile("^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
 
     /**
      * Check user and pass against the Accounts table
-     * @return  True if details correct, else False
+     *
+     * @return True if details correct, else False
      */
     public boolean verifyAccount(String user, String pass) {
-        try {  
+        try {
             Connection conn = accManager.getConnection();
             PreparedStatement statement = conn.prepareStatement("SELECT * FROM ACCOUNTS WHERE username = ?");
             statement.setString(1, user);
-            
+
             ResultSet rs = statement.executeQuery();
             if (rs.next()) {
                 String passHashSalt = rs.getString("PasswordHash");
-            
+
                 if (verifyPassword(pass, passHashSalt)) {
                     return true;
                 }
@@ -51,55 +59,97 @@ public class AccountHandler {
         } catch (SQLException e) {
             System.out.println("AccountHandler::verifyAccount:: " + e);
         }
-        
+
         System.out.println("AccountHandler::verifyAccount:: Unable to verify account '" + user + "'");
         return false;
     }
 
     /**
      * Check if enteredPass matches the passHashSalt
+     *
      * @return True if they match, else False
      */
     public boolean verifyPassword(String enteredPass, @NotNull String passHashSalt) {
         //Split PasswordHash entry from accounts into hash + salt
         String passSalt = passHashSalt.substring(passHashSalt.indexOf(":") + 1);
         String passHash = passHashSalt.substring(0, passHashSalt.indexOf(":"));
-        
-        byte[] salt = Base64.getDecoder().decode(passSalt); 
+
+        byte[] salt = Base64.getDecoder().decode(passSalt);
         String enteredPassHash = Base64.getEncoder().encodeToString(hash(enteredPass, salt));
 
         return enteredPassHash.equals(passHash);
     }
 
     /**
+     * Delete the given account from the Accounts table
+     *
+     * @param accountID int
+     */
+    public void deleteAccount(int accountID) {
+        try {
+            Connection conn = accManager.getConnection();
+            PreparedStatement statement = conn.prepareStatement("DELETE FROM ACCOUNTS WHERE AccountID = ?");
+            statement.setInt(1, accountID);
+
+            int result = statement.executeUpdate();
+
+            if (result == 0) {
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("AccountHandler::makeAccount:: " + e);
+        }
+        System.out.println("AccountHandler::makeAccount:: Deleted account " + accountID);
+    }
+
+    public void updateAccount(int accountID) {
+        try {
+            Connection conn = accManager.getConnection();
+            PreparedStatement statement = conn.prepareStatement("UPDATE ACCOUNTS SET Email = ?, Postcode = ? WHERE AccountID = ?");
+            statement.setString(1, account.getEmail());
+            statement.setString(2, account.getPostcode());
+            statement.setInt(3, accountID);
+
+            int result = statement.executeUpdate();
+
+            if (result == 0) {
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("AccountHandler::updateAccount:: " + e);
+        }
+        System.out.println("AccountHandler::updateAccount:: Updated account " + accountID);
+    }
+
+    /**
      * Validate all the entered details,
      * if they're good then make a new account in Accounts table
      */
-    public void makeAccount(String user, @NotNull String pass, String passConfirm, String postcode, String email) {
+    public String makeAccount(String user, @NotNull String pass, String passConfirm, String postcode, String email) {
         if (!pass.equals(passConfirm)) {
             System.out.println("AccountHandler::makeAccount:: Passwords do not match");
-            return;
+            return "Passwords do not match";
         }
 
         byte[] salt = generateSalt();
         byte[] passHash = hash(pass, salt);
-           
+
         String saltString = Base64.getEncoder().encodeToString(salt);
         String hashString = Base64.getEncoder().encodeToString(passHash);
-        
+
         String hashAndSalt = hashString + ":" + saltString;
-        
+
         if (!validateUsername(user) || !validatePassword(pass)) {
             System.out.println("AccountHandler::makeAccount:: Invalid username or password");
-            return;
+            return "Invalid username or password";
         } else if (!validatePostcode(postcode)) {
             System.out.println("AccountHandler::makeAccount:: Invalid postcode");
-            return;
+            return "Invalid postcode";
         } else if (!validateEmail(email)) {
             System.out.println("AccountHandler::makeAccount:: Invalid email");
-            return;
+            return "Invalid E-mail";
         }
-        
+
         try {
             Connection conn = accManager.getConnection();
             PreparedStatement statement = conn.prepareStatement("INSERT INTO ACCOUNTS (Username, PasswordHash, Postcode, Email) VALUES (?, ?, ?, ?)");
@@ -107,21 +157,26 @@ public class AccountHandler {
             statement.setString(2, hashAndSalt);
             statement.setString(3, postcode);
             statement.setString(4, email);
-        
+
             int result = statement.executeUpdate();
-        
+
             if (result == 0) {
-                return;
-            }  
+                return "Error creating account";
+            }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            return "That username is already taken";
         } catch (SQLException e) {
             System.out.println("AccountHandler::makeAccount:: " + e);
+            return "Error creating account";
         }
         System.out.println("AccountHandler::makeAccount:: Made new account '" + user + "'");
+        return "success";
     }
 
     /**
-     * Set account from the given username
-     * @param username  String
+     * Find account from the given username
+     *
+     * @param username String
      */
     public void setAccount(String username) {
         try {
@@ -145,13 +200,37 @@ public class AccountHandler {
         }
     }
 
+    public boolean setEmail(String email) {
+        if (validateEmail(email)) {
+            account.setEmail(email);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean setPostcode(String postcode) {
+        if (validatePostcode(postcode)) {
+            account.setPostcode(postcode);
+            return true;
+        }
+        return false;
+    }
+
     public int getAccountID() {
         return account.getAccountID();
     }
 
+    public String getAccountEmail() {
+        return account.getEmail();
+    }
+
+    public String getAccountPostcode() {
+        return account.getPostcode();
+    }
+
     private byte[] hash(String pass, byte[] salt) {
         byte[] passHash = null;
-        
+
         try {
             PBEKeySpec spec = new PBEKeySpec(pass.toCharArray(), salt, 65536, 128);
             SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
@@ -160,17 +239,17 @@ public class AccountHandler {
         } catch (Exception e) {
             System.out.println("AccountHandler::hash:: " + e);
         }
-        
+
         return passHash;
     }
-    
+
     private byte[] generateSalt() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[16];
         random.nextBytes(salt);
-        
+
         salt = Base64.getEncoder().encode(salt);
-        
+
         return salt;
     }
 

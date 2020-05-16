@@ -13,9 +13,13 @@ import java.util.regex.Pattern;
  */
 public class BasketHandler {
     private Basket basket = new Basket();
-    /**List of Product line summaries, used in JLists*/
+    /**
+     * List of Product line summaries, used in JLists
+     */
     private DefaultListModel listModel = new DefaultListModel();
-    /**Pattern used to extract ISBN from Product line summaries*/
+    /**
+     * Pattern used to extract ISBN from Product line summaries
+     */
     private Pattern isbnPattern = Pattern.compile("\\S+\\s+([0-9-]+)");
 
     /**
@@ -49,27 +53,35 @@ public class BasketHandler {
     public void refreshListModel() {
         DefaultListModel newListModel = new DefaultListModel();
         basket.forEach(product ->
-            newListModel.addElement(product.getLineSummary())
+                newListModel.addElement(product.getLineSummary())
         );
         listModel = newListModel;
     }
 
-    public Basket getBasket() { return basket; }
+    public Basket getBasket() {
+        return basket;
+    }
 
     /**
      * Get total size of the basket (sum of Product.quantity)
      */
-    public int getBasketSize() { return basket.getTotalSize(); }
+    public int getBasketSize() {
+        return basket.getTotalSize();
+    }
 
     /**
      * Get total price of the basket (sum of Product.quantity * Product.price)
      */
-    public float getBasketPrice() { return basket.getTotalPrice(); }
+    public float getBasketPrice() {
+        return basket.getTotalPrice();
+    }
 
-    public DefaultListModel getListModel() { return listModel; }
+    public DefaultListModel getListModel() {
+        return listModel;
+    }
 
     /**
-     * @return  Product or null
+     * @return Product or null
      */
     public Product getProductFromLineSummary(String lineSummary) {
         Matcher matcher = isbnPattern.matcher(lineSummary);

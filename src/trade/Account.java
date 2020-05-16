@@ -17,15 +17,19 @@ public class Account {
         return accountID;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public String getPostcode() {
         return postcode;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPostcode(String postcode) {
+        this.postcode = postcode;
     }
 }
