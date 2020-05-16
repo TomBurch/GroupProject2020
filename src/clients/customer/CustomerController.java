@@ -82,4 +82,11 @@ public class CustomerController {
         System.out.println("CustomerController:: SavedPanel::deletePopup clicked");
         model.deleteSavedSelectedValues(selectedValues);
     }
+
+    //=== Account Panel ===//
+
+    public String account_deleteAccountButtonClicked() {
+        System.out.println("CustomerController:: AccountPanel::deleteAccountButton clicked");
+        return model.deleteAccount();
+    }
 }

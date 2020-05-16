@@ -77,6 +77,32 @@ public class CustomerModel {
     }
 
     /**
+     * Delete the current account
+     * @return String - Success/Fail message for dialog
+     */
+    public String deleteAccount() {
+        try {
+            // Delete any saved user info
+            savedHandler.clearBasket();
+            savedHandler.updateUsersSavedBasket(accountHandler.getAccountID());
+            accountHandler.deleteAccount(accountHandler.getAccountID());
+
+            // Reset CustomerView
+            setState("Login");
+            tradeHandler.clearBasket();
+            setSavedList(savedHandler.getListModel());
+            setTradeList(tradeHandler.getListModel());
+            setTradePrice((tradeHandler.getBasketPrice()));
+            setResetView();
+
+            return "Account successfully deleted";
+        } catch (Exception e) {
+            System.out.println("CustomerModel::deleteAcount:: " + e);
+            return "Error deleting account";
+        }
+    }
+
+    /**
      * Delete selected savedList products from the Saved basket
      * @param selectedValues    List of selected products (lineSummary)
      */
@@ -206,5 +232,12 @@ public class CustomerModel {
      */
     public void setSavedList(DefaultListModel newValue) {
         pcs.firePropertyChange("savedList", null, newValue);
+    }
+
+    /**
+     * Reset CustomerView components
+     */
+    public void setResetView() {
+        pcs.firePropertyChange("resetView", null, null);
     }
 }

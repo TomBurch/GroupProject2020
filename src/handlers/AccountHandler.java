@@ -72,6 +72,27 @@ public class AccountHandler {
     }
 
     /**
+     * Delete the given account from the Accounts table
+     * @param accountID int
+     */
+    public void deleteAccount(int accountID) {
+        try {
+            Connection conn = accManager.getConnection();
+            PreparedStatement statement = conn.prepareStatement("DELETE FROM ACCOUNTS WHERE AccountID = ?");
+            statement.setInt(1, accountID);
+
+            int result = statement.executeUpdate();
+
+            if (result == 0) {
+                return;
+            }
+        } catch (SQLException e) {
+            System.out.println("AccountHandler::makeAccount:: " + e);
+        }
+        System.out.println("AccountHandler::makeAccount:: Deleted account " + accountID);
+    }
+
+    /**
      * Validate all the entered details,
      * if they're good then make a new account in Accounts table
      */

@@ -90,6 +90,11 @@ public class CustomerView implements PropertyChangeListener {
                 JList<?> savedList = (JList<?>) savedPanel.getClientProperty("savedList");
                 savedList.setModel((DefaultListModel) event.getNewValue());
                 break;
+
+            case "resetView":
+                tabbedPane.setSelectedIndex(0);
+                ((JTextField) homePanel.getClientProperty("isbnEntry")).setText("");
+                ((JTextArea) homePanel.getClientProperty("output")).setText("");
         }
     }
 
@@ -105,7 +110,6 @@ public class CustomerView implements PropertyChangeListener {
         private JButton loginButton;
         private JButton registerButton;
 
-        //Constructor 
         public LoginPanel() {
             this.setSize(400,300);
             
@@ -165,12 +169,11 @@ public class CustomerView implements PropertyChangeListener {
             loginButton.setFont(new Font("sansserif", Font.PLAIN,12));
             loginButton.setText("Login");
             loginButton.setVisible(true);
-            loginButton.addActionListener(
-                    e -> controller.login_loginButtonClicked(
-                            userEntry.getText(),
-                            passEntry.getText()
-                    )
-            );
+            loginButton.addActionListener( e -> {
+                controller.login_loginButtonClicked(userEntry.getText(), passEntry.getText());
+                userEntry.setText("");
+                passEntry.setText("");
+            });
 
             registerButton = new JButton();
             registerButton.setBounds(69,260,90,35);
@@ -326,15 +329,20 @@ public class CustomerView implements PropertyChangeListener {
             confirmButton.setFont(new Font("sansserif", Font.PLAIN,12));
             confirmButton.setText("Confirm");
             confirmButton.setVisible(true);
-            confirmButton.addActionListener(
-                    e -> controller.register_confirmButtonClicked(
+            confirmButton.addActionListener(e -> {
+                    controller.register_confirmButtonClicked(
                             userEntry.getText(),
                             passEntry.getText(),
                             passConfirmEntry.getText(),
                             postcodeEntry.getText(),
                             emailEntry.getText()
-                    )
-            );
+                    );
+                    userEntry.setText("");
+                    passEntry.setText("");
+                    passConfirmEntry.setText("");
+                    postcodeEntry.setText("");
+                    emailEntry.setText("");
+            });
 
             cancelButton = new JButton();
             cancelButton.setBounds(69,260,90,35);
@@ -419,6 +427,7 @@ public class CustomerView implements PropertyChangeListener {
             isbnEntry.setFont(new Font("sansserif", Font.PLAIN,12));
             isbnEntry.setText("");
             isbnEntry.setVisible(true);
+            this.putClientProperty("isbnEntry", isbnEntry);
     
             isbnLabel = new JLabel();
             isbnLabel.setBounds(19,45,90,35);
@@ -642,24 +651,29 @@ public class CustomerView implements PropertyChangeListener {
      * Panel for viewing and editing account details (to be made)
      */
     public class AccountPanel extends JPanel {
-        private JLabel label;
+        private JButton deleteAccountButton;
+
         public AccountPanel() {
             this.setSize(400,300);
 
             JPanel contentPane = new JPanel(null);
             contentPane.setPreferredSize(new Dimension(400,300));
-            contentPane.setBackground(new Color(192,192,192));            
+            contentPane.setBackground(new Color(192,192,192));
 
-            label = new JLabel();
-            label.setBounds(19,45,90,35);
-            label.setBackground(new Color(214,217,223));
-            label.setForeground(new Color(0,0,0));
-            label.setEnabled(true);
-            label.setFont(new Font("sansserif", Font.PLAIN,12));
-            label.setText("Account");
-            label.setVisible(true);
+            deleteAccountButton = new JButton();
+            deleteAccountButton.setBounds(231,260,120,35);
+            deleteAccountButton.setBackground(new Color(214,217,223));
+            deleteAccountButton.setForeground(new Color(0,0,0));
+            deleteAccountButton.setEnabled(true);
+            deleteAccountButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            deleteAccountButton.setText("Delete Account");
+            deleteAccountButton.setVisible(true);
+            deleteAccountButton.addActionListener( e -> {
+                String result = controller.account_deleteAccountButtonClicked();
+                JOptionPane.showMessageDialog(contentPane, result);
+            });
             
-            contentPane.add(label);
+            contentPane.add(deleteAccountButton);
     
             //adding panel to JFrame and seting of window position and close operation
             this.add(contentPane);
