@@ -8,6 +8,12 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class CustomerView implements PropertyChangeListener {
     private CustomerController controller;
@@ -15,12 +21,12 @@ public class CustomerView implements PropertyChangeListener {
     private JFrame frame = new JFrame("Customer MVC");
     private JPanel mainPanel = new JPanel();
     private JTabbedPane tabbedPane = new JTabbedPane();
-    //private CardLayout cardLayout = new CardLayout();
     private CardLayout cardLayout = new PageViewer();
     private JPanel cardPanel = new JPanel(cardLayout);
 
     private JPanel loginPanel;
     private JPanel registerPanel;
+    private JPanel termsPanel;
     private JPanel homePanel;
     private JPanel tradePanel;
     private JPanel savedPanel;
@@ -30,8 +36,10 @@ public class CustomerView implements PropertyChangeListener {
     public CustomerView() {
         loginPanel = new LoginPanel();
         registerPanel = new RegisterPanel();
+        termsPanel = new TermsPanel();
         cardPanel.add(loginPanel, "Login");
         cardPanel.add(registerPanel, "Register");
+        cardPanel.add(termsPanel, "Terms");
         cardPanel.add(tabbedPane, "Main");
 
         homePanel = new HomePanel();
@@ -401,6 +409,89 @@ public class CustomerView implements PropertyChangeListener {
             contentPane.add(ageCheckbox);
             contentPane.add(confirmButton);
             contentPane.add(cancelButton);
+
+            this.add(contentPane);
+            this.setVisible(true);
+        }
+    }
+
+    /**
+     * Panel displaying terms and conditions
+     */
+    public class TermsPanel extends JPanel {
+        private JTextArea textArea;
+        private JScrollPane scrollPane;
+        private JCheckBox agreeCheckbox;
+        private JButton cancelButton;
+        private JButton confirmButton;
+
+        public TermsPanel() {
+            this.setSize(400,350);
+
+            JPanel contentPane = new JPanel(null);
+            contentPane.setPreferredSize(new Dimension(400,350));
+            contentPane.setBackground(new Color(192,192,192));
+
+            try {
+                Path termsPath = Paths.get(getClass().getResource("/resources/terms.txt").toURI());
+
+                textArea = new JTextArea();
+                textArea.setBounds(10, 5, 380, 260);
+                textArea.setBackground(new Color(255, 255, 255));
+                textArea.setForeground(new Color(0, 0, 0));
+                textArea.setEnabled(true);
+                textArea.setFont(new Font("sansserif", Font.PLAIN, 12));
+                textArea.setText(Files.readString(termsPath, StandardCharsets.UTF_8));
+                textArea.setVisible(true);
+
+                scrollPane = new JScrollPane();
+                scrollPane.setBounds(10, 5, 380, 260);
+                scrollPane.getViewport().add(textArea);
+            } catch (IOException | URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+            agreeCheckbox = new JCheckBox();
+            agreeCheckbox.setBounds(90,265,225,35);
+            agreeCheckbox.setBackground(new Color(192, 192, 192));
+            agreeCheckbox.setForeground(new Color(0,0,0));
+            agreeCheckbox.setEnabled(true);
+            agreeCheckbox.setFont(new Font("sansserif", Font.PLAIN,12));
+            agreeCheckbox.setText("I agree to the terms and conditions");
+            agreeCheckbox.setVisible(true);
+
+            cancelButton = new JButton();
+            cancelButton.setBounds(60,305,90,35);
+            cancelButton.setBackground(new Color(214,217,223));
+            cancelButton.setForeground(new Color(0,0,0));
+            cancelButton.setEnabled(true);
+            cancelButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            cancelButton.setText("Cancel");
+            cancelButton.setVisible(true);
+            cancelButton.addActionListener( e -> {
+                controller.terms_cancelButtonClicked();
+                agreeCheckbox.setSelected(false);
+            });
+
+            confirmButton = new JButton();
+            confirmButton.setBounds(230,305,90,35);
+            confirmButton.setBackground(new Color(214,217,223));
+            confirmButton.setForeground(new Color(0,0,0));
+            confirmButton.setEnabled(true);
+            confirmButton.setFont(new Font("sansserif", Font.PLAIN,12));
+            confirmButton.setText("Confirm");
+            confirmButton.setVisible(true);
+            confirmButton.addActionListener( e -> {
+                String result = controller.terms_confirmButtonClicked(agreeCheckbox.isSelected());
+                if (!result.equals("success")) {
+                    JOptionPane.showMessageDialog(contentPane, result);
+                }
+            });
+
+            contentPane.add(scrollPane);
+            contentPane.add(agreeCheckbox);
+            contentPane.add(cancelButton);
+            contentPane.add(confirmButton);
 
             this.add(contentPane);
             this.setVisible(true);

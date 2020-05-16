@@ -22,7 +22,7 @@ public class CustomerController {
 
     public void login_registerButtonClicked() {
         System.out.println("CustomerController:: LoginPanel::registerButton clicked");
-        model.setState("Register");
+        model.setState("Terms");
     }
 
     //=== Register Panel ===//
@@ -34,6 +34,23 @@ public class CustomerController {
 
     public void register_cancelButtonClicked() {
         System.out.println("CustomerController:: RegisterPanel::cancelButton clicked");
+        model.setState("Terms");
+    }
+
+    //=== Terms Panel ===//
+
+    public String terms_confirmButtonClicked(boolean agreed) {
+        System.out.println("CustomerController:: TermsPanel::confirmButton clicked");
+        if (agreed) {
+            model.setState("Register");
+            return "success";
+        } else {
+            return "You must accept the terms and conditions";
+        }
+    }
+
+    public void terms_cancelButtonClicked() {
+        System.out.println("CustomerController:: TermsPanel::cancelButton clicked");
         model.setState("Login");
     }
 
