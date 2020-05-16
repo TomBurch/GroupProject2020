@@ -29,10 +29,9 @@ public class AccountHandler {
      * UK Government regex pattern for postcodes
      */
     private final Pattern regexPostcode = Pattern.compile("^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([AZa-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))[0-9][A-Za-z]{2})$");
-    /**
-     * Regex pattern for email addresses
-     */
     private final Pattern regexEmail = Pattern.compile("^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
+    private final Pattern regexUsername = Pattern.compile("^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$");
+    private final Pattern regexPassword = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{5,}$"); //>= 5 characters, 1 letter + 1 num
 
     /**
      * Check user and pass against the Accounts table
@@ -139,14 +138,13 @@ public class AccountHandler {
 
         String hashAndSalt = hashString + ":" + saltString;
 
-        if (!validateUsername(user) || !validatePassword(pass)) {
-            System.out.println("AccountHandler::makeAccount:: Invalid username or password");
-            return "Invalid username or password";
+        if (!validateUsername(user)) {
+            return "Invalid username";
+        } else if (!validatePassword(pass)){
+            return "Invalid password";
         } else if (!validatePostcode(postcode)) {
-            System.out.println("AccountHandler::makeAccount:: Invalid postcode");
             return "Invalid postcode";
         } else if (!validateEmail(email)) {
-            System.out.println("AccountHandler::makeAccount:: Invalid email");
             return "Invalid E-mail";
         }
 
@@ -256,11 +254,16 @@ public class AccountHandler {
     //=== Validation methods ===//
 
     private boolean validateUsername(@NotNull String user) {
-        return user.length() >= 5;
+        Matcher matcher = regexUsername.matcher(user);
+        if (user.length() >= 5 && user.length() <= 32) {
+            return matcher.matches();
+        }
+        return false;
     }
 
     private boolean validatePassword(@NotNull String pass) {
-        return (pass.length() >= 5 && pass.length() <= 15);
+        Matcher matcher = regexPassword.matcher(pass);
+        return matcher.matches();
     }
 
     private boolean validatePostcode(@NotNull String postcode) {
