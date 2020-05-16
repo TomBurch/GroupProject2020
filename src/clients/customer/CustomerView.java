@@ -384,6 +384,7 @@ public class CustomerView implements PropertyChangeListener {
                         passConfirmEntry.setText("");
                         postcodeEntry.setText("");
                         emailEntry.setText("");
+                        ageCheckbox.setSelected(false);
                     }
             });
 
@@ -489,6 +490,8 @@ public class CustomerView implements PropertyChangeListener {
                 String result = controller.terms_confirmButtonClicked(agreeCheckbox.isSelected());
                 if (!result.equals("success")) {
                     JOptionPane.showMessageDialog(contentPane, result);
+                } else {
+                    agreeCheckbox.setSelected(false);
                 }
             });
 

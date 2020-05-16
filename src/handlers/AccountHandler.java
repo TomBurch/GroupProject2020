@@ -153,15 +153,18 @@ public class AccountHandler {
             if (result == 0) {
                 return "Error creating account";
             }  
+        } catch (SQLIntegrityConstraintViolationException e) {
+            return "That username is already taken";
         } catch (SQLException e) {
             System.out.println("AccountHandler::makeAccount:: " + e);
+            return "Error creating account";
         }
         System.out.println("AccountHandler::makeAccount:: Made new account '" + user + "'");
         return "success";
     }
 
     /**
-     * Set account from the given username
+     * Find account from the given username
      * @param username  String
      */
     public void setAccount(String username) {
