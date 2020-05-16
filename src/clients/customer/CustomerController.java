@@ -27,9 +27,9 @@ public class CustomerController {
 
     //=== Register Panel ===//
 
-    public void register_confirmButtonClicked(String user, String pass, String passConfirm, String postcode, String email) {
+    public String register_confirmButtonClicked(boolean over18, String user, String pass, String passConfirm, String postcode, String email) {
         System.out.println("CustomerController:: RegisterPanel::confirmButton clicked");
-        model.register(user, pass, passConfirm, postcode, email);
+        return model.register(over18, user, pass, passConfirm, postcode, email);
     }
 
     public void register_cancelButtonClicked() {

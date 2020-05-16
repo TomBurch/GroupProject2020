@@ -115,10 +115,10 @@ public class AccountHandler {
      * Validate all the entered details,
      * if they're good then make a new account in Accounts table
      */
-    public void makeAccount(String user, @NotNull String pass, String passConfirm, String postcode, String email) {
+    public String makeAccount(String user, @NotNull String pass, String passConfirm, String postcode, String email) {
         if (!pass.equals(passConfirm)) {
             System.out.println("AccountHandler::makeAccount:: Passwords do not match");
-            return;
+            return "Passwords do not match";
         }
 
         byte[] salt = generateSalt();
@@ -131,13 +131,13 @@ public class AccountHandler {
         
         if (!validateUsername(user) || !validatePassword(pass)) {
             System.out.println("AccountHandler::makeAccount:: Invalid username or password");
-            return;
+            return "Invalid username or password";
         } else if (!validatePostcode(postcode)) {
             System.out.println("AccountHandler::makeAccount:: Invalid postcode");
-            return;
+            return "Invalid postcode";
         } else if (!validateEmail(email)) {
             System.out.println("AccountHandler::makeAccount:: Invalid email");
-            return;
+            return "Invalid E-mail";
         }
         
         try {
@@ -151,12 +151,13 @@ public class AccountHandler {
             int result = statement.executeUpdate();
         
             if (result == 0) {
-                return;
+                return "Error creating account";
             }  
         } catch (SQLException e) {
             System.out.println("AccountHandler::makeAccount:: " + e);
         }
         System.out.println("AccountHandler::makeAccount:: Made new account '" + user + "'");
+        return "success";
     }
 
     /**

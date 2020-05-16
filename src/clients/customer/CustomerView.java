@@ -221,25 +221,26 @@ public class CustomerView implements PropertyChangeListener {
      * Panel for registering a new account
      */
     public class RegisterPanel extends JPanel {
+        private JLabel title;
+        private JLabel userLabel;
+        private JTextField userEntry;
+        private JLabel passLabel;
+        private JPasswordField passEntry;
+        private JLabel passConfirmLabel;
+        private JPasswordField passConfirmEntry;
+        private JLabel postcodeLabel;
+        private JTextField postcodeEntry;
+        private JLabel emailLabel;
+        private JTextField emailEntry;
+        private JCheckBox ageCheckbox;
         private JButton confirmButton;
         private JButton cancelButton;
-        private JLabel title;
-        private JTextField userEntry;
-        private JLabel userLabel;
-        private JPasswordField passEntry;
-        private JLabel passLabel;
-        private JPasswordField passConfirmEntry;
-        private JLabel passConfirmLabel;
-        private JTextField postcodeEntry;
-        private JLabel postcodeLabel;
-        private JTextField emailEntry;
-        private JLabel emailLabel;
 
         public RegisterPanel() {
-            this.setSize(400,325);
+            this.setSize(400,350);
 
             JPanel contentPane = new JPanel(null);
-            contentPane.setPreferredSize(new Dimension(400,325));
+            contentPane.setPreferredSize(new Dimension(400,350));
             contentPane.setBackground(new Color(192,192,192));
 
             title = new JLabel();
@@ -329,7 +330,7 @@ public class CustomerView implements PropertyChangeListener {
             emailEntry.setVisible(true);
 
             emailLabel = new JLabel();
-            emailLabel.setBounds(48,218,140,35);
+            emailLabel.setBounds(55,218,140,35);
             emailLabel.setBackground(new Color(214,217,223));
             emailLabel.setForeground(new Color(0,0,0));
             emailLabel.setEnabled(true);
@@ -337,8 +338,17 @@ public class CustomerView implements PropertyChangeListener {
             emailLabel.setText("E-Mail:");
             emailLabel.setVisible(true);
 
+            ageCheckbox = new JCheckBox();
+            ageCheckbox.setBounds(145,265,120,35);
+            ageCheckbox.setBackground(new Color(192, 192, 192));
+            ageCheckbox.setForeground(new Color(0,0,0));
+            ageCheckbox.setEnabled(true);
+            ageCheckbox.setFont(new Font("sansserif", Font.PLAIN,12));
+            ageCheckbox.setText("I am over 18");
+            ageCheckbox.setVisible(true);
+
             confirmButton = new JButton();
-            confirmButton.setBounds(231,260,90,35);
+            confirmButton.setBounds(231,305,90,35);
             confirmButton.setBackground(new Color(214,217,223));
             confirmButton.setForeground(new Color(0,0,0));
             confirmButton.setEnabled(true);
@@ -346,22 +356,27 @@ public class CustomerView implements PropertyChangeListener {
             confirmButton.setText("Confirm");
             confirmButton.setVisible(true);
             confirmButton.addActionListener(e -> {
-                    controller.register_confirmButtonClicked(
+                    String result = controller.register_confirmButtonClicked(
+                            ageCheckbox.isSelected(),
                             userEntry.getText(),
                             passEntry.getText(),
                             passConfirmEntry.getText(),
                             postcodeEntry.getText(),
                             emailEntry.getText()
                     );
-                    userEntry.setText("");
-                    passEntry.setText("");
-                    passConfirmEntry.setText("");
-                    postcodeEntry.setText("");
-                    emailEntry.setText("");
+                    if (!result.equals("success")) {
+                        JOptionPane.showMessageDialog(contentPane, result);
+                    } else {
+                        userEntry.setText("");
+                        passEntry.setText("");
+                        passConfirmEntry.setText("");
+                        postcodeEntry.setText("");
+                        emailEntry.setText("");
+                    }
             });
 
             cancelButton = new JButton();
-            cancelButton.setBounds(69,260,90,35);
+            cancelButton.setBounds(69,305,90,35);
             cancelButton.setBackground(new Color(214,217,223));
             cancelButton.setForeground(new Color(0,0,0));
             cancelButton.setEnabled(true);
@@ -383,6 +398,7 @@ public class CustomerView implements PropertyChangeListener {
             contentPane.add(postcodeLabel);
             contentPane.add(emailEntry);
             contentPane.add(emailLabel);
+            contentPane.add(ageCheckbox);
             contentPane.add(confirmButton);
             contentPane.add(cancelButton);
 

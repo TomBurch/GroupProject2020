@@ -25,9 +25,16 @@ public class CustomerModel {
     /**
      * Make a new account and log in
      */
-    public void register(String user, String pass, String passConfirm, String postcode, String email) {
-        accountHandler.makeAccount(user, pass, passConfirm, postcode, email);
-        login(user, pass);
+    public String register(boolean over18, String user, String pass, String passConfirm, String postcode, String email) {
+        if (over18) {
+            String result = accountHandler.makeAccount(user, pass, passConfirm, postcode, email);
+            if (result.equals("success")) {
+                login(user, pass);
+            }
+            return result;
+        } else {
+            return "You must be over 18 to use Fizzit";
+        }
     }
 
     /**
