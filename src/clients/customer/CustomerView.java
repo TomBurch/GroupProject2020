@@ -194,9 +194,13 @@ public class CustomerView implements PropertyChangeListener {
             loginButton.setText("Login");
             loginButton.setVisible(true);
             loginButton.addActionListener( e -> {
-                controller.login_loginButtonClicked(userEntry.getText(), passEntry.getText());
-                userEntry.setText("");
-                passEntry.setText("");
+                String result = controller.login_loginButtonClicked(userEntry.getText(), passEntry.getText());
+                if (!result.equals("success")) {
+                    JOptionPane.showMessageDialog(contentPane, result);
+                } else {
+                    userEntry.setText("");
+                    passEntry.setText("");
+                }
             });
 
             registerButton = new JButton();

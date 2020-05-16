@@ -22,9 +22,6 @@ public class CustomerModel {
     private TradeHandler tradeHandler = new TradeHandler();
     private SavedHandler savedHandler = new SavedHandler();
 
-    /**
-     * Make a new account and log in
-     */
     public String register(boolean over18, String user, String pass, String passConfirm, String postcode, String email) {
         if (over18) {
             String result = accountHandler.makeAccount(user, pass, passConfirm, postcode, email);
@@ -37,10 +34,7 @@ public class CustomerModel {
         }
     }
 
-    /**
-     * Verify login details and move to Main panel
-     */
-    public void login(String user, String pass) {
+    public String login(String user, String pass) {
         if (accountHandler.verifyAccount(user, pass)) {
             accountHandler.setAccount(user);
             setAccountEmail(accountHandler.getAccountEmail());
@@ -52,6 +46,9 @@ public class CustomerModel {
                 setSavedList(savedHandler.getListModel());
             }
             setState("Main");
+            return "success";
+        } else {
+            return "Incorrect username or password";
         }
     }
 

@@ -15,9 +15,9 @@ public class CustomerController {
 
     //=== Login Panel ===//
 
-    public void login_loginButtonClicked(String user, String pass) {
+    public String login_loginButtonClicked(String user, String pass) {
         System.out.println("CustomerController:: LoginPanel::loginButton clicked");
-        model.login(user, pass);
+        return model.login(user, pass);
     }
 
     public void login_registerButtonClicked() {
