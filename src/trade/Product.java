@@ -56,7 +56,7 @@ public class Product {
         fr.format("Price: £%5.2f\n", this.price);
         fr.format("Publisher: %s\n", this.publisher);
         fr.format("Year Published: %s\n", this.yearPublished);
-        fr.format("Description: %s\n", this.description);
+        fr.format("\n %s\n", this.description);
         fr.close();
 
         return sb.toString();
