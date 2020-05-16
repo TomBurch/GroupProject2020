@@ -55,5 +55,4 @@ public abstract class DBManager
             
         return result.next();
     }
-
 }

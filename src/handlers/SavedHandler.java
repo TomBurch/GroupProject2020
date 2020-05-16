@@ -33,11 +33,7 @@ public class SavedHandler extends BasketHandler {
                 statement.setString(2, product.getISBN());
                 statement.setInt(3, product.getQuantity());
 
-                int result = statement.executeUpdate();
-
-                if (result == 0) {
-                    return;
-                }
+                statement.executeUpdate();
             } catch (SQLException e) {
                 System.out.println("SavedHandler::updateUsersSavedBasket:: " + e);
             }
@@ -90,10 +86,10 @@ public class SavedHandler extends BasketHandler {
                 if (rsProducts.next()) {
                     String title = rsProducts.getString("Title");
                     float price = rsProducts.getFloat("Price");
-                    String author = rsProducts.getString("Author");;
+                    String author = rsProducts.getString("Author");
                     String publisher = rsProducts.getString("Publisher");
-                    String yearPublished = rsProducts.getString("YearPublished");;
-                    String description = rsProducts.getString("Description");;
+                    String yearPublished = rsProducts.getString("YearPublished");
+                    String description = rsProducts.getString("Description");
 
                     Product product = new Product(isbn, title, price, author, publisher, yearPublished, description, quantity);
                     basket.add(product);

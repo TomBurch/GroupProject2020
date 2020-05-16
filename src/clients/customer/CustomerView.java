@@ -415,19 +415,38 @@ public class CustomerView implements PropertyChangeListener {
         private JButton tradeButton;
         private JTextField isbnEntry;
         private JLabel isbnLabel;
-        public JTextArea output;
+        private JTextArea output;
+        private JScrollPane scrollPane;
 
-        public HomePanel(){
+        public HomePanel() {
             this.setSize(400,300);
-    
-            //pane with null layout
+
             JPanel contentPane = new JPanel(null);
             contentPane.setPreferredSize(new Dimension(400,300));
             contentPane.setBackground(new Color(192,192,192));
 
+            isbnLabel = new JLabel();
+            isbnLabel.setBounds(19,22,90,35);
+            isbnLabel.setBackground(new Color(214,217,223));
+            isbnLabel.setForeground(new Color(0,0,0));
+            isbnLabel.setEnabled(true);
+            isbnLabel.setFont(new Font("sansserif", Font.PLAIN,12));
+            isbnLabel.setText("Enter ISBN: ");
+            isbnLabel.setVisible(true);
+
+            isbnEntry = new JTextField();
+            isbnEntry.setBounds(109,25,267,29);
+            isbnEntry.setBackground(new Color(255,255,255));
+            isbnEntry.setForeground(new Color(0,0,0));
+            isbnEntry.setEnabled(true);
+            isbnEntry.setFont(new Font("sansserif", Font.PLAIN,12));
+            isbnEntry.setText("");
+            isbnEntry.setVisible(true);
+            this.putClientProperty("isbnEntry", isbnEntry);
+
             checkButton = new JButton();
             checkButton = new JButton();
-            checkButton.setBounds(65,94,120,35);
+            checkButton.setBounds(65,75,120,35);
             checkButton.setBackground(new Color(214,217,223));
             checkButton.setForeground(new Color(0,0,0));
             checkButton.setEnabled(true);
@@ -437,9 +456,9 @@ public class CustomerView implements PropertyChangeListener {
             checkButton.addActionListener(
                     e -> controller.home_checkButtonClicked(isbnEntry.getText())
             );
-    
+
             tradeButton = new JButton();
-            tradeButton.setBounds(215,94,120,35);
+            tradeButton.setBounds(215,75,120,35);
             tradeButton.setBackground(new Color(214,217,223));
             tradeButton.setForeground(new Color(0,0,0));
             tradeButton.setEnabled(true);
@@ -449,28 +468,9 @@ public class CustomerView implements PropertyChangeListener {
             tradeButton.addActionListener(
                     e -> controller.home_tradeButtonClicked(isbnEntry.getText())
             );
-
-            isbnEntry = new JTextField();
-            isbnEntry.setBounds(109,48,267,29);
-            isbnEntry.setBackground(new Color(255,255,255));
-            isbnEntry.setForeground(new Color(0,0,0));
-            isbnEntry.setEnabled(true);
-            isbnEntry.setFont(new Font("sansserif", Font.PLAIN,12));
-            isbnEntry.setText("");
-            isbnEntry.setVisible(true);
-            this.putClientProperty("isbnEntry", isbnEntry);
-    
-            isbnLabel = new JLabel();
-            isbnLabel.setBounds(19,45,90,35);
-            isbnLabel.setBackground(new Color(214,217,223));
-            isbnLabel.setForeground(new Color(0,0,0));
-            isbnLabel.setEnabled(true);
-            isbnLabel.setFont(new Font("sansserif", Font.PLAIN,12));
-            isbnLabel.setText("Enter ISBN: ");
-            isbnLabel.setVisible(true);
     
             output = new JTextArea();
-            output.setBounds(79,150,243,109);
+            output.setBounds(65,130,270,150);
             output.setBackground(new Color(255,255,255));
             output.setForeground(new Color(0,0,0));
             output.setEnabled(true);
@@ -479,11 +479,15 @@ public class CustomerView implements PropertyChangeListener {
             output.setVisible(true);
             this.putClientProperty("output", output);
 
+            scrollPane = new JScrollPane();
+            scrollPane.setBounds(65,130,270,150);
+            scrollPane.getViewport().add(output);
+
             contentPane.add(checkButton);
             contentPane.add(tradeButton);
             contentPane.add(isbnEntry);
             contentPane.add(isbnLabel);
-            contentPane.add(output);
+            contentPane.add(scrollPane);
 
             this.add(contentPane);
             this.setVisible(true);
@@ -608,7 +612,7 @@ public class CustomerView implements PropertyChangeListener {
             contentPane.setBackground(new Color(192,192,192));
 
             savedList = new JList<>();
-            savedList.setBounds(50, 25, 300, 150);
+            savedList.setBounds(50, 25, 300, 235);
             savedList.setBackground(new Color(255,255,255));
             savedList.setForeground(new Color(0,0,0));
             savedList.setEnabled(true);
@@ -617,7 +621,7 @@ public class CustomerView implements PropertyChangeListener {
             this.putClientProperty("savedList", savedList);
 
             scrollPane = new JScrollPane();
-            scrollPane.setBounds(50, 25, 300, 150);
+            scrollPane.setBounds(50, 25, 300, 235);
             scrollPane.getViewport().add(savedList);
 
             popupMenu = new JPopupMenu("Saved");
@@ -652,25 +656,30 @@ public class CustomerView implements PropertyChangeListener {
      * Panel for viewing the Trade history (to be made)
      */
     public class HistoryPanel extends JPanel {
-        private JLabel label;
+        private JList<String> historyList;
+        private JScrollPane scrollPane;
+
         public HistoryPanel() {
             this.setSize(400,300);
-    
-            //pane with null layout
+
             JPanel contentPane = new JPanel(null);
             contentPane.setPreferredSize(new Dimension(400,300));
-            contentPane.setBackground(new Color(192,192,192));            
+            contentPane.setBackground(new Color(192,192,192));
 
-            label = new JLabel();
-            label.setBounds(19,45,90,35);
-            label.setBackground(new Color(214,217,223));
-            label.setForeground(new Color(0,0,0));
-            label.setEnabled(true);
-            label.setFont(new Font("sansserif", Font.PLAIN,12));
-            label.setText("History");
-            label.setVisible(true);
+            historyList = new JList<>();
+            historyList.setBounds(50, 25, 300, 235);
+            historyList.setBackground(new Color(255,255,255));
+            historyList.setForeground(new Color(0,0,0));
+            historyList.setEnabled(true);
+            historyList.setFont(new Font("sansserif", Font.PLAIN,12));
+            historyList.setVisible(true);
+            this.putClientProperty("savedList", historyList);
+
+            scrollPane = new JScrollPane();
+            scrollPane.setBounds(50, 25, 300, 235);
+            scrollPane.getViewport().add(historyList);
             
-            contentPane.add(label);
+            contentPane.add(scrollPane);
     
             //adding panel to JFrame and seting of window position and close operation
             this.add(contentPane);
@@ -679,7 +688,7 @@ public class CustomerView implements PropertyChangeListener {
     }
 
     /**
-     * Panel for viewing and editing account details (to be made)
+     * Panel for viewing and editing account details
      */
     public class AccountPanel extends JPanel {
         private JTextField emailEntry;
@@ -707,12 +716,12 @@ public class CustomerView implements PropertyChangeListener {
             this.putClientProperty("emailEntry", emailEntry);
 
             updateEmailButton = new JButton();
-            updateEmailButton.setBounds(245,30,120,35);
+            updateEmailButton.setBounds(245,30,135,35);
             updateEmailButton.setBackground(new Color(214,217,223));
             updateEmailButton.setForeground(new Color(0,0,0));
             updateEmailButton.setEnabled(true);
             updateEmailButton.setFont(new Font("sansserif", Font.PLAIN,12));
-            updateEmailButton.setText("Update E-Mail");
+            updateEmailButton.setText("Update E-mail");
             updateEmailButton.setVisible(true);
             updateEmailButton.addActionListener( e -> {
                 String result = controller.account_updateEmailButtonClicked(emailEntry.getText());
@@ -781,8 +790,7 @@ public class CustomerView implements PropertyChangeListener {
     }
 
     // Credit: https://stackoverflow.com/questions/23881651/cardlayout-with-different-sizes
-    public class PageViewer extends CardLayout {
-
+    public static class PageViewer extends CardLayout {
         @Override
         public Dimension preferredLayoutSize(Container parent) {
             Component current = findCurrentComponent(parent);
@@ -796,7 +804,7 @@ public class CustomerView implements PropertyChangeListener {
             return super.preferredLayoutSize(parent);
         }
 
-        public Component findCurrentComponent(Container parent) {
+        public Component findCurrentComponent(@NotNull Container parent) {
             for (Component comp : parent.getComponents()) {
                 if (comp.isVisible()) {
                     return comp;

@@ -5,8 +5,7 @@ import java.sql.*;
 /**
  * DBManager for creating and managing access to the Accounts table
  */
-public class AccountsManager extends DBManager
-{
+public class AccountsManager extends DBManager {
     @Override
     protected void setup() {
         try {
