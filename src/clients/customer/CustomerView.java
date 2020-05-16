@@ -12,9 +12,11 @@ import java.beans.PropertyChangeEvent;
 public class CustomerView implements PropertyChangeListener {
     private CustomerController controller;
 
+    private JFrame frame = new JFrame("Customer MVC");
     private JPanel mainPanel = new JPanel();
     private JTabbedPane tabbedPane = new JTabbedPane();
-    private CardLayout cardLayout = new CardLayout();
+    //private CardLayout cardLayout = new CardLayout();
+    private CardLayout cardLayout = new PageViewer();
     private JPanel cardPanel = new JPanel(cardLayout);
 
     private JPanel loginPanel;
@@ -54,7 +56,6 @@ public class CustomerView implements PropertyChangeListener {
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(cardPanel, BorderLayout.CENTER);
 
-        JFrame frame = new JFrame("Customer MVC");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(mainPanel);
         frame.setResizable(false);
@@ -72,6 +73,7 @@ public class CustomerView implements PropertyChangeListener {
         switch (event.getPropertyName()) {
             case "state":
                 cardLayout.show(cardPanel, (String) event.getNewValue());
+                frame.pack();
                 break;
 
             case "homeOutput":
@@ -125,10 +127,10 @@ public class CustomerView implements PropertyChangeListener {
         private JButton registerButton;
 
         public LoginPanel() {
-            this.setSize(400,300);
+            this.setSize(400,195);
             
             JPanel contentPane = new JPanel(null);
-            contentPane.setPreferredSize(new Dimension(400,300));
+            contentPane.setPreferredSize(new Dimension(400,195));
             contentPane.setBackground(new Color(192,192,192));
     
             title = new JLabel();
@@ -176,7 +178,7 @@ public class CustomerView implements PropertyChangeListener {
             passLabel.setVisible(true);
 
             loginButton = new JButton();
-            loginButton.setBounds(231,260,90,35);
+            loginButton.setBounds(231,145,90,35);
             loginButton.setBackground(new Color(214,217,223));
             loginButton.setForeground(new Color(0,0,0));
             loginButton.setEnabled(true);
@@ -190,7 +192,7 @@ public class CustomerView implements PropertyChangeListener {
             });
 
             registerButton = new JButton();
-            registerButton.setBounds(69,260,90,35);
+            registerButton.setBounds(69,145,90,35);
             registerButton.setBackground(new Color(214,217,223));
             registerButton.setForeground(new Color(0,0,0));
             registerButton.setEnabled(true);
@@ -218,7 +220,7 @@ public class CustomerView implements PropertyChangeListener {
     /**
      * Panel for registering a new account
      */
-    public class RegisterPanel extends JPanel{
+    public class RegisterPanel extends JPanel {
         private JButton confirmButton;
         private JButton cancelButton;
         private JLabel title;
@@ -234,10 +236,10 @@ public class CustomerView implements PropertyChangeListener {
         private JLabel emailLabel;
 
         public RegisterPanel() {
-            this.setSize(400,300);
+            this.setSize(400,325);
 
             JPanel contentPane = new JPanel(null);
-            contentPane.setPreferredSize(new Dimension(400,300));
+            contentPane.setPreferredSize(new Dimension(400,325));
             contentPane.setBackground(new Color(192,192,192));
 
             title = new JLabel();
@@ -398,8 +400,7 @@ public class CustomerView implements PropertyChangeListener {
         private JTextField isbnEntry;
         private JLabel isbnLabel;
         public JTextArea output;
-    
-        //Constructor 
+
         public HomePanel(){
             this.setSize(400,300);
     
@@ -760,6 +761,32 @@ public class CustomerView implements PropertyChangeListener {
             //adding panel to JFrame and seting of window position and close operation
             this.add(contentPane);
             this.setVisible(true);        
+        }
+    }
+
+    // Credit: https://stackoverflow.com/questions/23881651/cardlayout-with-different-sizes
+    public class PageViewer extends CardLayout {
+
+        @Override
+        public Dimension preferredLayoutSize(Container parent) {
+            Component current = findCurrentComponent(parent);
+            if (current != null) {
+                Insets insets = parent.getInsets();
+                Dimension pref = current.getPreferredSize();
+                pref.width += insets.left + insets.right;
+                pref.height += insets.top + insets.bottom;
+                return pref;
+            }
+            return super.preferredLayoutSize(parent);
+        }
+
+        public Component findCurrentComponent(Container parent) {
+            for (Component comp : parent.getComponents()) {
+                if (comp.isVisible()) {
+                    return comp;
+                }
+            }
+            return null;
         }
     }
 }
