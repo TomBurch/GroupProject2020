@@ -14,11 +14,14 @@ import java.sql.SQLException;
  * Modified BasketHandler for handling the Saved basket
  */
 public class SavedHandler extends BasketHandler {
-    /**Manages access to the Saved table*/
+    /**
+     * Manages access to the Saved table
+     */
     private SavedManager savedManager = new SavedManager();
 
     /**
      * Insert all Products from Saved basket into Saved table
+     *
      * @param accountID int
      */
     public void updateUsersSavedBasket(int accountID) {
@@ -43,6 +46,7 @@ public class SavedHandler extends BasketHandler {
 
     /**
      * Removed all entries from Saved table with given AccountID
+     *
      * @param accountID int
      */
     public void clearUsersSavedBasket(int accountID) {
@@ -64,6 +68,7 @@ public class SavedHandler extends BasketHandler {
 
     /**
      * Return a Basket made from entries in Saved table under AccountID
+     *
      * @param accountID int
      * @return Basket or null
      */

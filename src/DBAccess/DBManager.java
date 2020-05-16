@@ -7,8 +7,7 @@ import java.sql.*;
 /**
  * Abstract class for creating and managing access to tables
  */
-public abstract class DBManager
-{
+public abstract class DBManager {
     private static final String dbUrl = "jdbc:derby:fizzit.db;create=true";
     protected static Connection conn;
 
@@ -21,7 +20,7 @@ public abstract class DBManager
             System.out.println("DBManager::constructor:: " + e);
         }
     }
-    
+
     private static void shutdown_hook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("Closing fizzit.db connection");
@@ -52,7 +51,7 @@ public abstract class DBManager
     protected static boolean checkTable(@NotNull String tableName) throws SQLException {
         DatabaseMetaData meta = conn.getMetaData();
         ResultSet result = meta.getTables(null, null, tableName.toUpperCase(), null);
-            
+
         return result.next();
     }
 }

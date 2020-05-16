@@ -30,9 +30,13 @@ public class Product {
         return this.quantity;
     }
 
-    public float getPrice() { return this.price; }
+    public float getPrice() {
+        return this.price;
+    }
 
-    public String getISBN() { return this.isbn; }
+    public String getISBN() {
+        return this.isbn;
+    }
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
@@ -40,7 +44,8 @@ public class Product {
 
     /**
      * Get a multiline description of the Product - used in HomePanel output
-     * @return  String
+     *
+     * @return String
      */
     public String getDetails() {
         StringBuilder sb = new StringBuilder(256);
@@ -59,7 +64,8 @@ public class Product {
 
     /**
      * Get a single-line summary of the Product - used in JLists
-     * @return  String
+     *
+     * @return String
      */
     public String getLineSummary() {
         return String.format("%sx  %s    £%5.2f    %s    %s", this.quantity, this.isbn, (this.price * this.quantity), this.title, this.author);

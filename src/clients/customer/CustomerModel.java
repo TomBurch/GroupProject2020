@@ -8,14 +8,16 @@ import trade.Basket;
 import trade.Product;
 
 import javax.swing.*;
-import java.beans.PropertyChangeSupport;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.List;
 
 public class CustomerModel {
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
-    /**Initial GUI panel*/
+    /**
+     * Initial GUI panel
+     */
     private String state = "Login";
 
     private AccountHandler accountHandler = new AccountHandler();
@@ -65,7 +67,8 @@ public class CustomerModel {
 
     /**
      * Add a product to the Trade basket
-     * @param isbn  ISBN of the product
+     *
+     * @param isbn ISBN of the product
      */
     public void addProductToTrade(String isbn) {
         Product product = checkProduct(isbn);
@@ -79,8 +82,9 @@ public class CustomerModel {
 
     /**
      * Check if a Product with given ISBN exists in Products table
-     * @param isbn  String
-     * @return  Product if it exists, else null
+     *
+     * @param isbn String
+     * @return Product if it exists, else null
      */
     public Product checkProduct(String isbn) {
         Product product = tradeHandler.getProductFromISBN(isbn);
@@ -96,6 +100,7 @@ public class CustomerModel {
 
     /**
      * Delete the current account
+     *
      * @return String - Success/Fail message for dialog
      */
     public String deleteAccount() {
@@ -115,7 +120,8 @@ public class CustomerModel {
 
     /**
      * Delete selected savedList products from the Saved basket
-     * @param selectedValues    List of selected products (lineSummary)
+     *
+     * @param selectedValues List of selected products (lineSummary)
      */
     public void deleteSavedSelectedValues(@NotNull List<String> selectedValues) {
         selectedValues.forEach(lineSummary -> {
@@ -128,19 +134,21 @@ public class CustomerModel {
 
     /**
      * Delete selected tradeList products from the Trade basket
-     * @param selectedValues    List of selected products (lineSummary)
+     *
+     * @param selectedValues List of selected products (lineSummary)
      */
     public void deleteTradeSelectedValues(@NotNull List<String> selectedValues) {
         selectedValues.forEach(lineSummary -> {
-           Product product = tradeHandler.getProductFromLineSummary(lineSummary);
-           tradeHandler.deleteProductFromBasket(product);
+            Product product = tradeHandler.getProductFromLineSummary(lineSummary);
+            tradeHandler.deleteProductFromBasket(product);
         });
         setTradeList(tradeHandler.getListModel());
     }
 
     /**
      * Move selected tradeList products from the Trade basket to the Saved basket
-     * @param selectedValues    List of selected products (lineSummary)
+     *
+     * @param selectedValues List of selected products (lineSummary)
      */
     public void saveSelectedValues(@NotNull List<String> selectedValues) {
         selectedValues.forEach(lineSummary -> {
@@ -156,7 +164,8 @@ public class CustomerModel {
 
     /**
      * Move selected savedList products from the Saved basket to the Trade basket
-     * @param selectedValues    List of selected products (lineSummary)
+     *
+     * @param selectedValues List of selected products (lineSummary)
      */
     public void tradeSelectedValues(@NotNull List<String> selectedValues) {
         selectedValues.forEach(lineSummary -> {
@@ -172,6 +181,7 @@ public class CustomerModel {
 
     /**
      * Attempt to trade the contents of the Trade basket (currently non-functional)
+     *
      * @return String - Success/Fail message for dialog
      */
     public String processTrade() {
@@ -200,9 +210,9 @@ public class CustomerModel {
     public String updateEmail(String newEmail) {
         if (accountHandler.setEmail(newEmail)) {
             accountHandler.updateAccount(accountHandler.getAccountID());
-            return "E-Mail updated";
+            return "E-mail updated";
         } else {
-            return "Invalid E-Mail";
+            return "Invalid E-mail";
         }
     }
 
@@ -223,6 +233,7 @@ public class CustomerModel {
 
     /**
      * Change the active Panel
+     *
      * @param state String
      */
     public void setState(String state) {
@@ -234,7 +245,8 @@ public class CustomerModel {
 
     /**
      * Change the HomePanel output text
-     * @param newValue  String
+     *
+     * @param newValue String
      */
     public void setHomeOutput(String newValue) {
         pcs.firePropertyChange("homeOutput", null, newValue);
@@ -242,7 +254,8 @@ public class CustomerModel {
 
     /**
      * Change the TradePanel priceLabel text
-     * @param newValue  float
+     *
+     * @param newValue float
      */
     public void setTradePrice(float newValue) {
         pcs.firePropertyChange("tradePrice", null, newValue);
@@ -250,7 +263,8 @@ public class CustomerModel {
 
     /**
      * Change the TradePanel tradeList contents
-     * @param newValue  DefaultListModel
+     *
+     * @param newValue DefaultListModel
      */
     public void setTradeList(DefaultListModel newValue) {
         pcs.firePropertyChange("tradeList", null, newValue);
@@ -258,7 +272,8 @@ public class CustomerModel {
 
     /**
      * Change the SavedPanel savedList contents
-     * @param newValue  DefaultListModel
+     *
+     * @param newValue DefaultListModel
      */
     public void setSavedList(DefaultListModel newValue) {
         pcs.firePropertyChange("savedList", null, newValue);
@@ -266,7 +281,8 @@ public class CustomerModel {
 
     /**
      * Change the AccountPanel emailEntry contents
-     * @param newValue  String
+     *
+     * @param newValue String
      */
     public void setAccountEmail(String newValue) {
         pcs.firePropertyChange("accountEmail", null, newValue);
@@ -274,7 +290,8 @@ public class CustomerModel {
 
     /**
      * Change the AccountPanel postcodeEntry contents
-     * @param newValue  String
+     *
+     * @param newValue String
      */
     public void setAccountPostcode(String newValue) {
         pcs.firePropertyChange("accountPostcode", null, newValue);

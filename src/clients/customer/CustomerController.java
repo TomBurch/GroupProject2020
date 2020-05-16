@@ -1,13 +1,13 @@
 package clients.customer;
 
-import java.util.List;
-
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class CustomerController {
     private CustomerModel model;
     private CustomerView view;
-    
+
     public CustomerController(CustomerView view, CustomerModel model) {
         this.view = view;
         this.model = model;
