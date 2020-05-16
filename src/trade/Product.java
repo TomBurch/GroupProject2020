@@ -51,11 +51,11 @@ public class Product {
         StringBuilder sb = new StringBuilder(256);
         Formatter fr = new Formatter(sb);
 
-        fr.format("Title: %s\n", this.title);
-        fr.format("Author: %s\n", this.author);
-        fr.format("Price: £%5.2f\n", this.price);
-        fr.format("Publisher: %s\n", this.publisher);
-        fr.format("Year Published: %s\n", this.yearPublished);
+        fr.format(" Title: %s\n", this.title);
+        fr.format(" Author: %s\n", this.author);
+        fr.format(" Price: £%5.2f\n", this.price);
+        fr.format(" Publisher: %s\n", this.publisher);
+        fr.format(" Year Published: %s\n", this.yearPublished);
         fr.format("\n %s\n", this.description);
         fr.close();
 

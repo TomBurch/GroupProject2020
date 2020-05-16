@@ -576,6 +576,9 @@ public class CustomerView implements PropertyChangeListener {
             output.setFont(new Font("sansserif", Font.PLAIN, 12));
             output.setText("");
             output.setEditable(false);
+            output.setWrapStyleWord(true);
+            output.setLineWrap(true);
+            output.setColumns(51);
             output.setVisible(true);
             this.putClientProperty("output", output);
 
