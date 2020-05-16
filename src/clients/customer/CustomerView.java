@@ -447,6 +447,7 @@ public class CustomerView implements PropertyChangeListener {
                 textArea.setEnabled(true);
                 textArea.setFont(new Font("sansserif", Font.PLAIN, 12));
                 textArea.setText(Files.readString(termsPath, StandardCharsets.UTF_8));
+                textArea.setEditable(false);
                 textArea.setVisible(true);
 
                 scrollPane = new JScrollPane();
@@ -574,6 +575,7 @@ public class CustomerView implements PropertyChangeListener {
             output.setEnabled(true);
             output.setFont(new Font("sansserif", Font.PLAIN, 12));
             output.setText("");
+            output.setEditable(false);
             output.setVisible(true);
             this.putClientProperty("output", output);
 
