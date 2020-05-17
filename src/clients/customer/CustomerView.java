@@ -118,6 +118,8 @@ public class CustomerView implements PropertyChangeListener {
                 tabbedPane.setSelectedIndex(0);
                 ((JTextField) homePanel.getClientProperty("isbnEntry")).setText("");
                 ((JTextArea) homePanel.getClientProperty("output")).setText("");
+                ((JTextField) loginPanel.getClientProperty("userEntry")).setText("");
+                ((JPasswordField) loginPanel.getClientProperty("passEntry")).setText("");
                 break;
         }
     }
@@ -158,6 +160,7 @@ public class CustomerView implements PropertyChangeListener {
             userEntry.setFont(new Font("sansserif", Font.PLAIN, 12));
             userEntry.setText("");
             userEntry.setVisible(true);
+            this.putClientProperty("userEntry", userEntry);
 
             userLabel = new JLabel();
             userLabel.setBounds(48, 50, 90, 35);
@@ -175,6 +178,7 @@ public class CustomerView implements PropertyChangeListener {
             passEntry.setEnabled(true);
             passEntry.setFont(new Font("sansserif", Font.PLAIN, 12));
             passEntry.setVisible(true);
+            this.putClientProperty("passEntry", passEntry);
 
             passLabel = new JLabel();
             passLabel.setBounds(48, 92, 90, 35);
