@@ -8,12 +8,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class CustomerView implements PropertyChangeListener {
     private CustomerController controller;
@@ -215,9 +209,10 @@ public class CustomerView implements PropertyChangeListener {
             registerButton.setFont(new Font("sansserif", Font.PLAIN, 12));
             registerButton.setText("Register");
             registerButton.setVisible(true);
-            registerButton.addActionListener(
-                    e -> controller.login_registerButtonClicked()
-            );
+            registerButton.addActionListener(e -> {
+                ((JTextArea) termsPanel.getClientProperty("textArea")).setText(controller.getTerms());
+                controller.login_registerButtonClicked();
+            });
 
             //adding components to contentPane panel
             contentPane.add(title);
@@ -441,25 +436,19 @@ public class CustomerView implements PropertyChangeListener {
             contentPane.setPreferredSize(new Dimension(400, 350));
             contentPane.setBackground(new Color(192, 192, 192));
 
-            try {
-                Path termsPath = Paths.get(getClass().getResource("/resources/terms.txt").toURI());
+            textArea = new JTextArea();
+            textArea.setBounds(10, 5, 380, 260);
+            textArea.setBackground(new Color(255, 255, 255));
+            textArea.setForeground(new Color(0, 0, 0));
+            textArea.setEnabled(true);
+            textArea.setFont(new Font("sansserif", Font.PLAIN, 12));
+            textArea.setEditable(false);
+            textArea.setVisible(true);
+            this.putClientProperty("textArea", textArea);
 
-                textArea = new JTextArea();
-                textArea.setBounds(10, 5, 380, 260);
-                textArea.setBackground(new Color(255, 255, 255));
-                textArea.setForeground(new Color(0, 0, 0));
-                textArea.setEnabled(true);
-                textArea.setFont(new Font("sansserif", Font.PLAIN, 12));
-                textArea.setText(Files.readString(termsPath, StandardCharsets.UTF_8));
-                textArea.setEditable(false);
-                textArea.setVisible(true);
-
-                scrollPane = new JScrollPane();
-                scrollPane.setBounds(10, 5, 380, 260);
-                scrollPane.getViewport().add(textArea);
-            } catch (IOException | URISyntaxException e) {
-                e.printStackTrace();
-            }
+            scrollPane = new JScrollPane();
+            scrollPane.setBounds(10, 5, 380, 260);
+            scrollPane.getViewport().add(textArea);
 
             agreeCheckbox = new JCheckBox();
             agreeCheckbox.setBounds(90, 265, 225, 35);

@@ -13,6 +13,10 @@ public class CustomerController {
         this.model = model;
     }
 
+    public String getTerms() {
+        return model.getTerms();
+    }
+
     //=== Login Panel ===//
 
     public String login_loginButtonClicked(String user, String pass) {

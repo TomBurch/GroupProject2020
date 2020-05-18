@@ -10,6 +10,9 @@ import trade.Product;
 import javax.swing.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class CustomerModel {
@@ -223,6 +226,24 @@ public class CustomerModel {
         } else {
             return "Invalid postcode";
         }
+    }
+
+    public String getTerms() {
+        try {
+            InputStream inputStream = getClass().getResourceAsStream("/resources/terms.txt");
+            ByteArrayOutputStream result = new ByteArrayOutputStream();
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                result.write(buffer, 0, length);
+            }
+
+            return result.toString("UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Failed to load terms";
     }
 
     //=== PropertyChange methods ===//
