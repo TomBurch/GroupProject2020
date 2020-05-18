@@ -13,6 +13,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class CustomerModel {
@@ -23,9 +24,9 @@ public class CustomerModel {
      */
     private String state = "Login";
 
-    private AccountHandler accountHandler = new AccountHandler();
-    private TradeHandler tradeHandler = new TradeHandler();
-    private SavedHandler savedHandler = new SavedHandler();
+    private final AccountHandler accountHandler = new AccountHandler();
+    private final TradeHandler tradeHandler = new TradeHandler();
+    private final SavedHandler savedHandler = new SavedHandler();
 
     public String register(boolean over18, String user, String pass, String passConfirm, String postcode, String email) {
         if (over18) {
@@ -239,7 +240,7 @@ public class CustomerModel {
                 result.write(buffer, 0, length);
             }
 
-            return result.toString("UTF-8");
+            return result.toString(StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }

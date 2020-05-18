@@ -6,13 +6,13 @@ import java.util.Formatter;
  * Class representing an item from the Products table
  */
 public class Product {
-    private String isbn;
-    private String title;
-    private float price;
-    private String author;
-    private String publisher;
-    private String yearPublished;
-    private String description;
+    private final String isbn;
+    private final String title;
+    private final float price;
+    private final String author;
+    private final String publisher;
+    private final String yearPublished;
+    private final String description;
     private int quantity;
 
     public Product(String isbn, String title, float price, String author, String publisher, String yearPublished, String description, int quantity) {
@@ -30,16 +30,16 @@ public class Product {
         return this.quantity;
     }
 
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     public float getPrice() {
         return this.price;
     }
 
     public String getISBN() {
         return this.isbn;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 
     /**

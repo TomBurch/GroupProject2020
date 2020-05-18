@@ -21,6 +21,10 @@ public abstract class DBManager {
         }
     }
 
+    public DBManager() {
+        setup();
+    }
+
     private static void shutdown_hook() {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("Closing fizzit.db connection");
@@ -32,8 +36,14 @@ public abstract class DBManager {
         }));
     }
 
-    public DBManager() {
-        setup();
+    /**
+     * Check if the given table exists
+     */
+    protected static boolean checkTable(@NotNull String tableName) throws SQLException {
+        DatabaseMetaData meta = conn.getMetaData();
+        ResultSet result = meta.getTables(null, null, tableName.toUpperCase(), null);
+
+        return result.next();
     }
 
     /**
@@ -43,15 +53,5 @@ public abstract class DBManager {
 
     public Connection getConnection() {
         return conn;
-    }
-
-    /**
-     * Check if the given table exists
-     */
-    protected static boolean checkTable(@NotNull String tableName) throws SQLException {
-        DatabaseMetaData meta = conn.getMetaData();
-        ResultSet result = meta.getTables(null, null, tableName.toUpperCase(), null);
-
-        return result.next();
     }
 }

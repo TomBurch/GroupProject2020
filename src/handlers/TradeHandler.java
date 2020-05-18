@@ -14,14 +14,13 @@ import java.util.regex.Pattern;
  */
 public class TradeHandler extends BasketHandler {
     /**
-     * Manages access to the Products table
-     */
-    private ProductsManager prodManager = new ProductsManager();
-
-    /**
      * Regex pattern for verifying ISBNs (10 and 13 digits)
      */
     private final Pattern regexISBN = Pattern.compile("^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$");
+    /**
+     * Manages access to the Products table
+     */
+    private final ProductsManager prodManager = new ProductsManager();
 
     /**
      * @return Product or null

@@ -17,7 +17,7 @@ public class SavedHandler extends BasketHandler {
     /**
      * Manages access to the Saved table
      */
-    private SavedManager savedManager = new SavedManager();
+    private final SavedManager savedManager = new SavedManager();
 
     /**
      * Insert all Products from Saved basket into Saved table
