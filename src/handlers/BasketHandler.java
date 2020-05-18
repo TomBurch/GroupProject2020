@@ -20,7 +20,7 @@ public class BasketHandler {
     /**
      * Pattern used to extract ISBN from Product line summaries
      */
-    private Pattern isbnPattern = Pattern.compile("\\S+\\s+([0-9-]+)");
+    private final Pattern isbnPattern = Pattern.compile("\\S+\\s+([0-9-]+)");
 
     /**
      * Copy all Products from given Basket into this Basket

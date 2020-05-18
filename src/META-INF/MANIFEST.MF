@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: clients.TestBuild
+Class-Path: derby.jar annotations-18.0.0.jar derbyclient.jar
+

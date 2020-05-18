@@ -8,30 +8,24 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class CustomerView implements PropertyChangeListener {
     private CustomerController controller;
 
-    private JFrame frame = new JFrame("Customer MVC");
-    private JPanel mainPanel = new JPanel();
-    private JTabbedPane tabbedPane = new JTabbedPane();
-    private CardLayout cardLayout = new PageViewer();
-    private JPanel cardPanel = new JPanel(cardLayout);
+    private final JFrame frame = new JFrame("Customer MVC");
+    private final JPanel mainPanel = new JPanel();
+    private final JTabbedPane tabbedPane = new JTabbedPane();
+    private final CardLayout cardLayout = new PageViewer();
+    private final JPanel cardPanel = new JPanel(cardLayout);
 
-    private JPanel loginPanel;
-    private JPanel registerPanel;
-    private JPanel termsPanel;
-    private JPanel homePanel;
-    private JPanel tradePanel;
-    private JPanel savedPanel;
-    private JPanel historyPanel;
-    private JPanel accountPanel;
+    private final JPanel loginPanel;
+    private final JPanel registerPanel;
+    private final JPanel termsPanel;
+    private final JPanel homePanel;
+    private final JPanel tradePanel;
+    private final JPanel savedPanel;
+    private final JPanel historyPanel;
+    private final JPanel accountPanel;
 
     public CustomerView() {
         loginPanel = new LoginPanel();
@@ -91,7 +85,7 @@ public class CustomerView implements PropertyChangeListener {
 
             case "tradePrice":
                 JLabel priceLabel = (JLabel) tradePanel.getClientProperty("priceLabel");
-                priceLabel.setText(String.format("Total Price: £%5.2f", (float) event.getNewValue()));
+                priceLabel.setText(String.format("Total Price: £%5.2f", event.getNewValue()));
                 break;
 
             case "tradeList":
@@ -124,17 +118,42 @@ public class CustomerView implements PropertyChangeListener {
         }
     }
 
+    // Credit: https://stackoverflow.com/questions/23881651/cardlayout-with-different-sizes
+    public static class PageViewer extends CardLayout {
+        @Override
+        public Dimension preferredLayoutSize(Container parent) {
+            Component current = findCurrentComponent(parent);
+            if (current != null) {
+                Insets insets = parent.getInsets();
+                Dimension pref = current.getPreferredSize();
+                pref.width += insets.left + insets.right;
+                pref.height += insets.top + insets.bottom;
+                return pref;
+            }
+            return super.preferredLayoutSize(parent);
+        }
+
+        public Component findCurrentComponent(@NotNull Container parent) {
+            for (Component comp : parent.getComponents()) {
+                if (comp.isVisible()) {
+                    return comp;
+                }
+            }
+            return null;
+        }
+    }
+
     /**
      * Panel for logging in to an existing account
      */
     public class LoginPanel extends JPanel {
-        private JLabel title;
-        private JTextField userEntry;
-        private JLabel userLabel;
-        private JPasswordField passEntry;
-        private JLabel passLabel;
-        private JButton loginButton;
-        private JButton registerButton;
+        private final JLabel title;
+        private final JTextField userEntry;
+        private final JLabel userLabel;
+        private final JPasswordField passEntry;
+        private final JLabel passLabel;
+        private final JButton loginButton;
+        private final JButton registerButton;
 
         public LoginPanel() {
             this.setSize(400, 195);
@@ -215,9 +234,10 @@ public class CustomerView implements PropertyChangeListener {
             registerButton.setFont(new Font("sansserif", Font.PLAIN, 12));
             registerButton.setText("Register");
             registerButton.setVisible(true);
-            registerButton.addActionListener(
-                    e -> controller.login_registerButtonClicked()
-            );
+            registerButton.addActionListener(e -> {
+                ((JTextArea) termsPanel.getClientProperty("textArea")).setText(controller.getTerms());
+                controller.login_registerButtonClicked();
+            });
 
             //adding components to contentPane panel
             contentPane.add(title);
@@ -237,20 +257,20 @@ public class CustomerView implements PropertyChangeListener {
      * Panel for registering a new account
      */
     public class RegisterPanel extends JPanel {
-        private JLabel title;
-        private JLabel userLabel;
-        private JTextField userEntry;
-        private JLabel passLabel;
-        private JPasswordField passEntry;
-        private JLabel passConfirmLabel;
-        private JPasswordField passConfirmEntry;
-        private JLabel postcodeLabel;
-        private JTextField postcodeEntry;
-        private JLabel emailLabel;
-        private JTextField emailEntry;
-        private JCheckBox ageCheckbox;
-        private JButton confirmButton;
-        private JButton cancelButton;
+        private final JLabel title;
+        private final JLabel userLabel;
+        private final JTextField userEntry;
+        private final JLabel passLabel;
+        private final JPasswordField passEntry;
+        private final JLabel passConfirmLabel;
+        private final JPasswordField passConfirmEntry;
+        private final JLabel postcodeLabel;
+        private final JTextField postcodeEntry;
+        private final JLabel emailLabel;
+        private final JTextField emailEntry;
+        private final JCheckBox ageCheckbox;
+        private final JButton confirmButton;
+        private final JButton cancelButton;
 
         public RegisterPanel() {
             this.setSize(400, 350);
@@ -428,11 +448,11 @@ public class CustomerView implements PropertyChangeListener {
      * Panel displaying terms and conditions
      */
     public class TermsPanel extends JPanel {
-        private JTextArea textArea;
-        private JScrollPane scrollPane;
-        private JCheckBox agreeCheckbox;
-        private JButton cancelButton;
-        private JButton confirmButton;
+        private final JTextArea textArea;
+        private final JScrollPane scrollPane;
+        private final JCheckBox agreeCheckbox;
+        private final JButton cancelButton;
+        private final JButton confirmButton;
 
         public TermsPanel() {
             this.setSize(400, 350);
@@ -441,25 +461,19 @@ public class CustomerView implements PropertyChangeListener {
             contentPane.setPreferredSize(new Dimension(400, 350));
             contentPane.setBackground(new Color(192, 192, 192));
 
-            try {
-                Path termsPath = Paths.get(getClass().getResource("/resources/terms.txt").toURI());
+            textArea = new JTextArea();
+            textArea.setBounds(10, 5, 380, 260);
+            textArea.setBackground(new Color(255, 255, 255));
+            textArea.setForeground(new Color(0, 0, 0));
+            textArea.setEnabled(true);
+            textArea.setFont(new Font("sansserif", Font.PLAIN, 12));
+            textArea.setEditable(false);
+            textArea.setVisible(true);
+            this.putClientProperty("textArea", textArea);
 
-                textArea = new JTextArea();
-                textArea.setBounds(10, 5, 380, 260);
-                textArea.setBackground(new Color(255, 255, 255));
-                textArea.setForeground(new Color(0, 0, 0));
-                textArea.setEnabled(true);
-                textArea.setFont(new Font("sansserif", Font.PLAIN, 12));
-                textArea.setText(Files.readString(termsPath, StandardCharsets.UTF_8));
-                textArea.setEditable(false);
-                textArea.setVisible(true);
-
-                scrollPane = new JScrollPane();
-                scrollPane.setBounds(10, 5, 380, 260);
-                scrollPane.getViewport().add(textArea);
-            } catch (IOException | URISyntaxException e) {
-                e.printStackTrace();
-            }
+            scrollPane = new JScrollPane();
+            scrollPane.setBounds(10, 5, 380, 260);
+            scrollPane.getViewport().add(textArea);
 
             agreeCheckbox = new JCheckBox();
             agreeCheckbox.setBounds(90, 265, 225, 35);
@@ -515,11 +529,11 @@ public class CustomerView implements PropertyChangeListener {
      */
     public class HomePanel extends JPanel {
         private JButton checkButton;
-        private JButton tradeButton;
-        private JTextField isbnEntry;
-        private JLabel isbnLabel;
-        private JTextArea output;
-        private JScrollPane scrollPane;
+        private final JButton tradeButton;
+        private final JTextField isbnEntry;
+        private final JLabel isbnLabel;
+        private final JTextArea output;
+        private final JScrollPane scrollPane;
 
         public HomePanel() {
             this.setSize(400, 300);
@@ -605,15 +619,15 @@ public class CustomerView implements PropertyChangeListener {
      * Panel for viewing the Trade basket
      */
     public class TradePanel extends JPanel {
-        private JList<String> tradeList;
-        private JScrollPane scrollPane;
-        private JLabel priceLabel;
-        private JButton tradeButton;
-        private JButton saveButton;
+        private final JList<String> tradeList;
+        private final JScrollPane scrollPane;
+        private final JLabel priceLabel;
+        private final JButton tradeButton;
+        private final JButton saveButton;
 
-        private JPopupMenu popupMenu;
-        private JMenuItem savePopup;
-        private JMenuItem deletePopup;
+        private final JPopupMenu popupMenu;
+        private final JMenuItem savePopup;
+        private final JMenuItem deletePopup;
 
         public TradePanel() {
             this.setSize(400, 300);
@@ -704,12 +718,12 @@ public class CustomerView implements PropertyChangeListener {
      * Panel for viewing the Saved basket
      */
     public class SavedPanel extends JPanel {
-        private JList<String> savedList;
-        private JScrollPane scrollPane;
+        private final JList<String> savedList;
+        private final JScrollPane scrollPane;
 
-        private JPopupMenu popupMenu;
-        private JMenuItem tradePopup;
-        private JMenuItem deletePopup;
+        private final JPopupMenu popupMenu;
+        private final JMenuItem tradePopup;
+        private final JMenuItem deletePopup;
 
         public SavedPanel() {
             this.setSize(400, 300);
@@ -763,8 +777,8 @@ public class CustomerView implements PropertyChangeListener {
      * Panel for viewing the Trade history (to be made)
      */
     public class HistoryPanel extends JPanel {
-        private JList<String> historyList;
-        private JScrollPane scrollPane;
+        private final JList<String> historyList;
+        private final JScrollPane scrollPane;
 
         public HistoryPanel() {
             this.setSize(400, 300);
@@ -798,12 +812,12 @@ public class CustomerView implements PropertyChangeListener {
      * Panel for viewing and editing account details
      */
     public class AccountPanel extends JPanel {
-        private JTextField emailEntry;
-        private JButton updateEmailButton;
-        private JTextField postcodeEntry;
-        private JButton updatePostcodeButton;
-        private JButton deleteAccountButton;
-        private JButton logoutButton;
+        private final JTextField emailEntry;
+        private final JButton updateEmailButton;
+        private final JTextField postcodeEntry;
+        private final JButton updatePostcodeButton;
+        private final JButton deleteAccountButton;
+        private final JButton logoutButton;
 
         public AccountPanel() {
             this.setSize(400, 300);
@@ -893,31 +907,6 @@ public class CustomerView implements PropertyChangeListener {
             //adding panel to JFrame and seting of window position and close operation
             this.add(contentPane);
             this.setVisible(true);
-        }
-    }
-
-    // Credit: https://stackoverflow.com/questions/23881651/cardlayout-with-different-sizes
-    public static class PageViewer extends CardLayout {
-        @Override
-        public Dimension preferredLayoutSize(Container parent) {
-            Component current = findCurrentComponent(parent);
-            if (current != null) {
-                Insets insets = parent.getInsets();
-                Dimension pref = current.getPreferredSize();
-                pref.width += insets.left + insets.right;
-                pref.height += insets.top + insets.bottom;
-                return pref;
-            }
-            return super.preferredLayoutSize(parent);
-        }
-
-        public Component findCurrentComponent(@NotNull Container parent) {
-            for (Component comp : parent.getComponents()) {
-                if (comp.isVisible()) {
-                    return comp;
-                }
-            }
-            return null;
         }
     }
 }

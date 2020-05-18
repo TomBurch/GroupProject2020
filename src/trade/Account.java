@@ -1,8 +1,8 @@
 package trade;
 
 public class Account {
-    private int accountID;
-    private String username;
+    private final int accountID;
+    private final String username;
     private String email;
     private String postcode;
 
@@ -21,12 +21,12 @@ public class Account {
         return email;
     }
 
-    public String getPostcode() {
-        return postcode;
-    }
-
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPostcode() {
+        return postcode;
     }
 
     public void setPostcode(String postcode) {

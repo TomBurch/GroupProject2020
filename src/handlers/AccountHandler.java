@@ -17,21 +17,20 @@ import java.util.regex.Pattern;
  */
 public class AccountHandler {
     /**
-     * Manages access to the Accounts table
-     */
-    private AccountsManager accManager = new AccountsManager();
-    /**
-     * Details of logged in account
-     */
-    private Account account;
-
-    /**
      * UK Government regex pattern for postcodes
      */
     private final Pattern regexPostcode = Pattern.compile("^([Gg][Ii][Rr] 0[Aa]{2})|((([A-Za-z][0-9]{1,2})|(([A-Za-z][A-Ha-hJ-Yj-y][0-9]{1,2})|(([AZa-z][0-9][A-Za-z])|([A-Za-z][A-Ha-hJ-Yj-y][0-9]?[A-Za-z]))))[0-9][A-Za-z]{2})$");
     private final Pattern regexEmail = Pattern.compile("^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$");
     private final Pattern regexUsername = Pattern.compile("^[A-Za-z0-9]+(?:[ _-][A-Za-z0-9]+)*$");
     private final Pattern regexPassword = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{5,}$"); //>= 5 characters, 1 letter + 1 num
+    /**
+     * Manages access to the Accounts table
+     */
+    private final AccountsManager accManager = new AccountsManager();
+    /**
+     * Details of logged in account
+     */
+    private Account account;
 
     /**
      * Check user and pass against the Accounts table
@@ -140,7 +139,7 @@ public class AccountHandler {
 
         if (!validateUsername(user)) {
             return "Invalid username";
-        } else if (!validatePassword(pass)){
+        } else if (!validatePassword(pass)) {
             return "Invalid password";
         } else if (!validatePostcode(postcode)) {
             return "Invalid postcode";

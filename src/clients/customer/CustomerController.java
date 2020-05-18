@@ -5,12 +5,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class CustomerController {
-    private CustomerModel model;
-    private CustomerView view;
+    private final CustomerModel model;
+    private final CustomerView view;
 
     public CustomerController(CustomerView view, CustomerModel model) {
         this.view = view;
         this.model = model;
+    }
+
+    public String getTerms() {
+        return model.getTerms();
     }
 
     //=== Login Panel ===//

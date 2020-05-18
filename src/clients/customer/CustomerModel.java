@@ -10,6 +10,10 @@ import trade.Product;
 import javax.swing.*;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class CustomerModel {
@@ -20,9 +24,9 @@ public class CustomerModel {
      */
     private String state = "Login";
 
-    private AccountHandler accountHandler = new AccountHandler();
-    private TradeHandler tradeHandler = new TradeHandler();
-    private SavedHandler savedHandler = new SavedHandler();
+    private final AccountHandler accountHandler = new AccountHandler();
+    private final TradeHandler tradeHandler = new TradeHandler();
+    private final SavedHandler savedHandler = new SavedHandler();
 
     public String register(boolean over18, String user, String pass, String passConfirm, String postcode, String email) {
         if (over18) {
@@ -223,6 +227,24 @@ public class CustomerModel {
         } else {
             return "Invalid postcode";
         }
+    }
+
+    public String getTerms() {
+        try {
+            InputStream inputStream = getClass().getResourceAsStream("/resources/terms.txt");
+            ByteArrayOutputStream result = new ByteArrayOutputStream();
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                result.write(buffer, 0, length);
+            }
+
+            return result.toString(StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Failed to load terms";
     }
 
     //=== PropertyChange methods ===//
